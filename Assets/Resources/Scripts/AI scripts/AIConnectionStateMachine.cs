@@ -25,7 +25,7 @@ public class AIConnectionStateMachine : MonoBehaviour
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action OnConnectionError;
-    public event Action<int> OnReconnectAttempt; // attempts count
+    public event Action<int> OnReconnectAttempt;
 
     private AIClient _aiClient;
     private int _reconnectAttempts;
@@ -73,7 +73,6 @@ public class AIConnectionStateMachine : MonoBehaviour
 
     private void InitializeStateMachine()
     {
-        // Подписываемся на события AIClient
         _aiClient.OnConnectionStatusChanged += HandleAIClientStatusChange;
 
         // Начальное состояние
@@ -111,8 +110,7 @@ public class AIConnectionStateMachine : MonoBehaviour
 
     public void StartConnection()
     {
-        if (CurrentState == AIConnectionState.Connected ||
-            CurrentState == AIConnectionState.Connecting)
+        if (CurrentState == AIConnectionState.Connected)
             return;
 
         CurrentState = AIConnectionState.Connecting;
@@ -138,7 +136,7 @@ public class AIConnectionStateMachine : MonoBehaviour
     {
         yield return new WaitForSeconds(reconnectInterval);
 
-        //Debug.Log($"Попытка переподключения {_reconnectAttempts}/{maxReconnectAttempts}");
+        Debug.Log($"Попытка переподключения {_reconnectAttempts}/{maxReconnectAttempts}");
         _aiClient.RetryConnection();
     }
 

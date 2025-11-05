@@ -1,24 +1,38 @@
-// Services/ResourceService.cs
-using System.IO;
+using System;
 using UnityEngine;
 
-public class ResourceService : IResourceService
+public class ResourceService : BaseService, IResourceService
 {
+    protected override Type GetServiceType() => typeof(IResourceService);
+
     public T LoadJson<T>(string path) where T : class
     {
-        var fullPath = Path.Combine(Application.streamingAssetsPath, path);
-        if (File.Exists(fullPath))
+        try
         {
-            var json = File.ReadAllText(fullPath);
-            return JsonUtility.FromJson<T>(json);
+            if (path.EndsWith(".json"))
+                path = path.Substring(0, path.Length - 5);
+
+            var jsonFile = Resources.Load<TextAsset>(path);
+            if (jsonFile != null)
+            {
+                return JsonUtility.FromJson<T>(jsonFile.text);
+            }
+            else
+            {
+                Debug.LogWarning($"JSON file not found at path: {path}");
+                return null;
+            }
         }
-        return null;
+        catch (Exception e)
+        {
+            Debug.LogError($"Error loading JSON from {path}: {e.Message}");
+            return null;
+        }
     }
 
     public void SaveJson<T>(string path, T data) where T : class
     {
-        var fullPath = Path.Combine(Application.streamingAssetsPath, path);
-        var json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(fullPath, json);
+        Debug.LogWarning("SaveJson not implemented - using Resources is read-only. Progress in working");
+        // Для сохранения нужно использовать Application.persistentDataPath
     }
 }

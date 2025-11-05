@@ -342,10 +342,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 520908691}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.7565235, y: 0}
+  m_AnchorMin: {x: 0.7574922, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 1.1791992, y: 0.000030517578}
-  m_SizeDelta: {x: 1, y: -0.11999512}
+  m_AnchoredPosition: {x: 1.0108032, y: 0.000030517578}
+  m_SizeDelta: {x: 1.3368001, y: -0.12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &92320095
 MonoBehaviour:
@@ -939,6 +939,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AITester
   stateMachine: {fileID: 1525850898}
   aiClient: {fileID: 557532441}
+  startAIDialogueOnConnect: 1
+  testNpcId: ai_skeleton
+  testDialogueId: monk_knight
   statusDisplayTime: 3
 --- !u!114 &557532441
 MonoBehaviour:
@@ -956,9 +959,7 @@ MonoBehaviour:
   - http://localhost:1234/v1/chat/completions
   - http://localhost:8080/v1/chat/completions
   - http://127.0.0.1:1234/v1/chat/completions
-  isConnected: 0
   currentServerURL: 
-  dialogText: {fileID: 1669276308}
 --- !u!4 &557532442 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8214144316221040047, guid: d29cb6a6131d5a84280ff93e099505ce, type: 3}
@@ -1163,6 +1164,9 @@ GameObject:
   m_Component:
   - component: {fileID: 793540304}
   - component: {fileID: 793540305}
+  - component: {fileID: 793540308}
+  - component: {fileID: 793540307}
+  - component: {fileID: 793540306}
   m_Layer: 5
   m_Name: ServiceLocator
   m_TagString: Untagged
@@ -1201,6 +1205,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d6e0bb031eeae4429d6fbd21286dbaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServiceLocator
+--- !u!114 &793540306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793540303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fde10ef8ea398ca48bc5a616b27a5de2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceService
+--- !u!114 &793540307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793540303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f95adedd1bb69ca4997fae837b2a4ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueService
+--- !u!114 &793540308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793540303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35eac9b92dabbf44e92b935a5304b5dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WindowService
+  aiDialogueWindowPrefab: {fileID: 0}
+  classicalDialogueWindowPrefab: {fileID: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

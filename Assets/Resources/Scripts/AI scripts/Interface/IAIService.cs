@@ -1,13 +1,11 @@
 using System;
-using UnityEngine;
 
-public class IAIService
+public interface IAIService
 {
-    public Action<string> OnAIResponseReceived { get; internal set; }
-    public Action<bool> OnConnectionStatusChanged { get; internal set; }
-
-    public void SendMessage(string message)
-    {
-
-    }
+    event Action<string> OnAIResponseReceived;
+    event Action<bool> OnConnectionStatusChanged;
+    
+    void SendMessage(string message);
+    bool isConnected { get; set; }
+    void RetryConnection();
 }

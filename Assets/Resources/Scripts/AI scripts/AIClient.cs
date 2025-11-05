@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
 using System;
-using UnityEditor.Rendering;
 
 [System.Serializable]
 public class AIRequest
@@ -50,7 +49,7 @@ public class Usage
     public int total_tokens;
 }
 
-public class AIClient : MonoBehaviour
+public class AIClient : BaseService, IAIService
 {
     [Header("AI Connection Settings")]
     public string[] serverURLs = {
@@ -60,18 +59,19 @@ public class AIClient : MonoBehaviour
     };
 
     [Header("Status")]
-    public bool isConnected = false;
+    public bool isConnected
+    {
+        get; set;
+    }
+
     public string currentServerURL = "";
 
     private List<Message> conversationHistory = new List<Message>();
-    private int currentServerIndex = 0;
 
+    public event Action<string> OnAIResponseReceived;
     public event Action<bool> OnConnectionStatusChanged;
     public event Action<string> OnConnectionError;
-
-    [Header("Dialog")]
-    [SerializeField] private TMPro.TextMeshProUGUI dialogText;
-
+    protected override Type GetServiceType() => typeof(IAIService);
 
     void Start()
     {
@@ -95,38 +95,33 @@ public class AIClient : MonoBehaviour
 
         foreach (string url in serverURLs)
         {
-            Debug.Log($"Проверка подключения к: {url}");
+            Debug.Log($"Checking connection to: {url}");
             yield return StartCoroutine(TestConnection(url, (success) => {
                 if (success)
                 {
                     currentServerURL = url;
                     isConnected = true;
 
-                    // Уведомляем об изменении статуса
                     if (!wasConnected)
                     {
                         OnConnectionStatusChanged?.Invoke(true);
                     }
 
-                    Debug.Log($"Успешно подключено к: {url}");
+                    Debug.Log($"Successfully connected to: {url}");
                 }
             }));
 
             if (isConnected) break;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
         }
 
-        if (!isConnected)
+        if (!isConnected && wasConnected)
         {
-            Debug.LogWarning("Не удалось подключиться к локальной нейросети");
-            if (wasConnected)
-            {
-                OnConnectionStatusChanged?.Invoke(false);
-            }
+            OnConnectionStatusChanged?.Invoke(false);
         }
     }
 
-    private IEnumerator TestConnection(string url, System.Action<bool> callback)
+    private IEnumerator TestConnection(string url, Action<bool> callback)
     {
         string testJson = @"{
             ""messages"": [{""role"": ""user"", ""content"": ""Ответь 'готов'""}],
@@ -153,19 +148,8 @@ public class AIClient : MonoBehaviour
         if (string.IsNullOrEmpty(rawResponse))
             return rawResponse;
 
-        // Удаляем служебные токены gpt-oss-20b
+        // Удаляем служебные токены
         string cleaned = rawResponse;
-
-        // Удаляем <|channel|> commentary to=assistant
-        if (cleaned.StartsWith("<|channel|>commentary to=assistant"))
-        {
-            cleaned = cleaned.Replace("<|channel|>commentary to=assistant", "").Trim();
-        }
-
-        // Удаляем другие возможные служебные токены
-        cleaned = cleaned.Replace("<|channel|>", "");
-        cleaned = cleaned.Replace("commentary to=assistant", "");
-        cleaned = cleaned.Replace("commentary to=user", "");
 
         // Удаляем лишние пробелы
         cleaned = cleaned.Trim();
@@ -196,8 +180,6 @@ public class AIClient : MonoBehaviour
             content = userMessage
         });
 
-        //dialogText.text = userMessage;
-
         AIRequest requestData = new AIRequest
         {
             messages = conversationHistory,
@@ -223,14 +205,14 @@ public class AIClient : MonoBehaviour
                 bool wasConnected = isConnected;
                 isConnected = false;
 
-                // Уведомляем об ошибке и разрыве соединения
+                // Уведомление об ошибке и разрыве соединения
                 OnConnectionError?.Invoke(request.error);
                 if (wasConnected)
                 {
                     OnConnectionStatusChanged?.Invoke(false);
                 }
 
-                // Попробуем переподключиться
+                // Попытка переподключиться
                 StartCoroutine(AutoDetectServer());
             }
             else
@@ -248,27 +230,35 @@ public class AIClient : MonoBehaviour
 
             if (response.choices != null && response.choices.Count > 0 && response.choices[0].message != null)
             {
-                string aiMessage = response.choices[0].message.content;
-                aiMessage = CleanAIResponse(aiMessage);
+                string rawMessage = response.choices[0].message.content;
+                string cleanMessage = CleanAIResponse(rawMessage);
 
                 conversationHistory.Add(new Message
                 {
                     role = "assistant",
-                    content = aiMessage
+                    content = cleanMessage
                 });
 
-                Debug.Log($"AI: {aiMessage}");
-                dialogText.text = aiMessage;
-                OnAIResponseReceived?.Invoke(aiMessage);
+                Debug.Log($"AI Response: {cleanMessage}");
+                OnAIResponseReceived?.Invoke(cleanMessage);
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Ошибка обработки ответа: {e.Message}");
+            Debug.LogError($"Error processing AI response: {e.Message}");
         }
     }
 
-    public System.Action<string> OnAIResponseReceived;
+    public void SendMessage(string message)
+    {
+        if (!isConnected)
+        {
+            Debug.LogWarning("AI not connected. Cannot send message.");
+            return;
+        }
+
+        StartCoroutine(SendAIRequest(message));
+    }
 
     public void RetryConnection()
     {

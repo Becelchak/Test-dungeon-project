@@ -2,52 +2,99 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-public class WindowService : IWindowService
+public class WindowService : BaseService, IWindowService
 {
-    private readonly Dictionary<Type, GameObject> _openWindows = new();
-    private readonly Dictionary<Type, GameObject> _windowPrefabs = new();
+    [Header("Window Prefabs")]
+    public GameObject aiDialogueWindowPrefab;
+    public GameObject classicalDialogueWindowPrefab;
 
-    public WindowService()
+    private Dictionary<Type, GameObject> _openWindows = new Dictionary<Type, GameObject>();
+    private Transform _windowsParent;
+
+    protected override Type GetServiceType() => typeof(IWindowService);
+
+    private void Start()
     {
-        LoadWindowPrefabs();
-    }
-
-    private void LoadWindowPrefabs()
-    {
-        // Загрузка префабов окон из Resources
-        _windowPrefabs[typeof(ClassicalDialogueViewModel)] = Resources.Load<GameObject>("UI/DialogueWindow");
-        _windowPrefabs[typeof(AIDialogueViewModel)] = Resources.Load<GameObject>("UI/AIDialogueWindow");
-    }
-
-    public void ShowWindow<T>() where T : IViewModel
-    {
-        if (_openWindows.ContainsKey(typeof(T))) return;
-
-        if (_windowPrefabs.TryGetValue(typeof(T), out var prefab))
+        _windowsParent = GameObject.Find("DialogueWindows")?.transform;
+        if (_windowsParent == null)
         {
-            var windowObj = UnityEngine.Object.Instantiate(prefab);
-            var view = windowObj.GetComponent<IView>();
-
-            // Добавить создание соответствующего ViewModel
-            IViewModel viewModel = CreateViewModel<T>();
-            view.Bind(viewModel);
-
-            _openWindows[typeof(T)] = windowObj;
+            // Создаем родителя если не существует
+            var canvas = FindObjectOfType<Canvas>();
+            if (canvas != null)
+            {
+                var dialogueWindows = new GameObject("DialogueWindows");
+                dialogueWindows.transform.SetParent(canvas.transform);
+                _windowsParent = dialogueWindows.transform;
+            }
         }
     }
 
-    private IViewModel CreateViewModel<T>()
+    public void ShowAIDialogue(string npcId)
     {
-        // Фабричный метод для создания ViewModel
+        if (_openWindows.ContainsKey(typeof(AIDialogueViewModel)))
+        {
+            Debug.LogWarning("AI Dialogue window already open");
+            return;
+        }
 
-        return (IViewModel)Activator.CreateInstance<T>();
+        if (aiDialogueWindowPrefab == null)
+        {
+            Debug.LogError("AI Dialogue Window Prefab not assigned!");
+            return;
+        }
+
+        var windowObj = Instantiate(aiDialogueWindowPrefab, _windowsParent);
+        var view = windowObj.GetComponent<AIDialogueView>();
+
+        if (view != null)
+        {
+            var viewModel = new AIDialogueViewModel(npcId);
+            view.Bind(viewModel);
+            _openWindows[typeof(AIDialogueViewModel)] = windowObj;
+        }
+        else
+        {
+            Debug.LogError("AIDialogueView component not found on prefab!");
+            Destroy(windowObj);
+        }
+    }
+
+    public void ShowClassicalDialogue(string dialogueId)
+    {
+        // Аналогичная реализация для классического диалога
+        if (_openWindows.ContainsKey(typeof(ClassicalDialogueViewModel)))
+        {
+            Debug.LogWarning("Classical Dialogue window already open");
+            return;
+        }
+
+        if (classicalDialogueWindowPrefab == null)
+        {
+            Debug.LogError("Classical Dialogue Window Prefab not assigned!");
+            return;
+        }
+
+        var windowObj = Instantiate(classicalDialogueWindowPrefab, _windowsParent);
+        var view = windowObj.GetComponent<ClassicalDialogueView>();
+
+        if (view != null)
+        {
+            var viewModel = new ClassicalDialogueViewModel(dialogueId);
+            view.Bind(viewModel);
+            _openWindows[typeof(ClassicalDialogueViewModel)] = windowObj;
+        }
+        else
+        {
+            Debug.LogError("ClassicalDialogueView component not found on prefab!");
+            Destroy(windowObj);
+        }
     }
 
     public void CloseWindow<T>() where T : IViewModel
     {
         if (_openWindows.TryGetValue(typeof(T), out var window))
         {
-            UnityEngine.Object.Destroy(window);
+            Destroy(window);
             _openWindows.Remove(typeof(T));
         }
     }
@@ -55,5 +102,10 @@ public class WindowService : IWindowService
     public bool IsWindowOpen<T>() where T : IViewModel
     {
         return _openWindows.ContainsKey(typeof(T));
+    }
+
+    public void ShowWindow<T>() where T : IViewModel
+    {
+        throw new NotImplementedException("ShowWindow не прописано");
     }
 }
