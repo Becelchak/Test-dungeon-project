@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Skeleton in Cage
+* source:	https://sketchfab.com/3d-models/low-poly-skeleton-in-cage-c94f2b1b521b42c6ae778499d7086604
+* author:	Jorma Rysky (Joona Venäläinen) (https://sketchfab.com/Rysky)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Skeleton in Cage" (https://sketchfab.com/3d-models/low-poly-skeleton-in-cage-c94f2b1b521b42c6ae778499d7086604) by Jorma Rysky (Joona Venäläinen) (https://sketchfab.com/Rysky) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
