@@ -1,9 +1,13 @@
+using System;
+using UnityEngine;
+
 [System.Serializable]
 public class DialogueData
 {
     public string dialogueId;
     public string npcName;
     public string npcId;
+    public Sprite npcPortrait;
     public DialogueNode[] nodes;
     public string startNodeId;
 }
@@ -50,6 +54,7 @@ public class AIDialogueData
 {
     public string npcId;
     public string npcName;
+    public Sprite npcPortrait;
     public string initialPrompt;
     public AIDialogueConstraint[] constraints;
     public string personalityProfile;
@@ -61,4 +66,40 @@ public class AIDialogueConstraint
     public string type; // "topic_restriction", "response_length", "tone"
     public string constraint;
     public string value;
+}
+
+// Зачем?
+[System.Serializable]
+public class AICharacterData
+{
+    public string characterId;
+    public string characterName;
+    public string personality;
+    public string background;
+    public string communicationStyle;
+    public string avatarPath;
+
+    [System.NonSerialized]
+    public Sprite avatar;
+}
+
+[System.Serializable]
+public class PlayerProfile
+{
+    public string playerId = "player";
+    public string playerName = "Player";
+    public string avatarPath;
+
+    [System.NonSerialized]
+    public Sprite avatar;
+}
+
+[System.Serializable]
+public class MessageData
+{
+    public string messageId;
+    public string senderId; // "player" или characterId AI
+    public string text;
+    public DateTime timestamp;
+    public bool isAI => senderId != "player";
 }

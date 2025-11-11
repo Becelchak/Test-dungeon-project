@@ -37,30 +37,24 @@ public class WindowService : BaseService, IWindowService
             return;
         }
 
-        if (aiDialogueWindowPrefab == null)
-        {
-            Debug.LogError("AI Dialogue Window Prefab not assigned!");
-            return;
-        }
+        // Создаем общий лог для всех диалогов
+        var logViewModel = new DialogueLogViewModel();
+        var aiViewModel = new AIDialogueViewModel(npcId, logViewModel);
 
         var windowObj = Instantiate(aiDialogueWindowPrefab, _windowsParent);
         var view = windowObj.GetComponent<AIDialogueView>();
 
         if (view != null)
         {
-            var viewModel = new AIDialogueViewModel(npcId);
-            view.Bind(viewModel);
+            view.Bind(aiViewModel);
             _openWindows[typeof(AIDialogueViewModel)] = windowObj;
-        }
-        else
-        {
-            Debug.LogError("AIDialogueView component not found on prefab!");
-            Destroy(windowObj);
         }
     }
 
     public void ShowClassicalDialogue(string dialogueId)
     {
+        var logViewModel = new DialogueLogViewModel();
+        var classicalViewModel = new ClassicalDialogueViewModel(dialogueId, logViewModel);
         // Аналогичная реализация для классического диалога
         if (_openWindows.ContainsKey(typeof(ClassicalDialogueViewModel)))
         {
@@ -79,7 +73,7 @@ public class WindowService : BaseService, IWindowService
 
         if (view != null)
         {
-            var viewModel = new ClassicalDialogueViewModel(dialogueId);
+            var viewModel = new ClassicalDialogueViewModel(dialogueId, logViewModel);
             view.Bind(viewModel);
             _openWindows[typeof(ClassicalDialogueViewModel)] = windowObj;
         }

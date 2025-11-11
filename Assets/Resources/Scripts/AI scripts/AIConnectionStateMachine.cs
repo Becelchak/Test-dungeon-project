@@ -20,14 +20,13 @@ public class AIConnectionStateMachine : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private AIConnectionState _currentState;
 
-    // События для внешних подписчиков
     public event Action<AIConnectionState> OnStateChanged;
     public event Action OnConnected;
     public event Action OnDisconnected;
     public event Action OnConnectionError;
     public event Action<int> OnReconnectAttempt;
 
-    private AIClient _aiClient;
+    private IAIService _aiService;
     private int _reconnectAttempts;
     private Coroutine _reconnectCoroutine;
 
@@ -38,11 +37,9 @@ public class AIConnectionStateMachine : MonoBehaviour
         {
             if (_currentState != value)
             {
-                var previousState = _currentState;
                 _currentState = value;
                 OnStateChanged?.Invoke(value);
 
-                // Дополнительные специфичные события
                 switch (value)
                 {
                     case AIConnectionState.Connected:
@@ -59,12 +56,12 @@ public class AIConnectionStateMachine : MonoBehaviour
         }
     }
 
-    void Awake()
+    private void Awake()
     {
-        _aiClient = FindObjectOfType<AIClient>();
-        if (_aiClient == null)
+        _aiService = ServiceLocator.Instance.GetService<IAIService>();
+        if (_aiService == null)
         {
-            Debug.LogError("AIClient not found in scene!");
+            Debug.LogError("[StateMachine] IAIService не найден!");
             return;
         }
 
@@ -73,17 +70,13 @@ public class AIConnectionStateMachine : MonoBehaviour
 
     private void InitializeStateMachine()
     {
-        _aiClient.OnConnectionStatusChanged += HandleAIClientStatusChange;
+        _aiService.OnConnectionStatusChanged += HandleAIClientStatusChange;
+        _aiService.OnConnectionError += HandleAIClientError;
 
         // Начальное состояние
-        if (_aiClient.isConnected)
-        {
-            CurrentState = AIConnectionState.Connected;
-        }
-        else
-        {
-            CurrentState = AIConnectionState.Disconnected;
-        }
+        CurrentState = _aiService.IsConnected ?
+            AIConnectionState.Connected :
+            AIConnectionState.Disconnected;
     }
 
     private void HandleAIClientStatusChange(bool isConnected)
@@ -91,14 +84,14 @@ public class AIConnectionStateMachine : MonoBehaviour
         if (isConnected)
         {
             CurrentState = AIConnectionState.Connected;
-            _reconnectAttempts = 0; // Сброс счетчика попыток
+            _reconnectAttempts = 0; // Сброс счетчика при успешном подключении
             StopReconnectCoroutine();
         }
         else
         {
-            // Если было подключение и оно разорвалось
             if (CurrentState == AIConnectionState.Connected)
             {
+                // Было подключение, но соединение разорвано
                 StartReconnection();
             }
             else
@@ -108,13 +101,25 @@ public class AIConnectionStateMachine : MonoBehaviour
         }
     }
 
+    private void HandleAIClientError(string error)
+    {
+        Debug.LogWarning($"[StateMachine] Ошибка подключения: {error}");
+
+        // При любой ошибке пытаемся переподключиться, если были подключены
+        if (CurrentState == AIConnectionState.Connected)
+        {
+            StartReconnection();
+        }
+    }
+
     public void StartConnection()
     {
-        if (CurrentState == AIConnectionState.Connected)
+        if (CurrentState == AIConnectionState.Connected ||
+            CurrentState == AIConnectionState.Connecting)
             return;
 
         CurrentState = AIConnectionState.Connecting;
-        _aiClient.RetryConnection();
+        _aiService.RetryConnection();
     }
 
     public void StartReconnection()
@@ -122,11 +127,14 @@ public class AIConnectionStateMachine : MonoBehaviour
         if (_reconnectAttempts >= maxReconnectAttempts)
         {
             CurrentState = AIConnectionState.Error;
+            Debug.LogError("[StateMachine] Превышено максимальное количество попыток переподключения");
             return;
         }
 
         CurrentState = AIConnectionState.Reconnecting;
         _reconnectAttempts++;
+
+        Debug.Log($"[StateMachine] Попытка переподключения {_reconnectAttempts}/{maxReconnectAttempts}");
         OnReconnectAttempt?.Invoke(_reconnectAttempts);
 
         _reconnectCoroutine = StartCoroutine(ReconnectCoroutine());
@@ -135,9 +143,7 @@ public class AIConnectionStateMachine : MonoBehaviour
     private IEnumerator ReconnectCoroutine()
     {
         yield return new WaitForSeconds(reconnectInterval);
-
-        Debug.Log($"Попытка переподключения {_reconnectAttempts}/{maxReconnectAttempts}");
-        _aiClient.RetryConnection();
+        _aiService.RetryConnection();
     }
 
     private void StopReconnectCoroutine()
@@ -154,13 +160,15 @@ public class AIConnectionStateMachine : MonoBehaviour
         StopReconnectCoroutine();
         _reconnectAttempts = 0;
         CurrentState = AIConnectionState.Disconnected;
+        Debug.Log("[StateMachine] Сброс состояния подключения");
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
-        if (_aiClient != null)
+        if (_aiService != null)
         {
-            _aiClient.OnConnectionStatusChanged -= HandleAIClientStatusChange;
+            _aiService.OnConnectionStatusChanged -= HandleAIClientStatusChange;
+            _aiService.OnConnectionError -= HandleAIClientError;
         }
         StopReconnectCoroutine();
     }

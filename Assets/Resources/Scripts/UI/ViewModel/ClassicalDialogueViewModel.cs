@@ -6,12 +6,14 @@ using System.Windows.Input;
 public class ClassicalDialogueViewModel : BaseViewModel
 {
     private readonly IDialogueService _dialogueService;
+    private readonly PlayerProfileService _player;
     private DialogueData _dialogueData;
     private DialogueNode _currentNode;
 
     private string _npcName;
     private string _dialogueText;
     private ObservableCollection<DialogueResponseVM> _responses = new();
+    private DialogueLogViewModel _logViewModel;
 
     public string NpcName
     {
@@ -33,9 +35,11 @@ public class ClassicalDialogueViewModel : BaseViewModel
 
     public ICommand ResponseSelectedCommand { get; }
 
-    public ClassicalDialogueViewModel(string dialogueId)
+    public ClassicalDialogueViewModel(string dialogueId, DialogueLogViewModel logViewModel)
     {
+        _logViewModel = logViewModel;
         _dialogueService = ServiceLocator.Instance.GetService<IDialogueService>();
+        _player = ServiceLocator.Instance.GetService<PlayerProfileService>();
         ResponseSelectedCommand = new RelayCommand<string>(OnResponseSelected);
 
         EventBus.Subscribe(this as IDialogueEventSubscriber);
@@ -73,6 +77,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
         {
             _dialogueService.ExecuteDialogueAction(action);
         }
+        _logViewModel.AddEntry(_dialogueData.npcName, _dialogueData.npcPortrait, _currentNode.text);
     }
 
     private void UpdateResponses()
@@ -105,6 +110,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
     private void OnResponseSelected(string responseId)
     {
         var response = _currentNode.responses.FirstOrDefault(r => r.responseId == responseId);
+        _logViewModel.AddEntry("Игрок", _player.CurrentProfile.avatar, response.text, true);
         if (response != null)
         {
             foreach (var action in response.onSelected)

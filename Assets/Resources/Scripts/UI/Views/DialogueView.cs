@@ -10,7 +10,7 @@ public class DialogueView : BaseView<BaseViewModel>
     [SerializeField] private TextMeshProUGUI npcNameText;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private Transform responsesContainer;
-    [SerializeField] private InputField userInputField;
+    [SerializeField] private TMP_InputField userInputField;
     [SerializeField] private Button sendButton;
     [SerializeField] private Button closeButton;
     [SerializeField] private GameObject responseButtonPrefab;

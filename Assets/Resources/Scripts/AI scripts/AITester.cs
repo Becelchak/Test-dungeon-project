@@ -4,33 +4,47 @@ public class AITester : MonoBehaviour
 {
     [Header("References")]
     public AIConnectionStateMachine stateMachine;
-    public AIClient aiClient;
 
     [Header("Test Settings")]
     public bool startAIDialogueOnConnect = true;
     public string testNpcId = "ai_skeleton";
     public string testDialogueId = "monk_knight";
-    private IAIService _aiService;
-    private IWindowService _windowService;
 
     [Header("UI Settings")]
     public float statusDisplayTime = 3f;
 
+    private IAIService _aiService;
+    private IWindowService _windowService;
     private string _lastStatusMessage = "";
     private float _statusDisplayTimer = 0f;
     private bool _showStatus = false;
+    private bool _isSendingMessage = false;
 
-    void Start()
+    private void Start()
+    {
+        InitializeServices();
+        SubscribeToEvents();
+
+        if (stateMachine.CurrentState == AIConnectionState.Connected && startAIDialogueOnConnect)
+        {
+            StartAIDialogueWithDelay();
+        }
+    }
+
+    private void InitializeServices()
     {
         if (stateMachine == null)
             stateMachine = FindObjectOfType<AIConnectionStateMachine>();
-        if (aiClient == null)
-            aiClient = FindObjectOfType<AIClient>();
-        if(_aiService == null)
-            _aiService = ServiceLocator.Instance.GetService<IAIService>();
-        if(_windowService == null)
-            _windowService = ServiceLocator.Instance.GetService<IWindowService>();
 
+        _aiService = ServiceLocator.Instance.GetService<IAIService>();
+        _windowService = ServiceLocator.Instance.GetService<IWindowService>();
+
+        if (_aiService == null) Debug.LogError("[AITester] IAIService не найден");
+        if (_windowService == null) Debug.LogError("[AITester] IWindowService не найден");
+    }
+
+    private void SubscribeToEvents()
+    {
         if (stateMachine != null)
         {
             stateMachine.OnStateChanged += HandleStateChanged;
@@ -39,32 +53,17 @@ public class AITester : MonoBehaviour
             stateMachine.OnConnectionError += HandleConnectionError;
             stateMachine.OnReconnectAttempt += HandleReconnectAttempt;
         }
-
-        // Начальная проверка подключения
-        CheckInitialConnection();
-    }
-
-    private void CheckInitialConnection()
-    {
-        if (!aiClient.isConnected)
-        {
-            stateMachine.StartConnection();
-        }
-        else
-            Debug.Log("AITester started. Press F1 for AI dialogue, F2 for classical dialogue.");
     }
 
     private void HandleStateChanged(AIConnectionState newState)
     {
-        Debug.Log($"Состояние подключения изменилось: {newState}");
-
         switch (newState)
         {
             case AIConnectionState.Connecting:
-                ShowStatus("Подключение к нейросети...", false);
+                ShowStatus("Подключение к нейросети...");
                 break;
             case AIConnectionState.Reconnecting:
-                ShowStatus("Переподключение...", false);
+                ShowStatus("Переподключение...");
                 break;
             case AIConnectionState.Error:
                 ShowStatus("Ошибка подключения. Проверьте LM Studio.", true);
@@ -74,52 +73,41 @@ public class AITester : MonoBehaviour
 
     private void HandleConnected()
     {
-        ShowStatus("Нейросеть подключена!", false);
+        ShowStatus("Нейросеть подключена!");
 
-        SendTestMessage();
+        if (startAIDialogueOnConnect)
+        {
+            StartAIDialogueWithDelay();
+        }
     }
 
-    private void HandleDisconnected()
-    {
-        ShowStatus("Соединение с нейросетью разорвано", true);
-    }
+    private void HandleDisconnected() => ShowStatus("Соединение разорвано", true);
+    private void HandleConnectionError() => ShowStatus("Ошибка соединения", true);
 
-    private void HandleConnectionError()
-    {
-        ShowStatus("Ошибка соединения с нейросетью", true);
-    }
+    private void HandleReconnectAttempt(int attempt) =>
+        ShowStatus($"Переподключение ({attempt}/{stateMachine.maxReconnectAttempts})");
 
-    private void HandleReconnectAttempt(int attempt)
-    {
-        ShowStatus($"Попытка переподключения ({attempt}/{stateMachine.maxReconnectAttempts})", false);
-    }
-
-    private void ShowStatus(string message, bool isError = false)
+    private void ShowStatus(string message, bool isWarning = false)
     {
         _lastStatusMessage = message;
         _showStatus = true;
         _statusDisplayTimer = statusDisplayTime;
+    }
 
-        if (isError)
-        {
-            Debug.LogWarning($"AI Status: {message}");
-        }
-        else
-        {
-            Debug.Log($"AI Status: {message}");
-        }
+    private void StartAIDialogueWithDelay()
+    {
+        Invoke(nameof(StartAIDialogue), 1f);
     }
 
     private void StartAIDialogue()
     {
-        if (_windowService != null)
+        if (_windowService != null && stateMachine.CurrentState == AIConnectionState.Connected)
         {
             _windowService.ShowAIDialogue(testNpcId);
-            Debug.Log($"Started AI dialogue with {testNpcId}");
         }
         else
         {
-            Debug.LogError("WindowService not available!");
+            ShowStatus("Невозможно начать диалог: нет подключения", true);
         }
     }
 
@@ -128,72 +116,78 @@ public class AITester : MonoBehaviour
         if (_windowService != null)
         {
             _windowService.ShowClassicalDialogue(testDialogueId);
-            Debug.Log($"Started classical dialogue: {testDialogueId}");
+        }
+    }
+
+    private void SendTestMessage()
+    {
+        if (_isSendingMessage) return;
+
+        if (stateMachine.CurrentState == AIConnectionState.Connected)
+        {
+            _isSendingMessage = true;
+            _aiService?.SendMessage("Ответь кратко: соединение работает");
+
+            // Сброс флага через время таймаута для защиты от зависания
+            Invoke(nameof(ResetSendingFlag), 10f);
         }
         else
         {
-            Debug.LogError("WindowService not available!");
+            ShowStatus("Невозможно отправить сообщение: нет подключения", true);
         }
     }
-    private void SendTestMessage()
+
+    private void ResetSendingFlag()
     {
-        // Отправляет сообщение при успешном подключении
-        aiClient.SendMessageToAI("Ответь одним словом: 'готов'");
+        _isSendingMessage = false;
     }
 
-    void Update()
+    private void Update()
+    {
+        UpdateStatusTimer();
+        HandleTestInput();
+    }
+
+    private void UpdateStatusTimer()
     {
         if (_showStatus)
         {
             _statusDisplayTimer -= Time.deltaTime;
-            if (_statusDisplayTimer <= 0)
-            {
-                _showStatus = false;
-            }
+            if (_statusDisplayTimer <= 0) _showStatus = false;
         }
-        // Обработка клавиш для тестирования
-        HandleTestInput();
     }
 
     private void HandleTestInput()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            StartAIDialogue();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            StartClassicalDialogue();
-        }
+        if (Input.GetKeyDown(KeyCode.F1)) StartAIDialogue();
+        if (Input.GetKeyDown(KeyCode.F2)) StartClassicalDialogue();
+        if (Input.GetKeyDown(KeyCode.F3)) ShowInstructions();
+        if (Input.GetKeyDown(KeyCode.F4)) _aiService?.ClearConversation();
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
         DrawConnectionPanel();
+        if (_showStatus) DrawStatusWindow();
     }
 
     private void DrawConnectionPanel()
     {
-        GUILayout.BeginArea(new Rect(10, 10, 300, 200));
+        GUILayout.BeginArea(new Rect(10, 10, 300, 250));
 
-        GUILayout.Box($"Состояние: {stateMachine.CurrentState}");
+        GUILayout.Box($"Состояние AI: {stateMachine.CurrentState}");
 
         switch (stateMachine.CurrentState)
         {
             case AIConnectionState.Disconnected:
                 if (GUILayout.Button("Подключиться", GUILayout.Height(30)))
-                {
                     stateMachine.StartConnection();
-                }
                 break;
 
             case AIConnectionState.Connected:
                 GUILayout.Label("Нейросеть активна");
-                if (GUILayout.Button("Тестовый запрос", GUILayout.Height(30)))
-                {
-                    aiClient.SendMessageToAI("Ответь кратко: соединение работает");
-                }
+                if (GUILayout.Button("Тестовый запрос", GUILayout.Height(25)) && !_isSendingMessage)
+                    SendTestMessage();
                 break;
 
             case AIConnectionState.Error:
@@ -207,27 +201,52 @@ public class AITester : MonoBehaviour
 
             case AIConnectionState.Reconnecting:
                 GUILayout.Label("Идет переподключение...");
-                if (GUILayout.Button("Отменить", GUILayout.Height(30)))
-                {
+                if (GUILayout.Button("Отменить", GUILayout.Height(25)))
                     stateMachine.ResetConnection();
-                }
                 break;
         }
 
-        if (GUILayout.Button("Показать инструкцию", GUILayout.Height(25)))
-        {
+        GUILayout.Space(10);
+
+        if (GUILayout.Button("AI Диалог (F1)", GUILayout.Height(25)))
+            StartAIDialogue();
+
+        if (GUILayout.Button("Классический диалог (F2)", GUILayout.Height(25)))
+            StartClassicalDialogue();
+
+        if (GUILayout.Button("Очистить историю (F4)", GUILayout.Height(25)))
+            _aiService?.ClearConversation();
+
+        if (GUILayout.Button("Инструкция (F3)", GUILayout.Height(25)))
             ShowInstructions();
-        }
+
         GUILayout.EndArea();
+    }
+
+    private void DrawStatusWindow()
+    {
+        GUI.Box(new Rect(Screen.width - 310, 10, 300, 50), "Статус AI");
+        GUI.Label(new Rect(Screen.width - 300, 30, 290, 30), _lastStatusMessage);
     }
 
     private void ShowInstructions()
     {
-        Debug.Log("Открытие инструкции по подключению нейросети...");
-        Application.OpenURL(Application.streamingAssetsPath + "/Инструкция по установке AI.txt");
+        string instructionsPath = System.IO.Path.Combine(
+            Application.streamingAssetsPath,
+            "Инструкция по установке AI.txt"
+        );
+
+        if (System.IO.File.Exists(instructionsPath))
+        {
+            Application.OpenURL(instructionsPath);
+        }
+        else
+        {
+            Debug.LogWarning("[AITester] Файл инструкции не найден: " + instructionsPath);
+        }
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         if (stateMachine != null)
         {

@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
 {
+    [Header("Classical Dialogue UI")]
+    [SerializeField] private TextMeshProUGUI npcNameText;
+    [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private Transform responsesContainer;
     [SerializeField] private GameObject responseButtonPrefab;
 
@@ -14,6 +17,8 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
     protected override void SetupBindings()
     {
         ViewModel.PropertyChanged += OnPropertyChanged;
+        ViewModel.NPCName.BindTo(npcNameText);
+        ViewModel.CurrentDialogueText.BindTo(dialogueText);
         UpdateUI();
     }
 

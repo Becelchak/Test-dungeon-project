@@ -10,11 +10,11 @@ public class AIStatusUI : MonoBehaviour
     {
         if (connectionPanel != null)
         {
-            connectionPanel.SetActive(!aiClient.isConnected);
+            connectionPanel.SetActive(!aiClient.IsConnected);
 
             if (statusText != null)
             {
-                statusText.text = aiClient.isConnected ?
+                statusText.text = aiClient.IsConnected ?
                     "Нейросеть подключена" :
                     "Нейросеть неактивна\nЗапустите LM Studio";
             }

@@ -58,22 +58,39 @@ public class AIClient : BaseService, IAIService
         "http://127.0.0.1:1234/v1/chat/completions"
     };
 
+    [Header("Heartbeat Settings")]
+    public float heartbeatInterval = 5f;
+    public float requestTimeout = 3f;
+
     [Header("Status")]
-    public bool isConnected
+    [SerializeField] private bool _isConnected;
+
+    public bool IsConnected
     {
-        get; set;
+        get => _isConnected;
+        private set
+        {
+            if (_isConnected != value)
+            {
+                _isConnected = value;
+                Debug.Log($"[AIClient] Состояние подключения: {(value ? "Подключено" : "Отключено")}");
+            }
+        }
     }
 
     public string currentServerURL = "";
+    private List<Message> _conversationHistory = new List<Message>();
+    private Coroutine _heartbeatCoroutine;
+    private Coroutine _currentRequest;
 
-    private List<Message> conversationHistory = new List<Message>();
-
+    // События IAIService
     public event Action<string> OnAIResponseReceived;
     public event Action<bool> OnConnectionStatusChanged;
     public event Action<string> OnConnectionError;
+
     protected override Type GetServiceType() => typeof(IAIService);
 
-    void Start()
+    private void Start()
     {
         InitializeConversation();
         StartCoroutine(AutoDetectServer());
@@ -81,44 +98,54 @@ public class AIClient : BaseService, IAIService
 
     private void InitializeConversation()
     {
-        conversationHistory.Clear();
-        conversationHistory.Add(new Message
+        _conversationHistory.Clear();
+        _conversationHistory.Add(new Message
         {
             role = "system",
-            content = "Тестовый запрос. Ответь кратко."
+            content = "Ты полезный ассистент. Отвечай на вопросы кратко и по делу."
         });
     }
 
     private IEnumerator AutoDetectServer()
     {
-        bool wasConnected = isConnected;
+        bool wasConnected = IsConnected;
+        IsConnected = false;
 
         foreach (string url in serverURLs)
         {
-            Debug.Log($"Checking connection to: {url}");
-            yield return StartCoroutine(TestConnection(url, (success) => {
-                if (success)
+            Debug.Log($"[AIClient] Проверка подключения к: {url}");
+            bool connectionSuccess = false;
+            yield return StartCoroutine(TestConnection(url, (success) => connectionSuccess = success));
+
+            if (connectionSuccess)
+            {
+                currentServerURL = url;
+                IsConnected = true;
+                StartHeartbeat();
+
+                if (!wasConnected)
                 {
-                    currentServerURL = url;
-                    isConnected = true;
-
-                    if (!wasConnected)
-                    {
-                        OnConnectionStatusChanged?.Invoke(true);
-                    }
-
-                    Debug.Log($"Successfully connected to: {url}");
+                    Debug.Log($"[AIClient] Успешно подключено к: {url}");
+                    OnConnectionStatusChanged?.Invoke(true);
                 }
-            }));
+                yield break;
+            }
 
-            if (isConnected) break;
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
         }
 
-        if (!isConnected && wasConnected)
+        // Если ни один сервер не ответил
+        if (wasConnected)
         {
+            Debug.LogWarning("[AIClient] Соединение потеряно");
             OnConnectionStatusChanged?.Invoke(false);
         }
+        else
+        {
+            Debug.LogWarning("[AIClient] Не удалось подключиться к серверу AI");
+        }
+
+        StopHeartbeat();
     }
 
     private IEnumerator TestConnection(string url, Action<bool> callback)
@@ -135,46 +162,102 @@ public class AIClient : BaseService, IAIService
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-            request.timeout = 3;
+            request.timeout = (int)requestTimeout;
 
             yield return request.SendWebRequest();
 
-            callback(request.result == UnityWebRequest.Result.Success);
+            bool success = request.result == UnityWebRequest.Result.Success;
+            callback(success);
+
+            if (!success)
+            {
+                Debug.LogWarning($"[AIClient] Тест подключения к {url} не удался: {request.error}");
+            }
         }
     }
 
-    private string CleanAIResponse(string rawResponse)
+    private void StartHeartbeat()
     {
-        if (string.IsNullOrEmpty(rawResponse))
-            return rawResponse;
-
-        // Удаляем служебные токены
-        string cleaned = rawResponse;
-
-        // Удаляем лишние пробелы
-        cleaned = cleaned.Trim();
-
-        // Если после очистки строка пустая, возвращаем исходную
-        if (string.IsNullOrEmpty(cleaned))
-            return rawResponse;
-
-        return cleaned;
+        StopHeartbeat();
+        _heartbeatCoroutine = StartCoroutine(HeartbeatCoroutine());
+        Debug.Log("[AIClient] Запущен мониторинг соединения");
     }
 
-    public void SendMessageToAI(string userMessage)
+    private void StopHeartbeat()
     {
-        if (!isConnected)
+        if (_heartbeatCoroutine != null)
         {
-            Debug.LogWarning("Нейросеть не подключена. Запустите LM Studio с сервером.");
+            StopCoroutine(_heartbeatCoroutine);
+            _heartbeatCoroutine = null;
+        }
+    }
+
+    private IEnumerator HeartbeatCoroutine()
+    {
+        while (IsConnected)
+        {
+            yield return new WaitForSeconds(heartbeatInterval);
+
+            if (!IsConnected) yield break;
+
+            yield return StartCoroutine(TestConnection(currentServerURL, (success) =>
+            {
+                if (!success && IsConnected)
+                {
+                    Debug.LogWarning("[AIClient] Heartbeat: соединение потеряно");
+                    HandleConnectionLost("Сервер не отвечает");
+                }
+            }));
+        }
+    }
+
+    private void HandleConnectionLost(string error)
+    {
+        bool wasConnected = IsConnected;
+        IsConnected = false;
+        StopHeartbeat();
+        StopCurrentRequest();
+
+        OnConnectionError?.Invoke(error);
+        if (wasConnected)
+        {
+            OnConnectionStatusChanged?.Invoke(false);
+        }
+    }
+
+    private void StopCurrentRequest()
+    {
+        if (_currentRequest != null)
+        {
+            StopCoroutine(_currentRequest);
+            _currentRequest = null;
+        }
+    }
+
+    public void SendMessage(string message)
+    {
+        if (!IsConnected)
+        {
+            Debug.LogWarning("[AIClient] AI не подключен. Невозможно отправить сообщение.");
+            OnConnectionError?.Invoke("AI не подключен");
             return;
         }
 
-        StartCoroutine(SendAIRequest(userMessage));
+        if (string.IsNullOrWhiteSpace(message))
+        {
+            Debug.LogWarning("[AIClient] Пустое сообщение");
+            return;
+        }
+
+        StopCurrentRequest();
+        _currentRequest = StartCoroutine(SendAIRequest(message));
     }
 
     private IEnumerator SendAIRequest(string userMessage)
     {
-        conversationHistory.Add(new Message
+        Debug.Log($"[AIClient] Отправка сообщения: {userMessage}");
+
+        _conversationHistory.Add(new Message
         {
             role = "user",
             content = userMessage
@@ -182,7 +265,7 @@ public class AIClient : BaseService, IAIService
 
         AIRequest requestData = new AIRequest
         {
-            messages = conversationHistory,
+            messages = _conversationHistory,
             temperature = 0.7,
             max_tokens = 300
         };
@@ -195,32 +278,23 @@ public class AIClient : BaseService, IAIService
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = (int)requestTimeout;
 
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"Ошибка связи с нейросетью: {request.error}");
-
-                bool wasConnected = isConnected;
-                isConnected = false;
-
-                // Уведомление об ошибке и разрыве соединения
-                OnConnectionError?.Invoke(request.error);
-                if (wasConnected)
-                {
-                    OnConnectionStatusChanged?.Invoke(false);
-                }
-
-                // Попытка переподключиться
-                StartCoroutine(AutoDetectServer());
+                Debug.LogError($"[AIClient] Ошибка связи: {request.error}");
+                HandleConnectionLost(request.error);
             }
             else
             {
                 HandleAIResponse(request.downloadHandler.text);
             }
         }
-}
+
+        _currentRequest = null;
+    }
 
     private void HandleAIResponse(string jsonResponse)
     {
@@ -233,35 +307,55 @@ public class AIClient : BaseService, IAIService
                 string rawMessage = response.choices[0].message.content;
                 string cleanMessage = CleanAIResponse(rawMessage);
 
-                conversationHistory.Add(new Message
+                _conversationHistory.Add(new Message
                 {
                     role = "assistant",
                     content = cleanMessage
                 });
 
-                Debug.Log($"AI Response: {cleanMessage}");
+                Debug.Log($"[AIClient] Ответ AI: {cleanMessage}");
                 OnAIResponseReceived?.Invoke(cleanMessage);
+            }
+            else if (!string.IsNullOrEmpty(response.error))
+            {
+                Debug.LogError($"[AIClient] Ошибка AI: {response.error}");
+                OnConnectionError?.Invoke(response.error);
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error processing AI response: {e.Message}");
+            Debug.LogError($"[AIClient] Ошибка обработки ответа: {e.Message}");
+            OnConnectionError?.Invoke(e.Message);
         }
     }
 
-    public void SendMessage(string message)
+    private string CleanAIResponse(string rawResponse)
     {
-        if (!isConnected)
-        {
-            Debug.LogWarning("AI not connected. Cannot send message.");
-            return;
-        }
+        if (string.IsNullOrEmpty(rawResponse))
+            return rawResponse;
 
-        StartCoroutine(SendAIRequest(message));
+        string cleaned = rawResponse.Trim();
+        return string.IsNullOrEmpty(cleaned) ? rawResponse : cleaned;
     }
 
     public void RetryConnection()
     {
+        Debug.Log("[AIClient] Повторное подключение...");
+        StopHeartbeat();
+        StopCurrentRequest();
         StartCoroutine(AutoDetectServer());
+    }
+
+    public void ClearConversation()
+    {
+        _conversationHistory.Clear();
+        InitializeConversation();
+        Debug.Log("[AIClient] История диалога очищена");
+    }
+
+    private void OnDestroy()
+    {
+        StopHeartbeat();
+        StopCurrentRequest();
     }
 }
