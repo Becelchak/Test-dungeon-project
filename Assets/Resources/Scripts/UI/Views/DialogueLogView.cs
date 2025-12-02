@@ -9,13 +9,13 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
     [SerializeField] private Transform logEntriesContainer;
     [SerializeField] private GameObject logEntryPrefab;
     [SerializeField] private ScrollRect scrollRect;
-    [SerializeField] private Button clearLogButton;
+    //[SerializeField] private Button clearLogButton;
 
     private List<GameObject> _instantiatedEntries = new List<GameObject>();
 
     protected override void SetupBindings()
     {
-        clearLogButton.onClick.AddListener(() => ViewModel.ClearLogCommand.Execute(null));
+        //clearLogButton.onClick.AddListener(() => ViewModel.ClearLogCommand.Execute(null));
         ViewModel.PropertyChanged += OnPropertyChanged;
         ViewModel.LogEntries.CollectionChanged += OnLogEntriesChanged;
 
@@ -41,24 +41,37 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
         // Очищаем старые элементы
         foreach (var entry in _instantiatedEntries)
         {
-            Destroy(entry);
+            if (entry != null)
+                Destroy(entry);
         }
         _instantiatedEntries.Clear();
 
-        // Создаем новые элементы (в обратном порядке - новые внизу)
+        // ВАЖНО: Создаем элементы в обратном порядке, чтобы новые были ВНИЗУ
+        // Если хотите, чтобы новые были СВЕРХУ, используйте обычный foreach
         for (int i = ViewModel.LogEntries.Count - 1; i >= 0; i--)
         {
-            var entryViewModel = ViewModel.LogEntries[i];  // Теперь это ViewModel
+            var entryViewModel = ViewModel.LogEntries[i];
             var entryObj = Instantiate(logEntryPrefab, logEntriesContainer);
+
+            // Если хотите, чтобы новые элементы добавлялись СВЕРХУ (первыми в иерархии)
+            // entryObj.transform.SetAsFirstSibling();
+
+            // Если хотите, чтобы новые добавлялись ВНИЗ (как сейчас, но в правильном порядке)
+            // Оставьте как есть или используйте:
+            entryObj.transform.SetSiblingIndex(0);
+
             var entryView = entryObj.GetComponent<LogEntryView>();
 
             if (entryView != null)
             {
-                entryView.Bind(entryViewModel);  // Передаем ViewModel, а не данные
+                entryView.Bind(entryViewModel);
             }
 
             _instantiatedEntries.Add(entryObj);
         }
+
+        // Прокручиваем к самому новому сообщению (вниз)
+        ScrollToBottom();
     }
 
     private void ScrollToBottom()
@@ -77,6 +90,15 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
             ViewModel.PropertyChanged -= OnPropertyChanged;
             ViewModel.LogEntries.CollectionChanged -= OnLogEntriesChanged;
         }
+
+        // Очищаем созданные объекты
+        foreach (var entry in _instantiatedEntries)
+        {
+            if (entry != null)
+                Destroy(entry);
+        }
+        _instantiatedEntries.Clear();
+
         base.Unbind();
     }
 }

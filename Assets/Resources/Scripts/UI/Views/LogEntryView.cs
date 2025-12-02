@@ -3,9 +3,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LogEntryView : BaseView<LogEntryViewModel>  // Теперь используем ViewModel
+public class LogEntryView : BaseView<LogEntryViewModel>
 {
     [Header("UI References")]
+    [SerializeField] private AdaptiveLogEntry adaptiveLogEntry;
     [SerializeField] private Image portraitImage;
     [SerializeField] private TextMeshProUGUI speakerNameText;
     [SerializeField] private TextMeshProUGUI messageText;
@@ -19,7 +20,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>  // Теперь используем Vi
     {
         UpdateView();
 
-        // Подписываемся на изменения свойств ViewModel
         ViewModel.PropertyChanged += OnPropertyChanged;
     }
 
@@ -32,12 +32,42 @@ public class LogEntryView : BaseView<LogEntryViewModel>  // Теперь используем Vi
     {
         if (ViewModel == null) return;
 
+        // Вариант 1: Используем AdaptiveLogEntry (рекомендуется)
+        if (adaptiveLogEntry != null)
+        {
+            adaptiveLogEntry.Initialize(
+                ViewModel.MessageText,
+                ViewModel.IsPlayer,
+                ViewModel.SpeakerPortrait
+            );
+
+            // Дополнительно обновляем имя отправителя, если нужно
+            if (speakerNameText != null)
+            {
+                speakerNameText.text = ViewModel.SpeakerName;
+            }
+        }
+
         portraitImage.sprite = ViewModel.SpeakerPortrait;
         speakerNameText.text = ViewModel.SpeakerName;
         messageText.text = ViewModel.MessageText;
 
         // Разный цвет фона для игрока и NPC
         backgroundImage.color = ViewModel.IsPlayer ? playerBackgroundColor : npcBackgroundColor;
+
+        if (ViewModel.SpeakerPortrait != null)
+        {
+            portraitImage.sprite = ViewModel.SpeakerPortrait;
+            portraitImage.gameObject.SetActive(true);
+        }
+        else
+        {
+            portraitImage.gameObject.SetActive(false);
+        }
+
+        // Принудительно обновляем layout для старых компонентов
+        LayoutRebuilder.ForceRebuildLayoutImmediate(
+            transform as RectTransform);
     }
 
     public override void Unbind()

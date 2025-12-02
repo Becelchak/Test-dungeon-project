@@ -1,4 +1,3 @@
-// ViewModels/DialogueLogViewModel.cs
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System;
@@ -23,6 +22,7 @@ public class DialogueLogViewModel : BaseViewModel
 
     public void AddEntry(string speakerName, Sprite portrait, string message, bool isPlayer = false)
     {
+        Debug.Log($"Adding log entry: {speakerName} - {message} - Portrait: {portrait != null}");
         var entryData = new LogEntryData
         {
             speakerName = speakerName,
@@ -36,6 +36,7 @@ public class DialogueLogViewModel : BaseViewModel
 
         // Добавляем в начало для "накопления вверх"
         LogEntries.Insert(0, entryViewModel);
+        Debug.Log($"Total log entries: {LogEntries.Count}");
     }
 
     public void ClearLog()
@@ -45,11 +46,11 @@ public class DialogueLogViewModel : BaseViewModel
 
     public override void Initialize()
     {
-        throw new NotImplementedException();
+
     }
 
     public override void Cleanup()
     {
-        throw new NotImplementedException();
+        LogEntries.Clear();
     }
 }

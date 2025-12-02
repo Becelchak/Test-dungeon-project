@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
@@ -54,10 +55,24 @@ public class AIDialogueData
 {
     public string npcId;
     public string npcName;
-    public Sprite npcPortrait;
+    public string npcPortraitPath; // Путь к спрайту в Resources
+    [System.NonSerialized] public Sprite npcPortrait; // Загруженный спрайт (не сериализуется из JSON)
     public string initialPrompt;
     public AIDialogueConstraint[] constraints;
     public string personalityProfile;
+
+    // Метод для загрузки портрета
+    public void LoadPortrait()
+    {
+        if (!string.IsNullOrEmpty(npcPortraitPath))
+        {
+            npcPortrait = Resources.Load<Sprite>(npcPortraitPath);
+            if (npcPortrait == null)
+            {
+                Debug.LogWarning($"Не удалось загрузить портрет по пути: {npcPortraitPath}");
+            }
+        }
+    }
 }
 
 [System.Serializable]
@@ -87,12 +102,77 @@ public class AICharacterData
 public class PlayerProfile
 {
     public string playerId = "player";
-    public string playerName = "Player";
-    public string avatarPath;
+    public string playerName = "Рыцарь печального образа";
+    public string avatarPath = "Sprites/Portraits/player_portrait";
+
+    // Характеристики
+    public int level;
+    public int health;
+    public int maxHealth;
+    public int mana;
+    public int maxMana;
+    public int strength;
+    public int intelligence;
+    public int agility;
+
+    // Инвентарь
+    public List<InventoryItem> inventory = new List<InventoryItem>();
+
+    // Статистика
+    public PlayerStats stats = new PlayerStats();
+
+    // Прогресс квестов
+    public Dictionary<string, QuestProgress> quests = new Dictionary<string, QuestProgress>();
+
 
     [System.NonSerialized]
     public Sprite avatar;
+    public void LoadAvatar()
+    {
+        if (!string.IsNullOrEmpty(avatarPath))
+        {
+            avatar = Resources.Load<Sprite>(avatarPath);
+            if (avatar == null)
+            {
+                Debug.LogWarning($"Не удалось загрузить портрет игрока по пути: {avatarPath}");
+            }
+        }
+    }
 }
+
+[System.Serializable]
+public class InventoryItem
+{
+    public string itemId;
+    public string itemName;
+    public string description;
+    public int quantity = 1;
+    public ItemType type;
+    public Dictionary<string, int> attributes; // Дополнительные атрибуты
+}
+
+[System.Serializable]
+public class PlayerStats
+{
+    public int enemiesKilled;
+    public int questsCompleted;
+    public int dialoguesCompleted;
+    public int goldCollected;
+    public float playTimeHours;
+    public DateTime firstPlayDate;
+}
+
+[System.Serializable]
+public class QuestProgress
+{
+    public string questId;
+    public QuestStatus status;
+    public int currentStep;
+    public Dictionary<string, bool> objectives;
+}
+
+public enum ItemType { Weapon, Armor, Consumable, Quest, Miscellaneous }
+public enum QuestStatus { NotStarted, InProgress, Completed, Failed }
 
 [System.Serializable]
 public class MessageData

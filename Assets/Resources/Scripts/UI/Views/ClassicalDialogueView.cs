@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.ComponentModel;
 using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine;
 
 public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
 {
@@ -12,77 +10,74 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
     [SerializeField] private Transform responsesContainer;
     [SerializeField] private GameObject responseButtonPrefab;
 
-    private readonly List<GameObject> _responseButtons = new();
-
     protected override void SetupBindings()
     {
+        // Привязка имени NPC
+        npcNameText.text = ViewModel.NpcName;
+
+        // Подписка на изменения свойств
         ViewModel.PropertyChanged += OnPropertyChanged;
-        ViewModel.NPCName.BindTo(npcNameText);
-        ViewModel.CurrentDialogueText.BindTo(dialogueText);
-        UpdateUI();
+
+        // Инициализация начальных значений
+        dialogueText.text = ViewModel.DialogueText;
+        UpdateResponseButtons();
     }
 
-    protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected override void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
         {
-            case nameof(ViewModel.Responses):
-                UpdateResponses();
-                break;
             case nameof(ViewModel.DialogueText):
-                UpdateDialogueText();
+                dialogueText.text = ViewModel.DialogueText;
                 break;
+
+            case nameof(ViewModel.Responses):
+                UpdateResponseButtons();
+                break;
+
             case nameof(ViewModel.NpcName):
-                UpdateNpcName();
+                npcNameText.text = ViewModel.NpcName;
                 break;
         }
     }
 
-    private void UpdateUI()
+    private void UpdateResponseButtons()
     {
-        UpdateNpcName();
-        UpdateDialogueText();
-        UpdateResponses();
-    }
-
-    private void UpdateNpcName()
-    {
-        // npcNameText.text = ViewModel.NpcName;
-    }
-
-    private void UpdateDialogueText()
-    {
-        // dialogueText.text = ViewModel.DialogueText;
-    }
-
-    private void UpdateResponses()
-    {
-        // Удаление старых кнопок ответа
-        foreach (var button in _responseButtons)
+        // Очистка старых кнопок
+        foreach (Transform child in responsesContainer)
         {
-            Destroy(button);
+            Destroy(child.gameObject);
         }
-        _responseButtons.Clear();
 
-        // Создание новых кнопок ответа
-        foreach (var response in ViewModel.Responses)
+        // Создание новых кнопок для каждого ответа
+        if (ViewModel.Responses != null)
         {
-            var buttonObj = Instantiate(responseButtonPrefab, responsesContainer);
-            var button = buttonObj.GetComponent<Button>();
-            var text = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
+            foreach (var response in ViewModel.Responses)
+            {
+                var buttonObj = Instantiate(responseButtonPrefab, responsesContainer);
+                var button = buttonObj.GetComponent<Button>();
+                var text = buttonObj.GetComponentInChildren<TextMeshProUGUI>();
 
-            text.text = response.Text;
-            button.onClick.AddListener(() => response.SelectCommand.Execute(response.ResponseId));
+                text.text = response.Text;
 
-            _responseButtons.Add(buttonObj);
+                // Привязка команды с параметром ResponseId
+                button.onClick.AddListener(() =>
+                {
+                    if (response.SelectCommand != null && response.SelectCommand.CanExecute(response.ResponseId))
+                    {
+                        response.SelectCommand.Execute(response.ResponseId);
+                    }
+                });
+            }
         }
     }
-    public override void Unbind()
+
+    protected override void OnDestroy()
     {
         if (ViewModel != null)
         {
             ViewModel.PropertyChanged -= OnPropertyChanged;
         }
-        base.Unbind();
+        base.OnDestroy();
     }
 }

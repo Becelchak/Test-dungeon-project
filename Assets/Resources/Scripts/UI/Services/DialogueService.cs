@@ -35,8 +35,11 @@ public class DialogueService : BaseService, IDialogueService
                 Debug.LogError("ResourceService not available");
                 return null;
             }
+            var data = resourceService.LoadJson<AIDialogueData>($"Data/DialogData/AIDialog/{npcId}");
+            // «агружаем портрет после десериализации
+            data?.LoadPortrait();
 
-            return resourceService.LoadJson<AIDialogueData>($"AIDialogues/{npcId}");
+            return data;
         }
         catch (Exception e)
         {

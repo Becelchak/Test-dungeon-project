@@ -1,17 +1,21 @@
 using EventBusSystem;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using UnityEngine;
 
 public class AIDialogueViewModel : BaseViewModel
 {
-    private readonly IAIService _aiService;
-    private readonly AIDialogueData _aiData;
-    private readonly PlayerProfileService _player;
+    private IAIService _aiService;
+    private AIDialogueData _aiData;
+    private PlayerProfileService _player;
+    private IPlayerContextService _playerContextService;
 
-    private string _npcName;
-    private string _dialogueText;
+    private string _npcName = "Загрузка...";
+    private string _dialogueText = "...";
     private string _userInput;
     private bool _isWaitingForResponse;
+    private bool _isInitialized = false;
 
     public string NpcName
     {
@@ -37,30 +41,70 @@ public class AIDialogueViewModel : BaseViewModel
         private set => SetProperty(ref _isWaitingForResponse, value);
     }
 
+    public bool IsInitialized => _isInitialized;
+
     public ICommand SendMessageCommand { get; }
     public ICommand CloseDialogueCommand { get; }
-    private DialogueLogViewModel _logViewModel;
-
+    public DialogueLogViewModel LogViewModel { get; }
     public AIDialogueViewModel(string npcId, DialogueLogViewModel logViewModel)
     {
-        _logViewModel = logViewModel;
-        var dialogueService = ServiceLocator.Instance.GetService<IDialogueService>();
-        _aiService = ServiceLocator.Instance.GetService<IAIService>();
-        _aiData = dialogueService.GetAIDialogue(npcId);
-        _player = ServiceLocator.Instance.GetService<PlayerProfileService>();
-
+        LogViewModel = logViewModel;
         SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
         CloseDialogueCommand = new RelayCommand(CloseDialogue);
 
-        EventBus.Subscribe(this as IDialogueEventSubscriber);
+        // Начинаем асинхронную инициализацию
+        InitializeAsync(npcId);
+    }
 
-        InitializeAIDialogue();
+    private async void InitializeAsync(string npcId)
+    {
+        try
+        {
+            var dialogueService = ServiceLocator.Instance.GetService<IDialogueService>();
+            _aiService = ServiceLocator.Instance.GetService<IAIService>();
+            _player = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
+            _playerContextService = ServiceLocator.Instance.GetService<IPlayerContextService>();
+            if (_playerContextService != null)
+                _playerContextService.Initialize();
+
+            if (dialogueService == null || _aiService == null || _player == null)
+            {
+                Debug.LogError("Не удалось получить необходимые сервисы");
+                return;
+            }
+
+            _aiData = dialogueService.GetAIDialogue(npcId);
+
+            if (_aiData == null)
+            {
+                Debug.LogError($"Не удалось загрузить данные AI диалога для NPC: {npcId}");
+                NpcName = "Ошибка загрузки";
+                return;
+            }
+
+            // Теперь инициализируем данные
+            InitializeAIDialogue();
+            _isInitialized = true;
+
+            // Уведомляем об изменении состояния инициализации
+            OnPropertyChanged(nameof(IsInitialized));
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Ошибка инициализации AI диалога: {e.Message}");
+            NpcName = "Ошибка";
+        }
     }
 
     private void InitializeAIDialogue()
     {
         NpcName = _aiData.npcName;
-        DialogueText = "...";
+        DialogueText = "*Безмолвно ждет вашего вопроса*";
+
+        if (_aiData.npcPortrait != null)
+        {
+            Debug.Log($"Портрет загружен: {_aiData.npcPortrait.name}");
+        }
 
         _aiService.OnAIResponseReceived += OnAIResponse;
         _aiService.OnConnectionStatusChanged += OnConnectionStatusChanged;
@@ -84,26 +128,36 @@ public class AIDialogueViewModel : BaseViewModel
         var fullPrompt = BuildFullPrompt(userMessage);
         _aiService.SendMessage(fullPrompt);
 
-        _logViewModel.AddEntry("Игрок", _player.CurrentProfile.avatar, UserInput, true);
+        LogViewModel.AddEntry(_player.CurrentProfile.playerName, _player.CurrentProfile.avatar, userMessage, true);
+        
     }
 
     private string BuildFullPrompt(string userMessage)
     {
+        // Получаем контекст игрока
+        string playerContext = _playerContextService.GetPlayerContextForAI();
+        // Для отладки
+        Debug.Log("=== PLAYER CONTEXT SENT TO AI ===");
+        Debug.Log(playerContext);
+        Debug.Log("=================================");
+
         return $@"{_aiData.initialPrompt}
 
-            Ограничения:
-            {string.Join("\n", _aiData.constraints.Select(c => $"- {c.constraint}: {c.value}"))}
+                ДАННЫЕ ИГРОКА:
+                {playerContext}
 
-            Текущий диалог:
-            Пользователь: {userMessage}
-            {_aiData.npcName}:";
+                ОГРАНИЧЕНИЯ:
+                {string.Join("\n", _aiData.constraints.Select(c => $"- {c.constraint}: {c.value}"))}
+
+                ТЕКУЩИЙ ДИАЛОГ:
+                Пользователь: {userMessage}
+                {_aiData.npcName}:";
     }
 
     private void OnAIResponse(string response)
     {
         IsWaitingForResponse = false;
-        DialogueText = response;
-        _logViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, response);
+        LogViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, response);
     }
 
     private void OnConnectionStatusChanged(bool isConnected)

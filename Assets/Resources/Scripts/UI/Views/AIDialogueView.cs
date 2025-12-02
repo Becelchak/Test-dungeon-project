@@ -1,47 +1,112 @@
-using System.ComponentModel;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using System.ComponentModel;
 
 public class AIDialogueView : BaseView<AIDialogueViewModel>
 {
     [Header("AI Dialogue UI")]
-    [SerializeField] private Transform chatContent;
-    [SerializeField] private GameObject messagePrefab;
     [SerializeField] private TMP_InputField userInputField;
     [SerializeField] private Button sendButton;
     [SerializeField] private GameObject loadingIndicator;
-    [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private TextMeshProUGUI npcNameText;
+    [SerializeField] private TextMeshProUGUI dialogueText;
 
-    protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
+    [Header("Dialogue Log")]
+    [SerializeField] private DialogueLogView dialogueLogView;
 
     protected override void SetupBindings()
     {
-        // Привязка поля ввода
-        userInputField.onValueChanged.AddListener(ViewModel.SetInputText);
-        ViewModel.InputText.BindTo(userInputField);
+        // Сначала устанавливаем значения по умолчанию
+        npcNameText.text = "Загрузка...";
+        dialogueText.text = "...";
+        loadingIndicator.SetActive(false);
+        userInputField.text = "";
+        sendButton.interactable = false;
+
+        // Подписка на изменения свойств
+        ViewModel.PropertyChanged += OnPropertyChanged;
+
+        // Привязка поля ввода - двусторонняя
+        userInputField.onValueChanged.AddListener(value =>
+        {
+            if (ViewModel.UserInput != value)
+            {
+                ViewModel.UserInput = value;
+            }
+        });
 
         // Привязка команды отправки
-        sendButton.onClick.AddListener(() => ViewModel.SendMessageCommand.Execute());
+        sendButton.onClick.AddListener(() => ViewModel.SendMessageCommand.Execute(null));
 
-        // Привязка индикатора загрузки
-        ViewModel.IsLoading.BindTo(loadingIndicator.SetActive);
+        // Если ViewModel уже инициализирована, обновляем UI
+        if (ViewModel.IsInitialized)
+        {
+            UpdateUI();
+        }
 
-        // Привязка списка сообщений
-        ViewModel.Messages.ObserveAdd().Subscribe(OnMessageAdded);
+        // Привязка DialogueLogView
+        if (dialogueLogView != null && ViewModel.LogViewModel != null)
+        {
+            dialogueLogView.Bind(ViewModel.LogViewModel);
+        }
     }
 
-    private void OnMessageAdded(CollectionAddEvent<MessageData> evt)
+    protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        var messageObj = Instantiate(messagePrefab, chatContent);
-        var messageView = messageObj.GetComponent<MessageView>();
-        messageView.Bind(evt.Value);
+        switch (e.PropertyName)
+        {
+            case nameof(ViewModel.IsInitialized):
+                if (ViewModel.IsInitialized)
+                {
+                    UpdateUI();
+                }
+                break;
 
-        // Автопрокрутка к новому сообщению
-        Canvas.ForceUpdateCanvases();
-        scrollRect.verticalNormalizedPosition = 0f;
+            case nameof(ViewModel.NpcName):
+                npcNameText.text = ViewModel.NpcName ?? "Неизвестный NPC";
+                break;
+
+            case nameof(ViewModel.DialogueText):
+                dialogueText.text = ViewModel.DialogueText ?? "...";
+                break;
+
+            case nameof(ViewModel.IsWaitingForResponse):
+                loadingIndicator.SetActive(ViewModel.IsWaitingForResponse);
+                UpdateSendButtonInteractable();
+                break;
+
+            case nameof(ViewModel.UserInput):
+                if (userInputField.text != ViewModel.UserInput)
+                {
+                    userInputField.text = ViewModel.UserInput ?? "";
+                }
+                UpdateSendButtonInteractable();
+                break;
+        }
+    }
+
+    private void UpdateUI()
+    {
+        npcNameText.text = ViewModel.NpcName ?? "Неизвестный NPC";
+        dialogueText.text = ViewModel.DialogueText ?? "...";
+        userInputField.text = ViewModel.UserInput ?? "";
+        UpdateSendButtonInteractable();
+    }
+
+    private void UpdateSendButtonInteractable()
+    {
+                sendButton.interactable = !ViewModel.IsWaitingForResponse && 
+                                 !string.IsNullOrWhiteSpace(ViewModel.UserInput) &&
+                                 ViewModel.IsInitialized;
+    }
+
+    protected override void OnDestroy()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.PropertyChanged -= OnPropertyChanged;
+        }
+        base.OnDestroy();
     }
 }

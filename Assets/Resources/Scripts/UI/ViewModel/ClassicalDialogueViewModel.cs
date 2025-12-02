@@ -39,7 +39,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
     {
         _logViewModel = logViewModel;
         _dialogueService = ServiceLocator.Instance.GetService<IDialogueService>();
-        _player = ServiceLocator.Instance.GetService<PlayerProfileService>();
+        _player = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
         ResponseSelectedCommand = new RelayCommand<string>(OnResponseSelected);
 
         EventBus.Subscribe(this as IDialogueEventSubscriber);
