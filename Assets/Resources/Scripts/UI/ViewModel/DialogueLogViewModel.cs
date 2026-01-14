@@ -34,7 +34,6 @@ public class DialogueLogViewModel : BaseViewModel
 
         var entryViewModel = new LogEntryViewModel(entryData);
 
-        // Добавляем в начало для "накопления вверх"
         LogEntries.Insert(0, entryViewModel);
         Debug.Log($"Total log entries: {LogEntries.Count}");
     }

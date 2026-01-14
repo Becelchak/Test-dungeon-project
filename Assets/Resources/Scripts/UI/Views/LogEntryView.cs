@@ -32,22 +32,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>
     {
         if (ViewModel == null) return;
 
-        // Вариант 1: Используем AdaptiveLogEntry (рекомендуется)
-        if (adaptiveLogEntry != null)
-        {
-            adaptiveLogEntry.Initialize(
-                ViewModel.MessageText,
-                ViewModel.IsPlayer,
-                ViewModel.SpeakerPortrait
-            );
-
-            // Дополнительно обновляем имя отправителя, если нужно
-            if (speakerNameText != null)
-            {
-                speakerNameText.text = ViewModel.SpeakerName;
-            }
-        }
-
         portraitImage.sprite = ViewModel.SpeakerPortrait;
         speakerNameText.text = ViewModel.SpeakerName;
         messageText.text = ViewModel.MessageText;
@@ -63,6 +47,22 @@ public class LogEntryView : BaseView<LogEntryViewModel>
         else
         {
             portraitImage.gameObject.SetActive(false);
+        }
+
+        // Вариант 1: Используем AdaptiveLogEntry (рекомендуется)
+        if (adaptiveLogEntry != null)
+        {
+            adaptiveLogEntry.Initialize(
+                ViewModel.MessageText,
+                ViewModel.IsPlayer,
+                ViewModel.SpeakerPortrait
+            );
+
+            // Дополнительно обновляем имя отправителя, если нужно
+            if (speakerNameText != null)
+            {
+                speakerNameText.text = ViewModel.SpeakerName;
+            }
         }
 
         // Принудительно обновляем layout для старых компонентов

@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +7,7 @@ public class AdaptiveLogEntry : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TMP_Text messageText;
+    [SerializeField] private RectTransform messageRectTransform;
     [SerializeField] private Image portraitImage;
     [SerializeField] private RectTransform backgroundRect;
     [SerializeField] private Image backgroundImage;
@@ -14,19 +16,14 @@ public class AdaptiveLogEntry : MonoBehaviour
     [SerializeField] private float minWidth = 120f;
     [SerializeField] private float maxWidth = 450f;
     [SerializeField] private float minHeight = 40f;
-    [SerializeField] private float padding = 15f;
+    [SerializeField] private Vector2 padding = new Vector2(15f, 10f);
 
-    //[Header("Visual Settings")]
-    //[SerializeField] private Color playerColor = new Color(0.1f, 0.3f, 0.6f, 0.8f);
-    //[SerializeField] private Color npcColor = new Color(0.3f, 0.3f, 0.3f, 0.8f);
-
-    // Кэш для оптимизации
-    private RectTransform _rectTransform;
+    private RectTransform logRectTransform;
     private bool _isInitialized = false;
 
     private void Awake()
     {
-        _rectTransform = GetComponent<RectTransform>();
+        logRectTransform = GetComponent<RectTransform>();
     }
 
     public void Initialize(string text, bool isPlayer, Sprite portrait = null)
@@ -63,50 +60,75 @@ public class AdaptiveLogEntry : MonoBehaviour
         if (messageText == null || backgroundRect == null) return;
 
         // Принудительно обновляем текстовую сетку
-        messageText.ForceMeshUpdate();
+        messageText.ForceMeshUpdate(forceTextReparsing:true);
 
         // Получаем предпочтительные размеры текста
         Vector2 preferredSize = messageText.GetPreferredValues();
 
-        // Ограничиваем ширину
-        float width = Mathf.Clamp(
-            preferredSize.x + padding,
+        // 3. Рассчитываем ширину с учетом ограничений
+        float targetWidth = Mathf.Clamp(
+            preferredSize.x, // Текст + горизонтальные отступы
             minWidth,
             maxWidth
         );
 
-        // Если текст не помещается в ограниченную ширину,
-        // получаем новую высоту для этой ширины
-        if (preferredSize.x > width - padding)
+        // 4. Если текст шире доступного пространства, пересчитываем высоту
+        float textWidth = targetWidth - padding.x * 2;
+        float textHeight;
+
+        if (preferredSize.x > textWidth)
         {
-            preferredSize = messageText.GetPreferredValues(
-                width - padding,
-                0 // Неограниченная высота
-            );
+            // Текст не помещается по ширине - получаем высоту с учетом переноса
+            textHeight = messageText.GetPreferredValues(textWidth, messageText.renderedHeight).y;
+        }
+        else
+        {
+            // Текст помещается - используем исходную высоту
+            textHeight = preferredSize.y;
         }
 
-        // Вычисляем итоговую высоту
-        float height = Mathf.Max(
+        // 5. Рассчитываем общую высоту
+        float targetHeight = Mathf.Max(
             minHeight,
-            preferredSize.y + padding
+            textHeight + padding.y * 2
         );
 
-        // Применяем размеры
-        backgroundRect.sizeDelta = new Vector2(width, height);
+        messageRectTransform.sizeDelta = new Vector2(messageRectTransform.sizeDelta.x, targetHeight);
+        //backgroundRect.sizeDelta = new Vector2(logRectTransform.sizeDelta.x, targetHeight);
+        logRectTransform.sizeDelta = new Vector2(logRectTransform.sizeDelta.x, targetHeight + Math.Abs(messageRectTransform.sizeDelta.y));
 
-        // Опционально: настраиваем выравнивание
-        if (_rectTransform != null)
+        // 8. Проверяем, что текст не обрезается
+        ValidateTextFits();
+    }
+
+    private void ValidateTextFits()
+    {
+        // Проверяем, не обрезается ли текст
+        messageText.ForceMeshUpdate();
+
+        // Получаем информацию о тексте
+        TMP_TextInfo textInfo = messageText.textInfo;
+
+        if (textInfo != null && textInfo.characterCount > 0)
         {
-            ConfigureAlignment(preferredSize);
+            // Проверяем последний символ
+            TMP_CharacterInfo lastChar = textInfo.characterInfo[textInfo.characterCount - 1];
+
+            if (!lastChar.isVisible)
+            {
+                Debug.LogWarning("Текст не помещается, возможно нужно увеличить высоту или уменьшить шрифт");
+
+                // Автоматически увеличиваем высоту, если текст не помещается
+                float currentHeight = backgroundRect.sizeDelta.y;
+                backgroundRect.sizeDelta = new Vector2(
+                    backgroundRect.sizeDelta.x,
+                    currentHeight * 1.2f // Увеличиваем на 20%
+                );
+                backgroundRect.transform.position = new Vector3(backgroundRect.position.x,
+                    currentHeight * 1.2f);
+            }
         }
     }
-
-    private void ConfigureAlignment(Vector2 textSize)
-    {
-        // Можно добавить логику для разных типов выравнивания
-        // Например, сообщения игрока справа, NPC слева
-    }
-
     // Метод для обновления текста после инициализации
     public void UpdateText(string newText)
     {
@@ -115,6 +137,11 @@ public class AdaptiveLogEntry : MonoBehaviour
             messageText.text = newText;
             CalculateOptimalSize();
         }
+    }
+
+    public Vector2 GetCurrentSize()
+    {
+        return backgroundRect != null ? backgroundRect.sizeDelta : Vector2.zero;
     }
 
     // Автоматический пересчет при изменении текста через инспектор

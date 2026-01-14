@@ -79,7 +79,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
         if (scrollRect != null)
         {
             Canvas.ForceUpdateCanvases();
-            scrollRect.verticalNormalizedPosition = 0f;
+            scrollRect.verticalNormalizedPosition = 1f;
         }
     }
 
