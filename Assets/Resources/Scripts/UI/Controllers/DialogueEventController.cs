@@ -16,15 +16,11 @@ public class DialogueEventController : MonoBehaviour, IDialogueEventSubscriber
     public void OnDialogueStarted(string npcId, DialogueType dialogueType)
     {
         Debug.Log($"Диалог начался с NPC: {npcId}, тип: {dialogueType}");
-
-        Time.timeScale = 0;
     }
 
     public void OnDialogueEnded()
     {
         Debug.Log("Диалог завершен");
-
-        Time.timeScale = 1;
     }
 
     public void OnResponseSelected(string responseId)

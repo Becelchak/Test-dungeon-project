@@ -101,6 +101,8 @@ public class AIDialogueViewModel : BaseViewModel
         NpcName = _aiData.npcName;
         DialogueText = "*Безмолвно ждет вашего вопроса*";
 
+        LogViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, DialogueText);
+
         if (_aiData.npcPortrait != null)
         {
             Debug.Log($"Портрет загружен: {_aiData.npcPortrait.name}");

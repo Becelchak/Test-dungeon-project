@@ -2,6 +2,8 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using System.ComponentModel;
+using UnityEditor;
+using System.Collections;
 
 public class AIDialogueView : BaseView<AIDialogueViewModel>
 {
@@ -17,10 +19,10 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
 
     protected override void SetupBindings()
     {
+
         // Сначала устанавливаем значения по умолчанию
         npcNameText.text = "Загрузка...";
         dialogueText.text = "...";
-        loadingIndicator.SetActive(false);
         userInputField.text = "";
         sendButton.interactable = false;
 

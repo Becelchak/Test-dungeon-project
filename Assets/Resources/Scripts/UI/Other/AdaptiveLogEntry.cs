@@ -94,8 +94,7 @@ public class AdaptiveLogEntry : MonoBehaviour
         );
 
         messageRectTransform.sizeDelta = new Vector2(messageRectTransform.sizeDelta.x, targetHeight);
-        //backgroundRect.sizeDelta = new Vector2(logRectTransform.sizeDelta.x, targetHeight);
-        logRectTransform.sizeDelta = new Vector2(logRectTransform.sizeDelta.x, targetHeight + Math.Abs(messageRectTransform.sizeDelta.y));
+        logRectTransform.sizeDelta = new Vector2(logRectTransform.sizeDelta.x, targetHeight + Math.Abs(messageRectTransform.anchoredPosition.y));
 
         // 8. Проверяем, что текст не обрезается
         ValidateTextFits();
@@ -103,15 +102,11 @@ public class AdaptiveLogEntry : MonoBehaviour
 
     private void ValidateTextFits()
     {
-        // Проверяем, не обрезается ли текст
         messageText.ForceMeshUpdate();
-
-        // Получаем информацию о тексте
         TMP_TextInfo textInfo = messageText.textInfo;
 
         if (textInfo != null && textInfo.characterCount > 0)
         {
-            // Проверяем последний символ
             TMP_CharacterInfo lastChar = textInfo.characterInfo[textInfo.characterCount - 1];
 
             if (!lastChar.isVisible)

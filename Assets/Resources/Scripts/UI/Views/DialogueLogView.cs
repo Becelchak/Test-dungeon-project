@@ -18,6 +18,10 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
         //clearLogButton.onClick.AddListener(() => ViewModel.ClearLogCommand.Execute(null));
         ViewModel.PropertyChanged += OnPropertyChanged;
         ViewModel.LogEntries.CollectionChanged += OnLogEntriesChanged;
+        for (var i = 0; i < gameObject.transform.childCount; i++) 
+        {
+            _instantiatedEntries.Add(gameObject.transform.GetChild(i).gameObject);
+        }
 
         UpdateLogView();
     }
@@ -47,18 +51,11 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
         _instantiatedEntries.Clear();
 
         // ВАЖНО: Создаем элементы в обратном порядке, чтобы новые были ВНИЗУ
-        // Если хотите, чтобы новые были СВЕРХУ, используйте обычный foreach
         for (int i = ViewModel.LogEntries.Count - 1; i >= 0; i--)
         {
             var entryViewModel = ViewModel.LogEntries[i];
             var entryObj = Instantiate(logEntryPrefab, logEntriesContainer);
 
-            // Если хотите, чтобы новые элементы добавлялись СВЕРХУ (первыми в иерархии)
-            // entryObj.transform.SetAsFirstSibling();
-
-            // Если хотите, чтобы новые добавлялись ВНИЗ (как сейчас, но в правильном порядке)
-            // Оставьте как есть или используйте:
-            entryObj.transform.SetSiblingIndex(0);
 
             var entryView = entryObj.GetComponent<LogEntryView>();
 
@@ -79,7 +76,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
         if (scrollRect != null)
         {
             Canvas.ForceUpdateCanvases();
-            scrollRect.verticalNormalizedPosition = 1f;
+            scrollRect.verticalNormalizedPosition = 0f;
         }
     }
 
