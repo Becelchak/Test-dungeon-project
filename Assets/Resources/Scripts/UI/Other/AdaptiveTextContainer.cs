@@ -3,14 +3,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AdaptiveLogEntry : MonoBehaviour
+public class AdaptiveTextContainer : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TMP_Text messageText;
     [SerializeField] private RectTransform messageRectTransform;
     [SerializeField] private Image portraitImage;
     [SerializeField] private RectTransform backgroundRect;
-    [SerializeField] private Image backgroundImage;
+    //[SerializeField] private Image backgroundImage;
 
     [Header("Size Settings")]
     [SerializeField] private float minWidth = 120f;
@@ -18,14 +18,15 @@ public class AdaptiveLogEntry : MonoBehaviour
     [SerializeField] private float minHeight = 40f;
     [SerializeField] private Vector2 padding = new Vector2(15f, 10f);
 
-    private RectTransform logRectTransform;
+    private RectTransform textContainerRectTransform;
     private bool _isInitialized = false;
 
     private void Awake()
     {
-        logRectTransform = GetComponent<RectTransform>();
+        textContainerRectTransform = GetComponent<RectTransform>();
     }
 
+    //TO DO: Разделить задачи по рассчету оптимальных размеров (ширина/высота/все сразу)
     public void Initialize(string text, bool isPlayer, Sprite portrait = null)
     {
         // Устанавливаем текст
@@ -50,17 +51,99 @@ public class AdaptiveLogEntry : MonoBehaviour
 
 
         // Пересчитываем размеры
+        CalculateOptimalSizeForHeight();
+
+        _isInitialized = true;
+    }
+
+    //TO DO: Разделить задачи по рассчету оптимальных размеров (ширина/высота/все сразу)
+    public void Initialize(string text)
+    {
+        if (messageText != null)
+        {
+            messageText.text = text;
+        }
+
         CalculateOptimalSize();
 
         _isInitialized = true;
     }
 
+    private void CalculateOptimalSizeForHeight()
+    {
+        if (messageText == null) return;
+
+        messageText.ForceMeshUpdate(forceTextReparsing:true);
+
+        Vector2 preferredSize = messageText.GetPreferredValues();
+
+        float targetWidth = Mathf.Clamp(
+            preferredSize.x,
+            minWidth,
+            maxWidth
+        );
+
+        float textWidth = targetWidth - padding.x * 2;
+        float textHeight;
+
+        if (preferredSize.x > textWidth)
+        {
+            textHeight = messageText.GetPreferredValues(textWidth, messageText.renderedHeight).y;
+        }
+        else
+        {
+            textHeight = preferredSize.y;
+        }
+
+        float targetHeight = Mathf.Max(
+            minHeight,
+            textHeight + padding.y * 2
+        );
+
+        messageRectTransform.sizeDelta = new Vector2(messageRectTransform.sizeDelta.x, targetHeight);
+        textContainerRectTransform.sizeDelta = new Vector2(textContainerRectTransform.sizeDelta.x, targetHeight + Math.Abs(messageRectTransform.anchoredPosition.y));
+
+        ValidateTextFits();
+    }
+
+    private void CalculateOptimalSizeForWidth()
+    {
+        if (messageText == null) return;
+
+        messageText.ForceMeshUpdate(forceTextReparsing: true);
+
+        Vector2 preferredSize = messageText.GetPreferredValues();
+
+        float targetWidth = Mathf.Clamp(
+            preferredSize.x,
+            minWidth,
+            maxWidth
+        );
+
+        float textWidth = targetWidth - padding.x * 2;
+        float textHeight;
+
+        if (preferredSize.x > textWidth)
+        {
+            textHeight = messageText.GetPreferredValues(textWidth, messageText.renderedHeight).y;
+        }
+        else
+        {
+            textHeight = preferredSize.y;
+        }
+
+        messageRectTransform.sizeDelta = new Vector2(targetWidth, messageRectTransform.sizeDelta.y);
+        textContainerRectTransform.sizeDelta = new Vector2(targetWidth + Math.Abs(messageRectTransform.anchoredPosition.x), messageRectTransform.sizeDelta.x);
+
+        ValidateTextFits();
+    }
+
     private void CalculateOptimalSize()
     {
-        if (messageText == null || backgroundRect == null) return;
+        if (messageText == null) return;
 
         // Принудительно обновляем текстовую сетку
-        messageText.ForceMeshUpdate(forceTextReparsing:true);
+        messageText.ForceMeshUpdate(forceTextReparsing: true);
 
         // Получаем предпочтительные размеры текста
         Vector2 preferredSize = messageText.GetPreferredValues();
@@ -93,10 +176,9 @@ public class AdaptiveLogEntry : MonoBehaviour
             textHeight + padding.y * 2
         );
 
-        messageRectTransform.sizeDelta = new Vector2(messageRectTransform.sizeDelta.x, targetHeight);
-        logRectTransform.sizeDelta = new Vector2(logRectTransform.sizeDelta.x, targetHeight + Math.Abs(messageRectTransform.anchoredPosition.y));
+        messageRectTransform.sizeDelta = new Vector2(targetWidth, targetHeight);
+        textContainerRectTransform.sizeDelta = new Vector2(targetWidth, targetHeight);
 
-        // 8. Проверяем, что текст не обрезается
         ValidateTextFits();
     }
 
@@ -112,6 +194,8 @@ public class AdaptiveLogEntry : MonoBehaviour
             if (!lastChar.isVisible)
             {
                 Debug.LogWarning("Текст не помещается, возможно нужно увеличить высоту или уменьшить шрифт");
+
+                if(backgroundRect == null) return;
 
                 // Автоматически увеличиваем высоту, если текст не помещается
                 float currentHeight = backgroundRect.sizeDelta.y;

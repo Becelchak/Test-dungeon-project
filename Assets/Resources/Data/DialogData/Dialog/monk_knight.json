@@ -1,0 +1,137 @@
+{
+  "dialogueId": "monk_knight_intro",
+  "npcId": "monk_knight",
+  "npcName": "Статуя",
+  "npcPortraitPath": "Sprites/Portraits/monk_knight_portrait",
+  "startNodeId": "greeting",
+  "nodes": [
+    {
+      "nodeId": "greeting",
+      "text": "*Вы взираете на величественную статую Люциана, что некогда прошелся крестовым походом по здешним землям. Странное присутсвие ощущается рядом с этим монументом. Кажется вы даже можете поговорить с этим неосязаемым наваждением.*",
+      "responses": [
+        {
+          "responseId": "ask_about_ruins",
+          "text": "Что это за руины?",
+          "nextNodeId": "about_ruins",
+          "conditions": [],
+          "onSelected": []
+        },
+        {
+          "responseId": "ask_for_quest",
+          "text": "Что я могу сделать для тебя?",
+          "nextNodeId": "quest_offer",
+          "conditions": [
+            {
+              "type": "questStatus",
+              "questId": "ancient_relic",
+              "requiredStatus": "notStarted"
+            }
+          ],
+          "onSelected": []
+        },
+        {
+          "responseId": "just_lenght_textbox_test",
+          "text": "О горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе, горе...о чем бишь я?",
+          "nextNodeId": "greeting",
+          "conditions": [],
+          "onSelected": []
+        },
+        {
+          "responseId": "leave",
+          "text": "*Уйти*",
+          "nextNodeId": null,
+          "conditions": [],
+          "onSelected": [
+            {
+              "type": "endDialogue"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nodeId": "about_ruins",
+      "text": "Вы слышите чуждый голос в голове:'Сие место - оплот величайшей ереси, что видал этот свет. Здесь хранятся истоки людских пороков и путь к кончине наших судеб. Это место необходимо предать забвению, как и все вещи Небелитов'",
+      "responses": [
+        {
+          "responseId": "ask_about_nebelit",
+          "text": "Что за Небелиты?",
+          "nextNodeId": "about_nebelit",
+          "conditions": [],
+          "onSelected": []
+        },
+        {
+          "responseId": "return_to_greeting",
+          "text": "Вот как. (Вернутся к предыдущей мысли).",
+          "nextNodeId": "greeting",
+          "conditions": [],
+          "onSelected": []
+        }
+      ]
+    },
+    {
+      "nodeId": "quest_offer",
+      "text": "Вы слышите дрожащий голос в голове:'Моя плоть, разорвана вклочья, моя душа разбита и чахнет в осколках собственного величия. Молю, предай меня огню. Даруй мне покой любой ценой.'",
+      "responses": [
+        {
+          "responseId": "accept_quest",
+          "text": "Хорошо, я сделаю это.",
+          "nextNodeId": "quest_accepted",
+          "conditions": [],
+          "onSelected": [
+            {
+              "type": "startQuest",
+              "questId": "ancient_relic"
+            },
+            {
+              "type": "addItem",
+              "itemId": "quest_marker",
+              "quantity": 1
+            }
+          ]
+        },
+        {
+          "responseId": "decline_quest",
+          "text": "Я точно сошел с ума. Я ведь со статуей разговариваю!",
+          "nextNodeId": "greeting",
+          "conditions": [],
+          "onSelected": []
+        }
+      ]
+    },
+    {
+      "nodeId": "quest_accepted",
+      "text": "Вы слышите скорбный голос в голове: 'Мои останки. Ищи мои останки среди этих богомерзких руин. Ты поймешь где они, по тому ужасу, что бдит за ними.'",
+      "responses": [
+        {
+          "responseId": "goodbye",
+          "text": "*Уйти*.",
+          "nextNodeId": null,
+          "conditions": [],
+          "onSelected": [
+            {
+              "type": "endDialogue"
+            }
+          ]
+        }
+      ]
+    },
+        {
+      "nodeId": "about_nebelit",
+      "text": "Вы слышите тихий голос в голове: 'Те, кто жили здесь до нас. Те, кто живут здесь по сей день в ином обличии.'",
+      "responses": [
+        {
+          "responseId": "goodbye",
+          "text": "*Уйти*.",
+          "nextNodeId": null,
+          "conditions": [],
+          "onSelected": [
+            {
+              "type": "endDialogue"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

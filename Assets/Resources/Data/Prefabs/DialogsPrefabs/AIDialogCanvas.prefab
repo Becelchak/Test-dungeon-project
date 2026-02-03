@@ -1278,6 +1278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AIDialogueView
   userInputField: {fileID: 3044389611601242338}
   sendButton: {fileID: 2037394481319730245}
+  closeButton: {fileID: 1064918487566383744}
   loadingIndicator: {fileID: 6552200718619612004}
   npcNameText: {fileID: 1072360705444972671}
   dialogueText: {fileID: 4935299751451457812}

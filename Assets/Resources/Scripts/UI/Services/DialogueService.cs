@@ -15,8 +15,10 @@ public class DialogueService : BaseService, IDialogueService
                 Debug.LogError("ResourceService not available");
                 return null;
             }
+            var data = resourceService.LoadJson<DialogueData>($"Data/DialogData/Dialog/{dialogueId}");
+            data?.LoadPortrait();
 
-            return resourceService.LoadJson<DialogueData>($"Dialogues/{dialogueId}");
+            return data;
         }
         catch (Exception e)
         {

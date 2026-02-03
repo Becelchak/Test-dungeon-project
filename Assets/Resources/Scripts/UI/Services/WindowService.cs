@@ -55,7 +55,7 @@ public class WindowService : BaseService, IWindowService
     {
         var logViewModel = new DialogueLogViewModel();
         var classicalViewModel = new ClassicalDialogueViewModel(dialogueId, logViewModel);
-        // Аналогичная реализация для классического диалога
+
         if (_openWindows.ContainsKey(typeof(ClassicalDialogueViewModel)))
         {
             Debug.LogWarning("Classical Dialogue window already open");
@@ -73,8 +73,8 @@ public class WindowService : BaseService, IWindowService
 
         if (view != null)
         {
-            var viewModel = new ClassicalDialogueViewModel(dialogueId, logViewModel);
-            view.Bind(viewModel);
+            //var viewModel = new ClassicalDialogueViewModel(dialogueId, logViewModel);
+            view.Bind(classicalViewModel);
             _openWindows[typeof(ClassicalDialogueViewModel)] = windowObj;
         }
         else

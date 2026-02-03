@@ -12,8 +12,8 @@ public class ClassicalDialogueViewModel : BaseViewModel
 
     private string _npcName;
     private string _dialogueText;
-    private ObservableCollection<DialogueResponseVM> _responses = new();
-    private DialogueLogViewModel _logViewModel;
+    private ObservableCollection<DialogueResponseViewModel> _responses = new();
+    public DialogueLogViewModel LogViewModel { get; }
 
     public string NpcName
     {
@@ -27,7 +27,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
         private set => SetProperty(ref _dialogueText, value);
     }
 
-    public ObservableCollection<DialogueResponseVM> Responses
+    public ObservableCollection<DialogueResponseViewModel> Responses
     {
         get => _responses;
         private set => SetProperty(ref _responses, value);
@@ -37,12 +37,12 @@ public class ClassicalDialogueViewModel : BaseViewModel
 
     public ClassicalDialogueViewModel(string dialogueId, DialogueLogViewModel logViewModel)
     {
-        _logViewModel = logViewModel;
+        LogViewModel = logViewModel;
         _dialogueService = ServiceLocator.Instance.GetService<IDialogueService>();
         _player = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
         ResponseSelectedCommand = new RelayCommand<string>(OnResponseSelected);
 
-        EventBus.Subscribe(this as IDialogueEventSubscriber);
+        //EventBus.Subscribe(this as IDialogueEventSubscriber);
 
         LoadDialogue(dialogueId);
     }
@@ -73,11 +73,14 @@ public class ClassicalDialogueViewModel : BaseViewModel
         DialogueText = _currentNode.text;
         UpdateResponses();
 
-        foreach (var action in _currentNode.actions)
+        if (_currentNode.actions != null) 
         {
-            _dialogueService.ExecuteDialogueAction(action);
+            foreach (var action in _currentNode.actions)
+            {
+                _dialogueService.ExecuteDialogueAction(action);
+            }
         }
-        _logViewModel.AddEntry(_dialogueData.npcName, _dialogueData.npcPortrait, _currentNode.text);
+        LogViewModel.AddEntry(_dialogueData.npcName, _dialogueData.npcPortrait, _currentNode.text);
     }
 
     private void UpdateResponses()
@@ -87,12 +90,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
         {
             if (CheckResponseConditions(response))
             {
-                Responses.Add(new DialogueResponseVM
-                {
-                    ResponseId = response.responseId,
-                    Text = response.text,
-                    SelectCommand = ResponseSelectedCommand
-                });
+                Responses.Add(new DialogueResponseViewModel(response, ResponseSelectedCommand));
             }
         }
     }
@@ -110,9 +108,9 @@ public class ClassicalDialogueViewModel : BaseViewModel
     private void OnResponseSelected(string responseId)
     {
         var response = _currentNode.responses.FirstOrDefault(r => r.responseId == responseId);
-        _logViewModel.AddEntry("Игрок", _player.CurrentProfile.avatar, response.text, true);
         if (response != null)
         {
+            LogViewModel.AddEntry(_player.CurrentProfile.playerName, _player.CurrentProfile.avatar, response.text, true);
             foreach (var action in response.onSelected)
             {
                 _dialogueService.ExecuteDialogueAction(action);
@@ -132,14 +130,8 @@ public class ClassicalDialogueViewModel : BaseViewModel
     public override void Initialize() { }
     public override void Cleanup() 
     {
-        EventBus.Unsubscribe(this as IDialogueEventSubscriber);
+        //EventBus.Unsubscribe(this as IDialogueEventSubscriber);
+        var windowService = ServiceLocator.Instance.GetService<IWindowService>();
+        windowService?.CloseWindow<ClassicalDialogueViewModel>();
     }
-}
-
-// ViewModel для ответов
-public class DialogueResponseVM
-{
-    public string ResponseId { get; set; }
-    public string Text { get; set; }
-    public ICommand SelectCommand { get; set; }
 }

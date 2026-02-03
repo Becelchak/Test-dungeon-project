@@ -10,6 +10,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
     [Header("AI Dialogue UI")]
     [SerializeField] private TMP_InputField userInputField;
     [SerializeField] private Button sendButton;
+    [SerializeField] private Button closeButton;
     [SerializeField] private GameObject loadingIndicator;
     [SerializeField] private TextMeshProUGUI npcNameText;
     [SerializeField] private TextMeshProUGUI dialogueText;
@@ -25,6 +26,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
         dialogueText.text = "...";
         userInputField.text = "";
         sendButton.interactable = false;
+        closeButton.interactable = true;
 
         // Подписка на изменения свойств
         ViewModel.PropertyChanged += OnPropertyChanged;
@@ -40,6 +42,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
 
         // Привязка команды отправки
         sendButton.onClick.AddListener(() => ViewModel.SendMessageCommand.Execute(null));
+        closeButton.onClick.AddListener(() => ViewModel.CloseDialogueCommand.Execute(null));
 
         // Если ViewModel уже инициализирована, обновляем UI
         if (ViewModel.IsInitialized)

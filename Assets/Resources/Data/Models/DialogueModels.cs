@@ -8,9 +8,22 @@ public class DialogueData
     public string dialogueId;
     public string npcName;
     public string npcId;
-    public Sprite npcPortrait;
+    public string npcPortraitPath;
+    [System.NonSerialized] public Sprite npcPortrait;
     public DialogueNode[] nodes;
     public string startNodeId;
+
+    public void LoadPortrait()
+    {
+        if (!string.IsNullOrEmpty(npcPortraitPath))
+        {
+            npcPortrait = Resources.Load<Sprite>(npcPortraitPath);
+            if (npcPortrait == null)
+            {
+                Debug.LogWarning($"Не удалось загрузить портрет по пути: {npcPortraitPath}");
+            }
+        }
+    }
 }
 
 [System.Serializable]
@@ -55,13 +68,12 @@ public class AIDialogueData
 {
     public string npcId;
     public string npcName;
-    public string npcPortraitPath; // Путь к спрайту в Resources
-    [System.NonSerialized] public Sprite npcPortrait; // Загруженный спрайт (не сериализуется из JSON)
+    public string npcPortraitPath;
+    [System.NonSerialized] public Sprite npcPortrait;
     public string initialPrompt;
     public AIDialogueConstraint[] constraints;
     public string personalityProfile;
 
-    // Метод для загрузки портрета
     public void LoadPortrait()
     {
         if (!string.IsNullOrEmpty(npcPortraitPath))
@@ -178,7 +190,7 @@ public enum QuestStatus { NotStarted, InProgress, Completed, Failed }
 public class MessageData
 {
     public string messageId;
-    public string senderId; // "player" или characterId AI
+    public string senderId; // "player" or characterId AI
     public string text;
     public DateTime timestamp;
     public bool isAI => senderId != "player";

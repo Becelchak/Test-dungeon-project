@@ -10,4 +10,5 @@ public interface IAIService
     bool IsConnected { get; }
     void RetryConnection();
     void ClearConversation();
+    void BreakeMessage();
 }

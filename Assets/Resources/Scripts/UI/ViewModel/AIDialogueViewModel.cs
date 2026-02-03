@@ -182,6 +182,12 @@ public class AIDialogueViewModel : BaseViewModel
     {
         _aiService.OnAIResponseReceived -= OnAIResponse;
         _aiService.OnConnectionStatusChanged -= OnConnectionStatusChanged;
-        EventBus.Unsubscribe(this as IDialogueEventSubscriber);
+
+        _aiService.BreakeMessage();
+        LogViewModel.ClearLog();
+
+        var windowService = ServiceLocator.Instance.GetService<IWindowService>();
+        windowService?.CloseWindow<AIDialogueViewModel>();
+        //EventBus.Unsubscribe(this as IDialogueEventSubscriber);
     }
 }

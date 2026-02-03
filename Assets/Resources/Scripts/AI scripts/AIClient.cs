@@ -253,6 +253,11 @@ public class AIClient : BaseService, IAIService
         _currentRequest = StartCoroutine(SendAIRequest(message));
     }
 
+    public void BreakeMessage()
+    {
+        StopCurrentRequest();
+    }
+
     private IEnumerator SendAIRequest(string userMessage)
     {
         Debug.Log($"[AIClient] Отправка сообщения: {userMessage}");

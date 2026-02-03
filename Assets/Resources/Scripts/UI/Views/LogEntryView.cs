@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class LogEntryView : BaseView<LogEntryViewModel>
 {
     [Header("UI References")]
-    [SerializeField] private AdaptiveLogEntry adaptiveLogEntry;
+    [SerializeField] private AdaptiveTextContainer adaptiveLogEntry;
     [SerializeField] private Image portraitImage;
     [SerializeField] private TextMeshProUGUI speakerNameText;
     [SerializeField] private TextMeshProUGUI messageText;
@@ -49,7 +49,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>
             portraitImage.gameObject.SetActive(false);
         }
 
-        // Вариант 1: Используем AdaptiveLogEntry (рекомендуется)
         if (adaptiveLogEntry != null)
         {
             adaptiveLogEntry.Initialize(
@@ -65,7 +64,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>
             }
         }
 
-        // Принудительно обновляем layout для старых компонентов
         LayoutRebuilder.ForceRebuildLayoutImmediate(
             transform as RectTransform);
     }
