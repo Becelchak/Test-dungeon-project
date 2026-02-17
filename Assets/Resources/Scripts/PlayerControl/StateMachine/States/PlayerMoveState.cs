@@ -57,6 +57,12 @@ public class PlayerMoveState : PlayerStateBase
         }
     }
 
+    public override void HandleInteractionInput()
+    {
+        Debug.Log("MOVE INTERACT");
+        _stateMachine.interactor.TryInteract();
+    }
+
     public override void HandleMovement(Vector3 direction)
     {
         _currentInput = direction;

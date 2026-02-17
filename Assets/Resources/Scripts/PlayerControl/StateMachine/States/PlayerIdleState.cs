@@ -37,12 +37,18 @@ public class PlayerIdleState : PlayerStateBase
         }
     }
 
+    public override void HandleInteractionInput()
+    {
+        Debug.Log("INTERACT");
+        _stateMachine.interactor.TryInteract();
+    }
+
     public override void HandleAttackInput()
     {
-        // ѕровер€ем, может ли игрок атаковать из состо€ни€ поко€
         if (CanAttackFromIdle())
         {
-            _isTransitioning = true;
+            Debug.Log($"ATTACK");
+            //_isTransitioning = true;
             //var attackState = new PlayerAttackState(_stateMachine, _movementService);
             //_stateMachine.TransitionToState(attackState);
         }

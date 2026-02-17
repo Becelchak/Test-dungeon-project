@@ -14,6 +14,7 @@ public interface IInputService
     InputAction _moveAction { get; set; }
     InputAction _jumpAction { get; set; }
     InputAction _attackAction { get; set; }
+    InputAction _interactAction { get; set; }
 
     Vector2 GetMovementInput();
     void EnableGameplayInput();

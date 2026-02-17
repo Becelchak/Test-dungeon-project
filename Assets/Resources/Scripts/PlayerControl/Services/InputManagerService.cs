@@ -15,6 +15,7 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
     public InputAction _attackAction { get; set; }
+    public InputAction _interactAction { get; set; }
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -39,7 +40,10 @@ public class InputManagerService : BaseService, IInputService
         _attackAction = _inputActions.FindAction("Attack");
         _attackAction.performed += ctx => OnAttack?.Invoke();
         _attackAction.canceled += ctx => OnAttack?.Invoke();
-        // ... другие действия
+
+        _interactAction = _inputActions.FindAction("Interact");
+        _interactAction.performed += ctx => OnInteract?.Invoke();
+        //_interactAction.canceled += ctx => OnInteract?.Invoke();
     }
 
     public Vector2 GetMovementInput()
@@ -49,5 +53,9 @@ public class InputManagerService : BaseService, IInputService
     }
 
     public void EnableGameplayInput() => _inputActions.Enable();
-    public void DisableGameplayInput() => _inputActions.Disable();
+    public void DisableGameplayInput()
+    {
+        //_inputActions.Disable();
+        Debug.Log("Off input");
+    }
 }

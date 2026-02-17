@@ -1,23 +1,36 @@
+using EventBusSystem;
 using UnityEngine;
 
-public class PlayerStateMachine : MonoBehaviour
+public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
 {
     private IInputService _input;
     private IPlayerMovementService _movement;
     private PlayerStateBase _currentState;
     public CharacterRotator charRotate;
+    public Interactor interactor;
 
+    private void OnEnable()
+    {
+        EventBus.Subscribe(this);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(this);
+    }
     private void Start()
     {
         _input = ServiceLocator.Instance.GetService<IInputService>();
         _movement = ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _movement.Initialize();
         charRotate = GetComponent<CharacterRotator>();
+        interactor = GameObject.Find("Interactor").GetComponent<Interactor>();
 
         _input.OnMove += HandleMoveInput;
         _input.OnAttack += HandleAttackInput;
         _input.OnSprintInput += HandleSprintInput;
         _input.OnRun += HandleRunInput;
+        _input.OnInteract += HandleInteractionInput;
 
         TransitionToState(new PlayerIdleState(this, _movement));
     }
@@ -32,6 +45,12 @@ public class PlayerStateMachine : MonoBehaviour
     {
         _currentState?.HandleSprintInput(sprintInpitPressed);
     }
+
+    private void HandleInteractionInput()
+    {
+        _currentState?.HandleInteractionInput();
+    }
+
     private void Update()
     {
         Vector2 currentInput = _input.GetMovementInput();
@@ -62,4 +81,20 @@ public class PlayerStateMachine : MonoBehaviour
 
     public void OnMoveInput(Vector2 direction) => _currentState?.HandleMoveInput(direction);
     public void OnAttackInput() => _currentState?.HandleAttackInput();
+
+    public void OnDialogueStarted(string npcId, DialogueType dialogueType)
+    {
+        if (_currentState is PlayerDialogState) return;
+        TransitionToState(new PlayerDialogState(this, _movement));
+    }
+
+    public void OnDialogueEnded()
+    {
+        TransitionToState(new PlayerIdleState(this, _movement));
+    }
+
+    public void OnResponseSelected(string responseId)
+    {
+        
+    }
 }

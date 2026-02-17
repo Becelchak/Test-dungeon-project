@@ -6,7 +6,7 @@
   "constraints": [
     {
       "constraint": "max_tokens",
-      "value": "100"
+      "value": "200"
     },
     {
       "constraint": "personality",

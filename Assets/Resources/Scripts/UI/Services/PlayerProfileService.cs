@@ -42,8 +42,26 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
 
         profile.stats = new PlayerStats { firstPlayDate = DateTime.Now };
 
+        // Рандомное выставление параметров игрока
+        CreateRandomParameters(profile);
+
         Debug.Log("Создан новый профиль игрока по умолчанию");
         return profile;
+    }
+
+    public void CreateRandomParameters(PlayerProfile profile)
+    {
+        profile.level = UnityEngine.Random.RandomRange(1, 40);
+        profile.health = UnityEngine.Random.RandomRange(1, 250);
+        profile.maxHealth = UnityEngine.Random.RandomRange(10, 250);
+        profile.mana = UnityEngine.Random.RandomRange(0, 200);
+        profile.maxMana = UnityEngine.Random.RandomRange(0, 200);
+        profile.strength = UnityEngine.Random.RandomRange(0, 20);
+        profile.intelligence = UnityEngine.Random.RandomRange(0, 20);
+        profile.agility = UnityEngine.Random.RandomRange(0, 20);
+
+        profile.stats.goldCollected = UnityEngine.Random.RandomRange(0, 666);
+        profile.stats.enemiesKilled = UnityEngine.Random.RandomRange(0, 50);
     }
 
     public void SaveProfile(PlayerProfile profile)

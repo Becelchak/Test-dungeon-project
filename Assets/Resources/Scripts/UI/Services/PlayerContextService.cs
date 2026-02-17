@@ -19,10 +19,10 @@ public class PlayerContextService : BaseService, IPlayerContextService
         var sb = new StringBuilder();
 
         sb.AppendLine($"Игрок: {profile.playerName}");
-        sb.AppendLine($"Степень прозрения: {profile.level}");
+        sb.AppendLine($"Степень прозрения: {profile.level} из 40 возможных");
         sb.AppendLine($"Жизненные силы: {profile.health}/{profile.maxHealth}");
         sb.AppendLine($"Магические силы: {profile.mana}/{profile.maxMana}");
-        sb.AppendLine($"Характеристики: Стойкость({profile.strength}), Разум({profile.intelligence}), Эквилибристика({profile.agility})");
+        sb.AppendLine($"Характеристики: Стойкость({profile.strength} из 20 возможных), Разум({profile.intelligence} из 20 возможных), Эквилибристика({profile.agility} из 20 возможных)");
 
         sb.AppendLine("\nСодержимое сумки:");
         sb.AppendLine(GetPlayerInventorySummary());
@@ -59,7 +59,7 @@ public class PlayerContextService : BaseService, IPlayerContextService
         var stats = _playerProfileService.CurrentProfile.stats;
         return $"Убито врагов: {stats.enemiesKilled}\n" +
                $"Выполнено квестов: {stats.questsCompleted}\n" +
-               $"Собрано золота: {stats.goldCollected}\n" +
+               $"Собрано золотых монет: {stats.goldCollected}\n" +
                $"Время в игре: {stats.playTimeHours:F1} часов {stats.playTimeHours:F2} минут";
     }
 
