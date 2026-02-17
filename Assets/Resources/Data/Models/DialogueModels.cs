@@ -117,15 +117,26 @@ public class PlayerProfile
     public string playerName = "Рыцарь печального образа";
     public string avatarPath = "Sprites/Portraits/player_portrait";
 
-    // Характеристики
+    // Характеристики механические
     public int level;
     public int health;
     public int maxHealth;
     public int mana;
     public int maxMana;
+    // Характеристики движения
+    public float maxSpeed = 7f;
+    public float speedMove = 5f;
+    public float speedRun;
+    public float acceleration = 15f;
+    public float deceleration = 10f;
+    public float rotationSpeed = 10f;
+    // Характеристики ролевые
     public int strength;
     public int intelligence;
     public int agility;
+    // Характеристики регенерации
+    public float healthRegenRate;
+    public float manahRegenRate;
 
     // Инвентарь
     public List<InventoryItem> inventory = new List<InventoryItem>();

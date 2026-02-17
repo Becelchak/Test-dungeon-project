@@ -32,7 +32,6 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
             profile = CreateDefaultProfile();
         }
 
-        // Загружаем аватар
         profile.LoadAvatar();
         return profile;
     }
@@ -41,7 +40,6 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
     {
         var profile = new PlayerProfile();
 
-        // Начальная статистика
         profile.stats = new PlayerStats { firstPlayDate = DateTime.Now };
 
         Debug.Log("Создан новый профиль игрока по умолчанию");
