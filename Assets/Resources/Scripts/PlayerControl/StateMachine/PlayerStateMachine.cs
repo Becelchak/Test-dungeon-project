@@ -18,14 +18,18 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
     {
         EventBus.Unsubscribe(this);
     }
-    private void Start()
+
+    private void Awake()
     {
         _input = ServiceLocator.Instance.GetService<IInputService>();
         _movement = ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _movement.Initialize();
         charRotate = GetComponent<CharacterRotator>();
-        interactor = GameObject.Find("Interactor").GetComponent<Interactor>();
-
+        //interactor = GameObject.Find("Interactor").GetComponent<Interactor>();
+        interactor = GetComponentInChildren<Interactor>();
+    }
+    private void Start()
+    {
         _input.OnMove += HandleMoveInput;
         _input.OnAttack += HandleAttackInput;
         _input.OnSprintInput += HandleSprintInput;
@@ -74,6 +78,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
 
     public void TransitionToState(PlayerStateBase newState)
     {
+        //if (_currentState == null) return;
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();
@@ -96,5 +101,17 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
     public void OnResponseSelected(string responseId)
     {
         
+    }
+
+    public void OnDestroy()
+    {
+        if (_input != null)
+        {
+            _input.OnMove -= HandleMoveInput;
+            _input.OnAttack -= HandleAttackInput;
+            _input.OnSprintInput -= HandleSprintInput;
+            _input.OnRun -= HandleRunInput;
+            _input.OnInteract -= HandleInteractionInput;
+        }
     }
 }

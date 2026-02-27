@@ -1,3 +1,4 @@
+using EventBusSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -64,6 +65,16 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         profile.stats.enemiesKilled = UnityEngine.Random.RandomRange(0, 50);
     }
 
+    public void ModifyHealth(int delta)
+    {
+        var profile = CurrentProfile;
+        profile.health = Mathf.Clamp(profile.health + delta, 0, profile.maxHealth);
+        SaveProfile(profile);
+        EventBus.RaiseEvent<IHealthChangedEventSubscriber>(
+            s => s.OnHealthChanged(new HealthChangedEvent(profile.health, profile.maxHealth))
+        );
+    }
+
     public void SaveProfile(PlayerProfile profile)
     {
         try
@@ -80,7 +91,6 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         }
     }
 
-    // Методы для обновления данных
     public void UpdatePlayerStats(Action<PlayerStats> updateAction)
     {
         updateAction?.Invoke(CurrentProfile.stats);

@@ -140,6 +140,7 @@ public class PlayerProfile
 
     // Инвентарь
     public List<InventoryItem> inventory = new List<InventoryItem>();
+    public int goldCount;
 
     // Статистика
     public PlayerStats stats = new PlayerStats();
@@ -183,6 +184,8 @@ public class PlayerStats
     public int goldCollected;
     public float playTimeHours;
     public DateTime firstPlayDate;
+    public int victories;
+    public int defeats;
 }
 
 [System.Serializable]

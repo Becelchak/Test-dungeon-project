@@ -5,7 +5,7 @@ using System.Collections;
 public class PortalInteractable : MonoBehaviour, IInteractable
 {
     [SerializeField] private string sceneToLoad = "TestDungeon";
-    [SerializeField] private float loadDelay = 0.5f; // задержка для анимации
+    [SerializeField] private float loadDelay = 0.5f;
     private bool canInteract = true;
 
     public void Interact(GameObject interactor)

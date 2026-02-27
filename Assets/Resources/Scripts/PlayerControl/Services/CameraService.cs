@@ -15,6 +15,7 @@ public class CameraService : BaseService, ICameraService
     protected override void Awake()
     {
         base.Awake();
+        if (cinemachineObject == null) cinemachineObject = GameObject.Find("CinemachineCamera");
         _followCam = cinemachineObject.GetComponent<CinemachineCamera>();
         _inputAxis = cinemachineObject.GetComponent<CinemachineInputAxisController>();
         SetFollowMode();

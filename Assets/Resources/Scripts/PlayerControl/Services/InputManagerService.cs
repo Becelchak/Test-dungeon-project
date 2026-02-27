@@ -19,12 +19,18 @@ public class InputManagerService : BaseService, IInputService
 
     protected override Type GetServiceType() => typeof(IInputService);
 
-    protected void Start()
+
+    private void Awake()
     {
-        Debug.Log("Start input");
+        base.Awake();
         _inputActions = InputSystem.actions;
         SetupCallbacks();
         EnableGameplayInput();
+    }
+
+    protected void Start()
+    {
+        Debug.Log("Start input");
     }
 
     private void SetupCallbacks()
