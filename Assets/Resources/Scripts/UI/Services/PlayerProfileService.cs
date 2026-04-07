@@ -37,6 +37,14 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         return profile;
     }
 
+    public void ResetProfile()
+    {
+        PlayerPrefs.DeleteKey(PROFILE_KEY);
+        _currentProfile = null;
+        var _ = CurrentProfile;
+        Debug.Log("Профиль игрока сброшен и создан заново");
+    }
+
     private PlayerProfile CreateDefaultProfile()
     {
         var profile = new PlayerProfile();

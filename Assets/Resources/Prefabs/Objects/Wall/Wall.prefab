@@ -368,6 +368,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0407094bd96d3e2449b075fc54fff1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Despawnable
-  lifetime: 30
+  lifetime: -1
   spawnType: 2
   destroyOnCollect: 0

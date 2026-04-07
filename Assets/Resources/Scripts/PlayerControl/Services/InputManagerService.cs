@@ -61,7 +61,7 @@ public class InputManagerService : BaseService, IInputService
     public void EnableGameplayInput() => _inputActions.Enable();
     public void DisableGameplayInput()
     {
-        //_inputActions.Disable();
+        _inputActions.Disable();
         Debug.Log("Off input");
     }
 }

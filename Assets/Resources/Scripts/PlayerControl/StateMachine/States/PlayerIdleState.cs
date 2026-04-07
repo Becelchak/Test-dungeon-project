@@ -43,6 +43,17 @@ public class PlayerIdleState : PlayerStateBase
         _stateMachine.interactor.TryInteract();
     }
 
+    public override void HandleJumpInput(Vector3 direction)
+    {
+        if (direction.magnitude < 0.5f)
+            direction = Vector3.up;
+        if (_movementService.CheckGround())
+        {
+            var jumpState = new PlayerJumpState(_stateMachine, _movementService, direction);
+            _stateMachine.TransitionToState(jumpState);
+        }
+    }
+
     public override void HandleAttackInput()
     {
         if (CanAttackFromIdle())

@@ -220,6 +220,9 @@ public class AITester : MonoBehaviour
         if (GUILayout.Button("Инструкция (F3)", GUILayout.Height(25)))
             ShowInstructions();
 
+        if (GUILayout.Button("Сброс профиля (F5)", GUILayout.Height(25)))
+            ReseteProfile();
+
         GUILayout.EndArea();
     }
 
@@ -227,6 +230,12 @@ public class AITester : MonoBehaviour
     {
         GUI.Box(new Rect(Screen.width - 310, 10, 300, 50), "Статус AI");
         GUI.Label(new Rect(Screen.width - 300, 30, 290, 30), _lastStatusMessage);
+    }
+
+    private void ReseteProfile()
+    {
+        var porfService = ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        porfService.ResetProfile();
     }
 
     private void ShowInstructions()

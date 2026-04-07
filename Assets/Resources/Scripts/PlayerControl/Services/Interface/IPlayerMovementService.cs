@@ -8,7 +8,7 @@ public interface IPlayerMovementService
     Rigidbody _rigidbody {  get; set; }
     float _currentSpeed  {  get; set; }
     void Initialize();
-    void Jump(float force);
+    void Jump(float force, Vector3 direction);
     bool CheckGround();
     void StartRun();
     void StopRun();

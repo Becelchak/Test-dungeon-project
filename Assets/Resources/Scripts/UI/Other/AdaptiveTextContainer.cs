@@ -52,6 +52,7 @@ public class AdaptiveTextContainer : MonoBehaviour
 
         // Пересчитываем размеры
         CalculateOptimalSizeForHeight();
+        //CalculateOptimalSize();
 
         _isInitialized = true;
     }
@@ -73,15 +74,14 @@ public class AdaptiveTextContainer : MonoBehaviour
     {
         if (messageText == null) return;
 
-        messageText.ForceMeshUpdate(forceTextReparsing:true);
-
-        Vector2 preferredSize = messageText.GetPreferredValues();
-
         float targetWidth = Mathf.Clamp(
-            preferredSize.x,
-            minWidth,
-            maxWidth
+        messageRectTransform.sizeDelta.x,
+        minWidth,
+        maxWidth
         );
+
+        //Vector2 preferredSize = messageText.GetPreferredValues();
+        Vector2 preferredSize = messageText.GetPreferredValues(targetWidth, float.PositiveInfinity);
 
         float textWidth = targetWidth - padding.x * 2;
         float textHeight;
@@ -103,40 +103,42 @@ public class AdaptiveTextContainer : MonoBehaviour
         messageRectTransform.sizeDelta = new Vector2(messageRectTransform.sizeDelta.x, targetHeight);
         textContainerRectTransform.sizeDelta = new Vector2(textContainerRectTransform.sizeDelta.x, targetHeight + Math.Abs(messageRectTransform.anchoredPosition.y));
 
-        ValidateTextFits();
-    }
-
-    private void CalculateOptimalSizeForWidth()
-    {
-        if (messageText == null) return;
-
         messageText.ForceMeshUpdate(forceTextReparsing: true);
 
-        Vector2 preferredSize = messageText.GetPreferredValues();
-
-        float targetWidth = Mathf.Clamp(
-            preferredSize.x,
-            minWidth,
-            maxWidth
-        );
-
-        float textWidth = targetWidth - padding.x * 2;
-        float textHeight;
-
-        if (preferredSize.x > textWidth)
-        {
-            textHeight = messageText.GetPreferredValues(textWidth, messageText.renderedHeight).y;
-        }
-        else
-        {
-            textHeight = preferredSize.y;
-        }
-
-        messageRectTransform.sizeDelta = new Vector2(targetWidth, messageRectTransform.sizeDelta.y);
-        textContainerRectTransform.sizeDelta = new Vector2(targetWidth + Math.Abs(messageRectTransform.anchoredPosition.x), messageRectTransform.sizeDelta.x);
-
         ValidateTextFits();
     }
+
+    //private void CalculateOptimalSizeForWidth()
+    //{
+    //    if (messageText == null) return;
+
+    //    messageText.ForceMeshUpdate(forceTextReparsing: true);
+
+    //    Vector2 preferredSize = messageText.GetPreferredValues();
+
+    //    float targetWidth = Mathf.Clamp(
+    //        preferredSize.x,
+    //        minWidth,
+    //        maxWidth
+    //    );
+
+    //    float textWidth = targetWidth - padding.x * 2;
+    //    float textHeight;
+
+    //    if (preferredSize.x > textWidth)
+    //    {
+    //        textHeight = messageText.GetPreferredValues(textWidth, messageText.renderedHeight).y;
+    //    }
+    //    else
+    //    {
+    //        textHeight = preferredSize.y;
+    //    }
+
+    //    messageRectTransform.sizeDelta = new Vector2(targetWidth, messageRectTransform.sizeDelta.y);
+    //    textContainerRectTransform.sizeDelta = new Vector2(targetWidth + Math.Abs(messageRectTransform.anchoredPosition.x), messageRectTransform.sizeDelta.x);
+
+    //    ValidateTextFits();
+    //}
 
     private void CalculateOptimalSize()
     {
@@ -203,8 +205,8 @@ public class AdaptiveTextContainer : MonoBehaviour
                     backgroundRect.sizeDelta.x,
                     currentHeight * 1.2f // Увеличиваем на 20%
                 );
-                backgroundRect.transform.position = new Vector3(backgroundRect.position.x,
-                    currentHeight * 1.2f);
+                //backgroundRect.transform.position = new Vector3(backgroundRect.position.x,
+                //    currentHeight * 1.2f);
             }
         }
     }

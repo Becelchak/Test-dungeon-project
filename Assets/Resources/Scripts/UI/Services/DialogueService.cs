@@ -5,6 +5,11 @@ public class DialogueService : BaseService, IDialogueService
 {
     protected override Type GetServiceType() => typeof(IDialogueService);
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
     public DialogueData GetDialogue(string dialogueId)
     {
         try

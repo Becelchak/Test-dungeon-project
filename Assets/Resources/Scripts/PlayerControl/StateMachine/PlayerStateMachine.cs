@@ -35,10 +35,17 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         _input.OnSprintInput += HandleSprintInput;
         _input.OnRun += HandleRunInput;
         _input.OnInteract += HandleInteractionInput;
+        _input.OnJump += HandleJumpInput;
 
         TransitionToState(new PlayerIdleState(this, _movement));
     }
 
+
+    private void HandleJumpInput()
+    {
+        var direction = _input.GetMovementInput();
+        _currentState?.HandleJumpInput(direction);
+    }
     private void HandleMoveInput(Vector2 direction)
     {
         // Только текущее состояние решает, как обработать ввод
@@ -112,6 +119,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
             _input.OnSprintInput -= HandleSprintInput;
             _input.OnRun -= HandleRunInput;
             _input.OnInteract -= HandleInteractionInput;
+            _input.OnJump -= HandleJumpInput;
         }
     }
 }

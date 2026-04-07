@@ -1,25 +1,33 @@
 using EventBusSystem;
-using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using UnityEditor.Timeline.Actions;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldChangedEventSubscriber, IHealthChangedEventSubscriber
 {
 
-    [SerializeField] private int baseEnemyCount = 5;
-    [SerializeField] private int baseLootCount = 3;
-    [SerializeField] private int baseTrapCount = 2;
+    //[SerializeField] private int baseEnemyCount = 5;
+    //[SerializeField] private int baseLootCount = 3;
+    //[SerializeField] private int baseTrapCount = 2;
+    [SerializeField] private float _baseRespawnInterval;
+    [SerializeField] private float baseRespawnIntervalMin = 18f;
+    [SerializeField] private float baseRespawnIntervalMax = 21f;
 
     // Параметры, которые будет изменять ML-агент
-    public float enemyMultiplier { get; set; } = 1f;
-    public float lootMultiplier { get; set; } = 1f;
-    public float trapMultiplier { get; set; } = 1f;
+    [SerializeField] public float wallMultiplier = 1f;
+    [SerializeField] public float lootMultiplier = 1f;
+    [SerializeField] public float trapMultiplier = 1f;
+    [SerializeField] public float respawnMultiplier = 1f;
+    [SerializeField] public float goldMultiplier = 1f;
 
     private int _requiredGold;
     private bool _levelCompleted = false;
+    private bool _respawnEnabled = true;
+
+    private List<GameObject> _spawnedObjects = new List<GameObject>();
     public int RequiredGold => _requiredGold;
     public bool IsLevelCompleted => _levelCompleted;
 
@@ -33,12 +41,13 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
     [SerializeField] private GameObject[] spikePrefabs;
 
     [Header("Thresholds")]
-    [SerializeField] private int minLoot = 3;
-    [SerializeField] private int minWalls = 2;
-    [SerializeField] private int minSpikes = 2;
+    [SerializeField] private int minLoot = 1;
+    [SerializeField] private int minWalls = 1;
+    [SerializeField] private int minSpikes = 1;
 
     [Header("Respawn")]
     [SerializeField] private float respawnCheckInterval = 5f;
+    private float _currentRespawnInterval;
 
     // Текущие количества
     private int _currentLoot;
@@ -51,22 +60,99 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
     private List<SpawnPoint> _freeSpikePoints;
     private List<SpawnPoint> playerPoints;
 
+    // Флаги
+    public bool _isInitialized = false;
 
     private void Awake()
     {
         base.Awake();
     }
+
+    public void InitializeDungeon()
+    {
+        if (_isInitialized) return;
+        _isInitialized = true;
+        SpawnAllInitial();
+        //InvokeRepeating(nameof(CheckThresholdsAndRespawn), respawnCheckInterval, respawnCheckInterval);
+    }
+
     private void Start()
     {
         InitializeFreePoints();
-        SpawnAllInitial();
+        //SpawnAllInitial();
+        GenerateBaseRespawnInterval();
+        StartRespawnTimer();
         InvokeRepeating(nameof(CheckThresholdsAndRespawn), respawnCheckInterval, respawnCheckInterval);
+    }
+
+    private void ResetFreePoints()
+    {
+        _freeLootPoints = allSpawnPoints.Where(p => p.spawnType == SpawnType.Loot).ToList();
+        _freeWallPoints = allSpawnPoints.Where(p => p.spawnType == SpawnType.Wall).ToList();
+        _freeSpikePoints = allSpawnPoints.Where(p => p.spawnType == SpawnType.Spikes).ToList();
     }
 
     public void OnEnable()
     {
-        _requiredGold = Random.Range(50, 150);
-        EventBus.Subscribe(this);
+        _requiredGold = Mathf.RoundToInt(Random.Range(50 * goldMultiplier, 100 * goldMultiplier));
+        EventBusSystem.EventBus.Subscribe(this);
+    }
+
+    private void GenerateBaseRespawnInterval()
+    {
+        _baseRespawnInterval = Random.Range(baseRespawnIntervalMin, baseRespawnIntervalMax);
+        UpdateCurrentRespawnInterval();
+
+        // Уведомление о стартовом интервале
+        EventBusSystem.EventBus.RaiseEvent<IRespawnIntervalChangedEventSubscriber>(
+            s => s.OnShowNotification(new RespawnIntervalChangedEvent($"Интервал обновления: {_currentRespawnInterval:F1} сек", 2f))
+        );
+    }
+
+    private void UpdateCurrentRespawnInterval()
+    {
+        _currentRespawnInterval = _baseRespawnInterval * respawnMultiplier;
+    }
+
+    private void StartRespawnTimer()
+    {
+        CancelInvoke(nameof(RespawnAll));
+        InvokeRepeating(nameof(RespawnAll), _currentRespawnInterval, _currentRespawnInterval);
+    }
+
+    // Публичный метод для изменения множителя (вызывается ML-агентом)
+    public void SetRespawnMultiplier(float multiplier)
+    {
+        respawnMultiplier = Mathf.Max(0.1f, multiplier);
+        UpdateCurrentRespawnInterval();
+        StartRespawnTimer(); // перезапуск с новым интервалом
+
+        EventBusSystem.EventBus.RaiseEvent<IRespawnIntervalChangedEventSubscriber>(
+            s => s.OnShowNotification(new RespawnIntervalChangedEvent($"Интервал изменён на {_currentRespawnInterval:F1} сек", 2f))
+        );
+    }
+
+    private void RespawnAll()
+    {
+        if (!_respawnEnabled) return;
+
+        // Уничтожаем все ранее заспавненные объекты
+        foreach (var obj in _spawnedObjects)
+        {
+
+            if (obj != null) Destroy(obj);
+        }
+        _spawnedObjects.Clear();
+
+        // Сбрасываем свободные точки (теперь все доступны)
+        ResetFreePoints();
+
+        // Заново спавним объекты
+        SpawnAllRandom();
+
+        EventBusSystem.EventBus.RaiseEvent<IRespawnIntervalChangedEventSubscriber>(
+            s => s.OnShowNotification(new RespawnIntervalChangedEvent("Подземелье обновлено!", 1.5f))
+        );
     }
 
     public void OnGoldChanged(GoldChangedEvent evt)
@@ -78,11 +164,18 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
 
             var profile = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
             profile.CurrentProfile.stats.victories++;
+            profile.CurrentProfile.stats.goldCollected += profile.CurrentProfile.goldCount;
+            profile.CurrentProfile.goldCount = 0;
             ServiceLocator.Instance.GetService<IPlayerProfileService>().SaveProfile(profile.CurrentProfile);
 
-            EventBus.RaiseEvent<ILevelVictoryEventSubscriber>(s => s.OnLevelVictory());
+            profile.CurrentProfile.health = profile.CurrentProfile.maxHealth;
+            profile.SaveProfile(profile.CurrentProfile);
+
+            EventBusSystem.EventBus.RaiseEvent<ILevelVictoryEventSubscriber>(s => s.OnLevelVictory());
             var inputService = ServiceLocator.Instance.GetService<IInputService>();
             inputService.DisableGameplayInput();
+            var playerMove = ServiceLocator.Instance.GetService<IPlayerMovementService>();
+            playerMove.StopMovement();
 
             Invoke(nameof(ReturnToMainScene), 2f);
         }
@@ -99,7 +192,10 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
             profile.CurrentProfile.stats.defeats++;
             ServiceLocator.Instance.GetService<IPlayerProfileService>().SaveProfile(profile.CurrentProfile);
 
-            EventBus.RaiseEvent<ILevelDefeatEventSubscriber>(s => s.OnLevelDefeat());
+            profile.CurrentProfile.health = profile.CurrentProfile.maxHealth;
+            profile.SaveProfile(profile.CurrentProfile);
+
+            EventBusSystem.EventBus.RaiseEvent<ILevelDefeatEventSubscriber>(s => s.OnLevelDefeat());
             var inputService = ServiceLocator.Instance.GetService<IInputService>();
             inputService.DisableGameplayInput();
 
@@ -124,35 +220,10 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
         SpawnPlayer(playerPoints);
     }
 
-    //private void SpawnAll()
-    //{
-    //    var playerSpawnPoints = new List<SpawnPoint>();
-    //    foreach (var point in allSpawnPoints)
-    //    {
-    //        switch (point.spawnType)
-    //        {
-    //            case SpawnType.Loot:
-    //                SpawnRandom(lootPrefabs, point, baseLootCount);
-    //                break;
-    //            case SpawnType.Wall:
-    //                SpawnRandom(wallPrefabs, point, baseTrapCount - Random.Range(0, baseTrapCount / 2));
-    //                break;
-    //            case SpawnType.Spikes:
-    //                SpawnRandom(spikePrefabs, point, baseTrapCount - Random.Range(0, baseTrapCount));
-    //                break;
-    //            case SpawnType.Player:
-    //                playerSpawnPoints.Add(point);
-    //                break;
-    //        }
-    //    }
-    //    SpawnPlayer(playerSpawnPoints);
-    //}
-
     private void SpawnPlayer(List<SpawnPoint> points)
     {
         var player = (PlayerMovementService) ServiceLocator.Instance.GetService<IPlayerMovementService>();
         var spawnPoint = points[Random.Range(0, points.Count)];
-        Debug.Log($"Before {player.transform.position}");
 
         var rb = player.gameObject.GetComponent<Rigidbody>();
         if (rb != null)
@@ -169,19 +240,6 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
         }
         Debug.Log($"After {player.transform.position}");
     }
-
-    //private void SpawnRandom(GameObject[] prefabs, ISpawnPoint point, int maxCount)
-    //{
-    //    if (prefabs.Length == 0) return;
-    //    var prefab = prefabs[Random.Range(0, prefabs.Length)];
-    //    var instance = Instantiate(prefab, point.GetSpawnPosition(), point.GetSpawnRotation());
-    //    switch (point.spawnType) 
-    //    {
-    //        case SpawnType.Loot:
-    //            instance.transform.parent = GameObject.Find("Entity").transform;
-    //            break;
-    //    }
-    //}
 
     private void SpawnObjectsOfType(SpawnType type, int count)
     {
@@ -264,6 +322,7 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
 
         var prefab = prefabs[Random.Range(0, prefabs.Length)];
         var obj = Instantiate(prefab, point.GetSpawnPosition(), point.GetSpawnRotation());
+        _spawnedObjects.Add(obj);
 
         var despawnable = obj.GetComponent<Despawnable>();
         if (despawnable != null)
@@ -276,21 +335,57 @@ public class DungeonManagerService : BaseService, IDungeonManagerService, IGoldC
         freePoints.Remove(point);
     }
 
-    private void SpawnMultipleAtPoints(List<SpawnPoint> points, GameObject[] prefabs, SpawnType type, ref int counter, ref List<SpawnPoint> freePoints)
+    private void SpawnMultipleAtPoints(List<SpawnPoint> points, GameObject[] prefabs, SpawnType type, ref int counter, ref List<SpawnPoint> freePoints, bool isRandom)
     {
         var pointsCopy = points.ToList();
-        foreach (var point in pointsCopy)
+        if (isRandom)
         {
-            SpawnSingleAtPoint(point, prefabs, type, ref counter, ref freePoints);
+            int minCountForType = 0;
+            switch (type)
+            {
+                case SpawnType.Loot:
+                    minCountForType = Mathf.Min(Mathf.RoundToInt(minLoot * lootMultiplier), freePoints.Count);
+                    break;
+                case SpawnType.Wall:
+                    minCountForType = Mathf.Min(
+                        Mathf.CeilToInt(minWalls * wallMultiplier), 
+                        freePoints.Count);
+                    break;
+                case SpawnType.Spikes:
+                    minCountForType = Mathf.Min(
+                        Mathf.CeilToInt(minSpikes * trapMultiplier), 
+                        freePoints.Count);
+                    break;
+            }
+            for(var i = 0; i < minCountForType; i++)
+            {
+                var rndPoint = freePoints[Random.Range(0, freePoints.Count)];
+                SpawnSingleAtPoint(rndPoint, prefabs, type, ref counter, ref freePoints);
+            }
+        }
+        else
+        {
+            foreach (var point in pointsCopy)
+            {
+                SpawnSingleAtPoint(point, prefabs, type, ref counter, ref freePoints);
+            }
         }
     }
 
     private void SpawnAllInitial()
     {
 
-        SpawnMultipleAtPoints(_freeLootPoints, lootPrefabs, SpawnType.Loot, ref _currentLoot, ref _freeLootPoints);
-        SpawnMultipleAtPoints(_freeWallPoints, wallPrefabs, SpawnType.Wall, ref _currentWalls, ref _freeWallPoints);
-        SpawnMultipleAtPoints(_freeSpikePoints, spikePrefabs, SpawnType.Spikes, ref _currentSpikes, ref _freeSpikePoints);
+        SpawnMultipleAtPoints(_freeLootPoints, lootPrefabs, SpawnType.Loot, ref _currentLoot, ref _freeLootPoints, true);
+        SpawnMultipleAtPoints(_freeWallPoints, wallPrefabs, SpawnType.Wall, ref _currentWalls, ref _freeWallPoints, true);
+        SpawnMultipleAtPoints(_freeSpikePoints, spikePrefabs, SpawnType.Spikes, ref _currentSpikes, ref _freeSpikePoints, true);
+    }
+
+    private void SpawnAllRandom()
+    {
+
+        SpawnMultipleAtPoints(_freeLootPoints, lootPrefabs, SpawnType.Loot, ref _currentLoot, ref _freeLootPoints, true);
+        SpawnMultipleAtPoints(_freeWallPoints, wallPrefabs, SpawnType.Wall, ref _currentWalls, ref _freeWallPoints, true);
+        SpawnMultipleAtPoints(_freeSpikePoints, spikePrefabs, SpawnType.Spikes, ref _currentSpikes, ref _freeSpikePoints, true);
     }
 
     private void HandleDespawned(SpawnPoint point, SpawnType type)

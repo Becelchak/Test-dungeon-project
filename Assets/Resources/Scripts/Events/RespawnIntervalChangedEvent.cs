@@ -1,11 +1,11 @@
 public struct RespawnIntervalChangedEvent
 {
-    public float NewInterval { get; }
     public string Message { get; }
+    public float Duration { get; }
 
-    public RespawnIntervalChangedEvent(float newInterval, string message)
+    public RespawnIntervalChangedEvent(string message, float duration = 0f)
     {
-        NewInterval = newInterval;
         Message = message;
+        Duration = duration;
     }
 }

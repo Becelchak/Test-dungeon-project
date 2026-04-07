@@ -60,7 +60,7 @@ public class AIClient : BaseService, IAIService
 
     [Header("Heartbeat Settings")]
     public float heartbeatInterval = 5f;
-    public float requestTimeout = 3f;
+    public float requestTimeout = 14f;
 
     [Header("Status")]
     [SerializeField] private bool _isConnected;
@@ -90,6 +90,11 @@ public class AIClient : BaseService, IAIService
 
     protected override Type GetServiceType() => typeof(IAIService);
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
     private void Start()
     {
         InitializeConversation();
@@ -102,7 +107,7 @@ public class AIClient : BaseService, IAIService
         _conversationHistory.Add(new Message
         {
             role = "system",
-            content = "Ты полезный ассистент. Отвечай на вопросы кратко и по делу."
+            content = "Ты актер. Отвечай на поставленные вопросы. При указании твоей роли - следуй ей."
         });
     }
 
@@ -271,8 +276,8 @@ public class AIClient : BaseService, IAIService
         AIRequest requestData = new AIRequest
         {
             messages = _conversationHistory,
-            temperature = 0.7,
-            max_tokens = 300
+            temperature = 0.4,
+            max_tokens = 180
         };
 
         string jsonData = JsonUtility.ToJson(requestData);
@@ -285,7 +290,22 @@ public class AIClient : BaseService, IAIService
             request.SetRequestHeader("Content-Type", "application/json");
             request.timeout = (int)requestTimeout;
 
-            yield return request.SendWebRequest();
+            int maxRetries = 2;
+            int attempt = 0;
+
+            while (attempt <= maxRetries)
+            {
+                yield return request.SendWebRequest();
+                if (request.result == UnityWebRequest.Result.Success) break;
+                if (request.result == UnityWebRequest.Result.ConnectionError && attempt < maxRetries)
+                {
+                    attempt++;
+                    Debug.Log($"Попытка {attempt}...");
+                    yield return new WaitForSeconds(1f);
+                    continue;
+                }
+                break;
+            }
 
             if (request.result != UnityWebRequest.Result.Success)
             {

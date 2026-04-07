@@ -31,6 +31,12 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     public float CurrentSpeed => _rigidbody.linearVelocity.magnitude;
     public Vector3 MoveDirection => _moveDirection;
 
+    protected override void Awake()
+    {
+        Debug.Log("PlayerMovementService проснулся");
+        base.Awake();
+    }
+
     public void Initialize()
     {
         _rigidbody = playerObject.GetComponent<Rigidbody>();
@@ -46,16 +52,15 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
             playerCamera = Camera.main;
         }
 
-        ServiceLocator.Instance.RegisterService<IPlayerMovementService>(this);
+        var input = ServiceLocator.Instance.GetService<IInputService>();
+        input?.EnableGameplayInput();
     }
 
-    public void Jump(float force)
+    public void Jump(float force, Vector3 direction)
     {
 
-        _rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-
-        Debug.Log("Игрок прыгнул!");
+        //_rigidbody.AddForce((Vector3.up + direction) * force, ForceMode.Impulse);
+        _rigidbody.AddForce(Vector3.up * force * _rigidbody.mass, ForceMode.Impulse);
     }
 
     public void StartRun()

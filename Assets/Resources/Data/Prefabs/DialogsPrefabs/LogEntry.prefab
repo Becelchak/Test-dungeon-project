@@ -297,10 +297,9 @@ MonoBehaviour:
   messageRectTransform: {fileID: 6509261887135450342}
   portraitImage: {fileID: 6264111604631708807}
   backgroundRect: {fileID: 2006956356105298936}
-  backgroundImage: {fileID: 878695493371924107}
   minWidth: 300
-  maxWidth: 330
-  minHeight: 280
+  maxWidth: 470
+  minHeight: 350
   padding: {x: 0, y: 25}
 --- !u!1 &6218770040255807412
 GameObject:

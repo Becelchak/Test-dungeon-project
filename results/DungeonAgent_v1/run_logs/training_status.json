@@ -1,0 +1,29 @@
+{
+    "DungeonParameter": {
+        "checkpoints": [
+            {
+                "steps": 250778,
+                "file_path": "results\\DungeonAgent_v1\\DungeonParameter\\DungeonParameter-250778.onnx",
+                "reward": -0.5906585056967977,
+                "creation_time": 1772450261.887704,
+                "auxillary_file_paths": [
+                    "results\\DungeonAgent_v1\\DungeonParameter\\DungeonParameter-250778.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 250778,
+            "file_path": "results\\DungeonAgent_v1\\DungeonParameter.onnx",
+            "reward": -0.5906585056967977,
+            "creation_time": 1772450261.887704,
+            "auxillary_file_paths": [
+                "results\\DungeonAgent_v1\\DungeonParameter\\DungeonParameter-250778.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "1.2.0.dev0",
+        "torch_version": "2.2.2+cu121"
+    }
+}

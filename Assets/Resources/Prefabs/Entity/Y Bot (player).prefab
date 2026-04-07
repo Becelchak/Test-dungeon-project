@@ -77,15 +77,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 13cecef0579127143969f19e9b44faee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.64
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13cecef0579127143969f19e9b44faee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.17
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13cecef0579127143969f19e9b44faee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 13cecef0579127143969f19e9b44faee, type: 3}
       propertyPath: m_LocalRotation.w
@@ -114,6 +114,10 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 13cecef0579127143969f19e9b44faee, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4706228988682842286, guid: 13cecef0579127143969f19e9b44faee, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: -3090848061168836670, guid: 13cecef0579127143969f19e9b44faee, type: 3}
       propertyPath: m_IsActive
@@ -283,7 +287,7 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 65
   playerCamera: {fileID: 0}
   playerObject: {fileID: 8401725991204894466}
 --- !u!114 &7741003697527847259

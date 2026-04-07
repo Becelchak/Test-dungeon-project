@@ -15,6 +15,21 @@ public class DamageSource : MonoBehaviour
 
         var playerService = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
         playerService.ModifyHealth(-damageAmount);
+        Debug.Log("хцпнй онксвхк спнм! [рпхццеп]");
+
+        _canDamage = false;
+        Invoke(nameof(ResetCooldown), cooldown);
+
+        if (destroyOnHit) Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!_canDamage || !collision.collider.CompareTag("Player")) return;
+
+        var playerService = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        playerService.ModifyHealth(-damageAmount);
+        Debug.Log("хцпнй онксвхк спнм! [янккхдеп]");
 
         _canDamage = false;
         Invoke(nameof(ResetCooldown), cooldown);

@@ -3,7 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
-public class NotificationPopup : MonoBehaviour, IRespawnIntervalChangedEvent
+public class NotificationPopup : MonoBehaviour, IRespawnIntervalChangedEventSubscriber
 {
     [SerializeField] private GameObject notificationPanel;
     [SerializeField] private TextMeshProUGUI notificationText;
@@ -14,27 +14,29 @@ public class NotificationPopup : MonoBehaviour, IRespawnIntervalChangedEvent
     private void OnEnable()
     {
         EventBus.Subscribe(this);
-        notificationPanel.SetActive(false);
+        if (notificationPanel != null) notificationPanel.SetActive(false);
     }
 
     private void OnDisable()
     {
         EventBus.Unsubscribe(this);
+        if (_hideCoroutine != null) StopCoroutine(_hideCoroutine);
     }
 
-    private void OnRespawnIntervalChanged(RespawnIntervalChangedEvent evt)
+    public void OnShowNotification(RespawnIntervalChangedEvent evt)
     {
-        if (_hideCoroutine != null)
-            StopCoroutine(_hideCoroutine);
+        if (_hideCoroutine != null) StopCoroutine(_hideCoroutine);
 
         notificationText.text = evt.Message;
         notificationPanel.SetActive(true);
-        _hideCoroutine = StartCoroutine(HideAfterDelay());
+
+        float duration = evt.Duration > 0 ? evt.Duration : displayDuration;
+        _hideCoroutine = StartCoroutine(HideAfterDelay(duration));
     }
 
-    private IEnumerator HideAfterDelay()
+    private IEnumerator HideAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(displayDuration);
+        yield return new WaitForSeconds(delay);
         notificationPanel.SetActive(false);
     }
 }

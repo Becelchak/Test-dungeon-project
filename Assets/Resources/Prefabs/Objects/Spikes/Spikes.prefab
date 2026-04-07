@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7697823412793202906}
   - component: {fileID: 5711134745911115469}
   - component: {fileID: 3008206546856651151}
+  - component: {fileID: 1067766225564095757}
   m_Layer: 0
   m_Name: Cone (1)
   m_TagString: Untagged
@@ -329,13 +330,28 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &1067766225564095757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447192016692331803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7eb26913c59fc6498c9c44e89172aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageSource
+  damageAmount: 30
+  destroyOnHit: 0
+  cooldown: 1
 --- !u!1 &822424446725132161
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,6 +366,7 @@ GameObject:
   - component: {fileID: 4577677330840063733}
   - component: {fileID: 5666113832374831618}
   - component: {fileID: 2146775720761534286}
+  - component: {fileID: 2292433719572823919}
   m_Layer: 0
   m_Name: Cone
   m_TagString: Untagged
@@ -665,13 +682,28 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &2292433719572823919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822424446725132161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7eb26913c59fc6498c9c44e89172aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageSource
+  damageAmount: 30
+  destroyOnHit: 0
+  cooldown: 1
 --- !u!1 &6038793424056343677
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,6 +718,7 @@ GameObject:
   - component: {fileID: 2707100728599992337}
   - component: {fileID: 6272030117906877436}
   - component: {fileID: 8589026742729716599}
+  - component: {fileID: 884880010481403854}
   m_Layer: 0
   m_Name: Cone (2)
   m_TagString: Untagged
@@ -1001,13 +1034,28 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &884880010481403854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6038793424056343677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7eb26913c59fc6498c9c44e89172aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageSource
+  damageAmount: 30
+  destroyOnHit: 0
+  cooldown: 1
 --- !u!1 &6354750873976563538
 GameObject:
   m_ObjectHideFlags: 0
@@ -2293,7 +2341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0407094bd96d3e2449b075fc54fff1ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Despawnable
-  lifetime: 15
+  lifetime: -1
   spawnType: 3
   destroyOnCollect: 0
 --- !u!1 &6693758049529682672
@@ -2310,6 +2358,7 @@ GameObject:
   - component: {fileID: 7305574071964134868}
   - component: {fileID: 7615579975727782319}
   - component: {fileID: 8836442800516418597}
+  - component: {fileID: 6989402430721763669}
   m_Layer: 0
   m_Name: Cone (3)
   m_TagString: Untagged
@@ -2625,10 +2674,25 @@ MeshCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &6989402430721763669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6693758049529682672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7eb26913c59fc6498c9c44e89172aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageSource
+  damageAmount: 30
+  destroyOnHit: 0
+  cooldown: 1

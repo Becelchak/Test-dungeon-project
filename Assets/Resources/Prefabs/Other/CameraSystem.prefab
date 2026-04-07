@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 221908409237768640}
   serializedVersion: 2
   m_LocalRotation: {x: 0.45858082, y: 0.000000026483919, z: -0.000000013666775, w: 0.88865274}
-  m_LocalPosition: {x: -33.50942, y: 10.433529, z: -14.512976}
+  m_LocalPosition: {x: -3.8303967, y: 6.953529, z: -7.325013}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -311,7 +311,7 @@ Transform:
   m_GameObject: {fileID: 939772552990981376}
   serializedVersion: 2
   m_LocalRotation: {x: 0.45858085, y: 0.000000026483923, z: -0.000000013666778, w: 0.88865274}
-  m_LocalPosition: {x: -33.50942, y: 10.433529, z: -14.512976}
+  m_LocalPosition: {x: -3.8303967, y: 6.953529, z: -7.325013}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -461,6 +461,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8331930586377302234}
+  - component: {fileID: 2671132259363986204}
   m_Layer: 0
   m_Name: CameraSystem
   m_TagString: Untagged
@@ -485,3 +486,16 @@ Transform:
   - {fileID: 1902326576903506916}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2671132259363986204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2656268085321647002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cc5a6a31d313564fbed320874e684f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraService
+  cinemachineObject: {fileID: 221908409237768640}

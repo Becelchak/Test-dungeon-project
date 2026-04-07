@@ -43,7 +43,9 @@ public abstract class PlayerStateBase
 
     public virtual void HandleMoveInput(Vector3 direction) { }
     public virtual void HandleAttackInput() { }
-    public virtual void HandleInteractInput() { }
+    //public virtual void HandleInteractInput() { }
+
+    public virtual void HandleJumpInput(Vector3 direction) { }
     public virtual void HandleDashInput() { }
     public virtual void HandleSprintInput(bool inputPressed) { }
     public virtual void HandleMovement(Vector3 direction) { }

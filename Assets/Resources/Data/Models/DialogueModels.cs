@@ -73,6 +73,9 @@ public class AIDialogueData
     public string initialPrompt;
     public AIDialogueConstraint[] constraints;
     public string personalityProfile;
+    public float[] defaultEmotions = new float[8]; // joy, sadness, anger, fear, surprise, trust, arousal, dominance
+    [System.NonSerialized]
+    public float[] currentEmotions;
 
     public void LoadPortrait()
     {
@@ -130,6 +133,7 @@ public class PlayerProfile
     public float acceleration = 15f;
     public float deceleration = 10f;
     public float rotationSpeed = 10f;
+    public float jumpForce = 8f;
     // Характеристики ролевые
     public int strength;
     public int intelligence;
@@ -147,6 +151,14 @@ public class PlayerProfile
 
     // Прогресс квестов
     public Dictionary<string, QuestProgress> quests = new Dictionary<string, QuestProgress>();
+
+    // Данные с диалогов
+    [SerializeField] private float[] _lastEmotions = new float[8]; // joy, sadness, anger, fear, surprise, trust, arousal, dominance
+    public float[] LastEmotions
+    {
+        get => _lastEmotions;
+        set => _lastEmotions = value;
+    }
 
 
     [System.NonSerialized]

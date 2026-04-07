@@ -23,7 +23,7 @@ public class Interactor : MonoBehaviour
         if (interactable != null && interactable.CanInteract(gameObject))
         {
             _currentInteractable = interactable;
-            Debug.Log($"Interactor: вошёл в контакт с {other.name}, поднимаем событие");
+            //Debug.Log($"Interactor: вошёл в контакт с {other.name}, поднимаем событие");
             EventBus.RaiseEvent<IInteractionPromptEventSubscriber>(
             s => s.OnInteractionPrompt(new InteractionPromptEvent(interactable))
             );
@@ -36,7 +36,7 @@ public class Interactor : MonoBehaviour
         if (interactable != null && interactable.CanInteract(gameObject))
         {
             _currentInteractable = interactable;
-            Debug.Log($"Interactor: вошёл в контакт с {other.collider.name}, поднимаем событие");
+            //Debug.Log($"Interactor: вошёл в контакт с {other.collider.name}, поднимаем событие");
             EventBus.RaiseEvent<IInteractionPromptEventSubscriber>(
             s => s.OnInteractionPrompt(new InteractionPromptEvent(interactable))
             );

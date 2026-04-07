@@ -43,17 +43,20 @@ public class PlayerMoveState : PlayerStateBase
             _playerStats.CurrentProfile.maxSpeed, 
             _playerStats.CurrentProfile.acceleration * Time.deltaTime);
 
-        if (_inputService._jumpAction.WasPressedThisFrame() && _movementService.CheckGround())
-        {
-            //var jumpState = new PlayerJumpState(_stateMachine, _movementService, direction);
-            //_stateMachine.TransitionToState(jumpState);
-        }
-
         if (direction.magnitude < 0.1f)
         {
-            Debug.Log($"{direction.magnitude}");
             var idleState = new PlayerIdleState(_stateMachine, _movementService);
             _stateMachine.TransitionToState(idleState);
+        }
+    }
+
+    public override void HandleJumpInput(Vector3 direction)
+    {
+        Debug.Log("JUMP");
+        if (_movementService.CheckGround()) // можно прыгать только с земли
+        {
+            var jumpState = new PlayerJumpState(_stateMachine, _movementService, direction);
+            _stateMachine.TransitionToState(jumpState);
         }
     }
 
