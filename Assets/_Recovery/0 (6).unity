@@ -1373,7 +1373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AITester
   stateMachine: {fileID: 1525850898}
-  llmAgent: {fileID: 557532444}
+  llmAgent: {fileID: 0}
   startAIDialogueOnConnect: 0
   testNpcId: ai_skeleton_no_initial
   testDialogueId: monk_knight

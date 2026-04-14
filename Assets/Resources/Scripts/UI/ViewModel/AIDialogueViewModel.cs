@@ -143,6 +143,11 @@ public class AIDialogueViewModel : BaseViewModel
         
     }
 
+    /// <summary>
+    /// Составляет полный промпт для LLM в ходе диалога. Помимо самого сообщения от игрока, передает его текущие показатели и контекст.
+    /// </summary>
+    /// <param name="userMessage">Сообщение пользователя</param>
+    /// <returns></returns>
     private string BuildFullPrompt(string userMessage)
     {
         // Получаем контекст игрока

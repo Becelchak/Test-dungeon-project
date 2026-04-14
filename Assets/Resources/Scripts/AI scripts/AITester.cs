@@ -1,9 +1,12 @@
+using LLMUnity;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class AITester : MonoBehaviour
 {
     [Header("References")]
     public AIConnectionStateMachine stateMachine;
+    [SerializeField] LLMAgent llmAgent;
 
     [Header("Test Settings")]
     public bool startAIDialogueOnConnect = true;
@@ -18,17 +21,12 @@ public class AITester : MonoBehaviour
     private string _lastStatusMessage = "";
     private float _statusDisplayTimer = 0f;
     private bool _showStatus = false;
-    private bool _isSendingMessage = false;
 
     private void Start()
     {
         InitializeServices();
         SubscribeToEvents();
-
-        if (stateMachine.CurrentState == AIConnectionState.Connected && startAIDialogueOnConnect)
-        {
-            StartAIDialogueWithDelay();
-        }
+        stateMachine.StartConnection();
     }
 
     private void InitializeServices()
@@ -51,7 +49,6 @@ public class AITester : MonoBehaviour
             stateMachine.OnConnected += HandleConnected;
             stateMachine.OnDisconnected += HandleDisconnected;
             stateMachine.OnConnectionError += HandleConnectionError;
-            stateMachine.OnReconnectAttempt += HandleReconnectAttempt;
         }
     }
 
@@ -83,9 +80,6 @@ public class AITester : MonoBehaviour
 
     private void HandleDisconnected() => ShowStatus("Соединение разорвано", true);
     private void HandleConnectionError() => ShowStatus("Ошибка соединения", true);
-
-    private void HandleReconnectAttempt(int attempt) =>
-        ShowStatus($"Переподключение ({attempt}/{stateMachine.maxReconnectAttempts})");
 
     private void ShowStatus(string message, bool isWarning = false)
     {
@@ -119,29 +113,6 @@ public class AITester : MonoBehaviour
         }
     }
 
-    private void SendTestMessage()
-    {
-        if (_isSendingMessage) return;
-
-        if (stateMachine.CurrentState == AIConnectionState.Connected)
-        {
-            _isSendingMessage = true;
-            _aiService?.SendMessage("Ответь кратко: соединение работает");
-
-            // Сброс флага через время таймаута для защиты от зависания
-            Invoke(nameof(ResetSendingFlag), 10f);
-        }
-        else
-        {
-            ShowStatus("Невозможно отправить сообщение: нет подключения", true);
-        }
-    }
-
-    private void ResetSendingFlag()
-    {
-        _isSendingMessage = false;
-    }
-
     private void Update()
     {
         UpdateStatusTimer();
@@ -161,8 +132,8 @@ public class AITester : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F1)) StartAIDialogue();
         if (Input.GetKeyDown(KeyCode.F2)) StartClassicalDialogue();
-        if (Input.GetKeyDown(KeyCode.F3)) ShowInstructions();
-        if (Input.GetKeyDown(KeyCode.F4)) _aiService?.ClearConversation();
+        if (Input.GetKeyDown(KeyCode.F3)) _aiService?.ClearConversation();
+        if(Input.GetKey(KeyCode.F4)) ReseteProfile();
     }
 
     private void OnGUI()
@@ -182,12 +153,6 @@ public class AITester : MonoBehaviour
             case AIConnectionState.Disconnected:
                 if (GUILayout.Button("Подключиться", GUILayout.Height(30)))
                     stateMachine.StartConnection();
-                break;
-
-            case AIConnectionState.Connected:
-                GUILayout.Label("Нейросеть активна");
-                if (GUILayout.Button("Тестовый запрос", GUILayout.Height(25)) && !_isSendingMessage)
-                    SendTestMessage();
                 break;
 
             case AIConnectionState.Error:
@@ -214,13 +179,10 @@ public class AITester : MonoBehaviour
         if (GUILayout.Button("Классический диалог (F2)", GUILayout.Height(25)))
             StartClassicalDialogue();
 
-        if (GUILayout.Button("Очистить историю (F4)", GUILayout.Height(25)))
+        if (GUILayout.Button("Очистить историю (F3)", GUILayout.Height(25)))
             _aiService?.ClearConversation();
 
-        if (GUILayout.Button("Инструкция (F3)", GUILayout.Height(25)))
-            ShowInstructions();
-
-        if (GUILayout.Button("Сброс профиля (F5)", GUILayout.Height(25)))
+        if (GUILayout.Button("Сброс профиля (F4)", GUILayout.Height(25)))
             ReseteProfile();
 
         GUILayout.EndArea();
@@ -238,23 +200,6 @@ public class AITester : MonoBehaviour
         porfService.ResetProfile();
     }
 
-    private void ShowInstructions()
-    {
-        string instructionsPath = System.IO.Path.Combine(
-            Application.streamingAssetsPath,
-            "Инструкция по установке AI.txt"
-        );
-
-        if (System.IO.File.Exists(instructionsPath))
-        {
-            Application.OpenURL(instructionsPath);
-        }
-        else
-        {
-            Debug.LogWarning("[AITester] Файл инструкции не найден: " + instructionsPath);
-        }
-    }
-
     private void OnDestroy()
     {
         if (stateMachine != null)
@@ -263,7 +208,7 @@ public class AITester : MonoBehaviour
             stateMachine.OnConnected -= HandleConnected;
             stateMachine.OnDisconnected -= HandleDisconnected;
             stateMachine.OnConnectionError -= HandleConnectionError;
-            stateMachine.OnReconnectAttempt -= HandleReconnectAttempt;
+            //stateMachine.OnReconnectAttempt -= HandleReconnectAttempt;
         }
     }
 }
