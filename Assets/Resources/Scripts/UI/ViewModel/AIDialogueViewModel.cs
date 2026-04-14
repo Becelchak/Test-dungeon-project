@@ -155,7 +155,7 @@ public class AIDialogueViewModel : BaseViewModel
         // Формируем строку с текущими эмоциями для контекста
         string emotionsStr = string.Join(", ", _aiData.currentEmotions.Select(e => e.ToString("F2")));
 
-        return $@"{_aiData.initialPrompt}
+        return $@"
 
         ДАННЫЕ ИГРОКА:
         {playerContext}

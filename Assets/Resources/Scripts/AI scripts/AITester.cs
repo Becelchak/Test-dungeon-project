@@ -101,7 +101,7 @@ public class AITester : MonoBehaviour
 
     private void StartAIDialogue()
     {
-        if (_windowService != null && stateMachine.CurrentState == AIConnectionState.Connected)
+        if (_windowService != null)
         {
             _windowService.ShowAIDialogue(testNpcId);
         }

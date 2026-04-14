@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Text;
 using System;
+using LLMUnity;
 
 [System.Serializable]
 public class AIRequest
@@ -57,6 +58,7 @@ public class AIClient : BaseService, IAIService
         "http://localhost:8080/v1/chat/completions",
         "http://127.0.0.1:1234/v1/chat/completions"
     };
+    [SerializeField] private LLMAgent llmAgent;
 
     [Header("Heartbeat Settings")]
     public float heartbeatInterval = 5f;
@@ -83,6 +85,10 @@ public class AIClient : BaseService, IAIService
     private Coroutine _heartbeatCoroutine;
     private Coroutine _currentRequest;
 
+
+    private bool _isWaitingForResponse = false;
+    private string _pendingResponse = null;
+    private string _pendingError = null;
     // События IAIService
     public event Action<string> OnAIResponseReceived;
     public event Action<bool> OnConnectionStatusChanged;
@@ -97,19 +103,38 @@ public class AIClient : BaseService, IAIService
 
     private void Start()
     {
-        InitializeConversation();
-        StartCoroutine(AutoDetectServer());
+        //InitializeConversation();
+        //StartCoroutine(AutoDetectServer());
+
+        if (llmAgent == null)
+        {
+            Debug.LogError("[AIClient] LLMAgent не назначен!");
+        }
+        else
+        {
+            llmAgent.ClearHistory();
+        }
     }
 
-    private void InitializeConversation()
+    public void SetSystemPrompt(string systemPrompt)
     {
-        _conversationHistory.Clear();
-        _conversationHistory.Add(new Message
+        if (llmAgent != null)
         {
-            role = "system",
-            content = "Ты актер. Отвечай на поставленные вопросы. При указании твоей роли - следуй ей."
-        });
+            llmAgent.systemPrompt = systemPrompt;
+            // Очищаем историю, чтобы начать новый диалог
+            llmAgent.ClearHistory();
+        }
     }
+
+    //private void InitializeConversation()
+    //{
+    //    _conversationHistory.Clear();
+    //    _conversationHistory.Add(new Message
+    //    {
+    //        role = "system",
+    //        content = "Ты актер. Отвечай на поставленные вопросы. При указании твоей роли - следуй ей."
+    //    });
+    //}
 
     private IEnumerator AutoDetectServer()
     {
@@ -239,14 +264,14 @@ public class AIClient : BaseService, IAIService
         }
     }
 
-    public void SendMessage(string message)
+    async public void SendMessage(string message)
     {
-        if (!IsConnected)
-        {
-            Debug.LogWarning("[AIClient] AI не подключен. Невозможно отправить сообщение.");
-            OnConnectionError?.Invoke("AI не подключен");
-            return;
-        }
+        //if (!IsConnected)
+        //{
+        //    Debug.LogWarning("[AIClient] AI не подключен. Невозможно отправить сообщение.");
+        //    OnConnectionError?.Invoke("AI не подключен");
+        //    return;
+        //}
 
         if (string.IsNullOrWhiteSpace(message))
         {
@@ -254,112 +279,142 @@ public class AIClient : BaseService, IAIService
             return;
         }
 
+        _isWaitingForResponse = true;
+        _pendingResponse = null;
+        _pendingError = null;
+
         StopCurrentRequest();
-        _currentRequest = StartCoroutine(SendAIRequest(message));
+        string fullResponse = await llmAgent.Chat(message); // Ждем полный ответ
+        OnChatSuccess(fullResponse);
+        //_currentRequest = StartCoroutine(SendAIRequest(message));
+    }
+
+    private void OnChatSuccess(string response)
+    {
+        _pendingResponse = response;
+        _isWaitingForResponse = false;
+        // Обработка ответа (очистка от тегов <think> и т.п.)
+        string cleanMessage = CleanAIResponse(response);
+        Debug.Log($"[AIClient] Ответ AI: {cleanMessage}");
+        OnAIResponseReceived?.Invoke(cleanMessage);
+    }
+
+    private void OnChatError(string error)
+    {
+        _pendingError = error;
+        _isWaitingForResponse = false;
+        Debug.LogError($"[AIClient] Ошибка при получении ответа: {error}");
+        OnConnectionError?.Invoke(error);
+        // Можно также попробовать переподключиться
     }
 
     public void BreakeMessage()
     {
         StopCurrentRequest();
+        llmAgent.CancelRequests();
     }
 
-    private IEnumerator SendAIRequest(string userMessage)
-    {
-        Debug.Log($"[AIClient] Отправка сообщения: {userMessage}");
+    //private IEnumerator SendAIRequest(string userMessage)
+    //{
+    //    Debug.Log($"[AIClient] Отправка сообщения: {userMessage}");
 
-        _conversationHistory.Add(new Message
-        {
-            role = "user",
-            content = userMessage
-        });
+    //    _conversationHistory.Add(new Message
+    //    {
+    //        role = "user",
+    //        content = userMessage
+    //    });
 
-        AIRequest requestData = new AIRequest
-        {
-            messages = _conversationHistory,
-            temperature = 0.4,
-            max_tokens = 180
-        };
+    //    //AIRequest requestData = new AIRequest
+    //    //{
+    //    //    messages = _conversationHistory,
+    //    //    temperature = 0.4,
+    //    //    max_tokens = 180
+    //    //};
 
-        string jsonData = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+    //    //string jsonData = JsonUtility.ToJson(requestData);
+    //    //byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
 
-        using (UnityWebRequest request = new UnityWebRequest(currentServerURL, "POST"))
-        {
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-            request.timeout = (int)requestTimeout;
+    //    //using (UnityWebRequest request = new UnityWebRequest(currentServerURL, "POST"))
+    //    //{
+    //    //    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+    //    //    request.downloadHandler = new DownloadHandlerBuffer();
+    //    //    request.SetRequestHeader("Content-Type", "application/json");
+    //    //    request.timeout = (int)requestTimeout;
 
-            int maxRetries = 2;
-            int attempt = 0;
+    //    //    int maxRetries = 2;
+    //    //    int attempt = 0;
 
-            while (attempt <= maxRetries)
-            {
-                yield return request.SendWebRequest();
-                if (request.result == UnityWebRequest.Result.Success) break;
-                if (request.result == UnityWebRequest.Result.ConnectionError && attempt < maxRetries)
-                {
-                    attempt++;
-                    Debug.Log($"Попытка {attempt}...");
-                    yield return new WaitForSeconds(1f);
-                    continue;
-                }
-                break;
-            }
+    //    //    while (attempt <= maxRetries)
+    //    //    {
+    //    //        yield return request.SendWebRequest();
+    //    //        if (request.result == UnityWebRequest.Result.Success) break;
+    //    //        if (request.result == UnityWebRequest.Result.ConnectionError && attempt < maxRetries)
+    //    //        {
+    //    //            attempt++;
+    //    //            Debug.Log($"Попытка {attempt}...");
+    //    //            yield return new WaitForSeconds(1f);
+    //    //            continue;
+    //    //        }
+    //    //        break;
+    //    //    }
 
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                Debug.LogError($"[AIClient] Ошибка связи: {request.error}");
-                HandleConnectionLost(request.error);
-            }
-            else
-            {
-                HandleAIResponse(request.downloadHandler.text);
-            }
-        }
+    //    //    if (request.result != UnityWebRequest.Result.Success)
+    //    //    {
+    //    //        Debug.LogError($"[AIClient] Ошибка связи: {request.error}");
+    //    //        HandleConnectionLost(request.error);
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        HandleAIResponse(request.downloadHandler.text);
+    //    //    }
+    //    //}
 
-        _currentRequest = null;
-    }
+    //    _ = llmAgent.Chat(userMessage);
+    //    yield return new WaitForSeconds(1f);
 
-    private void HandleAIResponse(string jsonResponse)
-    {
-        try
-        {
-            AIResponse response = JsonUtility.FromJson<AIResponse>(jsonResponse);
+    //    _currentRequest = null;
+    //}
 
-            if (response.choices != null && response.choices.Count > 0 && response.choices[0].message != null)
-            {
-                string rawMessage = response.choices[0].message.content;
-                string cleanMessage = CleanAIResponse(rawMessage);
+    //private void HandleAIResponse(string jsonResponse)
+    //{
+    //    try
+    //    {
+    //        AIResponse response = JsonUtility.FromJson<AIResponse>(jsonResponse);
 
-                _conversationHistory.Add(new Message
-                {
-                    role = "assistant",
-                    content = cleanMessage
-                });
+    //        if (response.choices != null && response.choices.Count > 0 && response.choices[0].message != null)
+    //        {
+    //            string rawMessage = response.choices[0].message.content;
+    //            string cleanMessage = CleanAIResponse(rawMessage);
 
-                Debug.Log($"[AIClient] Ответ AI: {cleanMessage}");
-                OnAIResponseReceived?.Invoke(cleanMessage);
-            }
-            else if (!string.IsNullOrEmpty(response.error))
-            {
-                Debug.LogError($"[AIClient] Ошибка AI: {response.error}");
-                OnConnectionError?.Invoke(response.error);
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"[AIClient] Ошибка обработки ответа: {e.Message}");
-            OnConnectionError?.Invoke(e.Message);
-        }
-    }
+    //            _conversationHistory.Add(new Message
+    //            {
+    //                role = "assistant",
+    //                content = cleanMessage
+    //            });
+
+    //            Debug.Log($"[AIClient] Ответ AI: {cleanMessage}");
+    //            OnAIResponseReceived?.Invoke(cleanMessage);
+    //        }
+    //        else if (!string.IsNullOrEmpty(response.error))
+    //        {
+    //            Debug.LogError($"[AIClient] Ошибка AI: {response.error}");
+    //            OnConnectionError?.Invoke(response.error);
+    //        }
+    //    }
+    //    catch (System.Exception e)
+    //    {
+    //        Debug.LogError($"[AIClient] Ошибка обработки ответа: {e.Message}");
+    //        OnConnectionError?.Invoke(e.Message);
+    //    }
+    //}
 
     private string CleanAIResponse(string rawResponse)
     {
         if (string.IsNullOrEmpty(rawResponse))
             return rawResponse;
 
-        string cleaned = rawResponse.Trim();
+        string pattern = @"<think>.*?</think>";
+        string cleaned = System.Text.RegularExpressions.Regex.Replace(rawResponse, pattern, "", System.Text.RegularExpressions.RegexOptions.Singleline).Trim();
         return string.IsNullOrEmpty(cleaned) ? rawResponse : cleaned;
     }
 
@@ -373,8 +428,10 @@ public class AIClient : BaseService, IAIService
 
     public void ClearConversation()
     {
-        _conversationHistory.Clear();
-        InitializeConversation();
+        //_conversationHistory.Clear();
+        if (llmAgent != null)
+            llmAgent.ClearHistory();
+        //InitializeConversation();
         Debug.Log("[AIClient] История диалога очищена");
     }
 

@@ -73,3 +73,11 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# LLM 
+*.gguf
+*.gguf.meta
+*.bin
+*.bin.meta
+/[Aa]ssets/[Ss]treamingAssets/LlamaLib-v2.0.5
+/[Aa]ssets/[Ss]treamingAssets/LlamaLib-v2.0.5.meta
