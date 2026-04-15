@@ -1,9 +1,24 @@
 fileFormatVersion: 2
-guid: 5b5fd4bc361cccb4cb340194ba5f172f
+guid: f38858f874476d54380edcc74b0ec81b
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: m_wood_1
+    second: {fileID: 2100000, guid: 32daab9879c4b49468f7c48191e36bf3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: m_wood_stick.001
+    second: {fileID: 2100000, guid: cfd1a7504ee84e644bb04995838df718, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "\u0421\u0442\u043E\u043B"
+    second: {fileID: 2800000, guid: 7009411a20261e940ae5ba70c910ca0d, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -22,7 +37,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -94,13 +109,13 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 1
+    hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 3
+  animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

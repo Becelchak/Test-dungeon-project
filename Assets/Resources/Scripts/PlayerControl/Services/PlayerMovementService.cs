@@ -14,10 +14,10 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     [Header("ÑÑÛËÊÈ")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private GameObject playerObject;
+    [SerializeField] private Transform hips;
 
     private Vector3 moveDuraction;
     public Rigidbody _rigidbody { get; set; }
-    private Transform hips;
 
     private Vector3 _currentInput;
     private Vector2 _rawInput;
@@ -26,6 +26,8 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     private bool _isGrounded;
     private bool _isMoving;
+
+    public Transform Hips => hips;
 
     public float _currentSpeed { get; set; }
     public float CurrentSpeed => _rigidbody.linearVelocity.magnitude;
@@ -40,7 +42,6 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     public void Initialize()
     {
         _rigidbody = playerObject.GetComponent<Rigidbody>();
-        hips = playerObject.transform.GetChild(2);
 
         _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
         _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
