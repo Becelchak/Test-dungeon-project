@@ -6,6 +6,7 @@ using System.Text;
 using System;
 using LLMUnity;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 
 [System.Serializable]
 public class AIRequest
@@ -116,7 +117,7 @@ public class AIClient : BaseService, IAIService
         }
     }
 
-    public async Task InitializeConnectionAsync()
+    public async UniTask InitializeConnectionAsync()
     {
         IsConnected = false;
         if (llmAgent != null && llmAgent.llm != null)
@@ -159,19 +160,19 @@ public class AIClient : BaseService, IAIService
         }
     }
 
-    private void HandleConnectionLost(string error)
-    {
-        bool wasConnected = IsConnected;
-        IsConnected = false;
-        StopHeartbeat();
-        StopCurrentRequest();
+    //private void HandleConnectionLost(string error)
+    //{
+    //    bool wasConnected = IsConnected;
+    //    IsConnected = false;
+    //    StopHeartbeat();
+    //    StopCurrentRequest();
 
-        OnConnectionError?.Invoke(error);
-        if (wasConnected)
-        {
-            OnConnectionStatusChanged?.Invoke(false);
-        }
-    }
+    //    OnConnectionError?.Invoke(error);
+    //    if (wasConnected)
+    //    {
+    //        OnConnectionStatusChanged?.Invoke(false);
+    //    }
+    //}
 
     private void StopCurrentRequest()
     {
@@ -182,7 +183,7 @@ public class AIClient : BaseService, IAIService
         }
     }
 
-    async public void SendMessage(string message)
+    async public UniTaskVoid SendMessage(string message)
     {
 
         if (string.IsNullOrWhiteSpace(message))

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UndreamAI.LlamaLib;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace LLMUnity
 {
@@ -115,7 +116,7 @@ namespace LLMUnity
             base.Awake();
         }
 
-        protected override async Task SetupCallerObject()
+        protected override async UniTask SetupCallerObject()
         {
             await base.SetupCallerObject();
 
@@ -139,7 +140,7 @@ namespace LLMUnity
         /// <summary>
         /// Initialisation after setting up the LLM client (local or remote).
         /// </summary>
-        protected override async Task PostSetupCallerObject()
+        protected override async UniTask PostSetupCallerObject()
         {
             await base.PostSetupCallerObject();
             if (slot != -1) llmAgent.SlotId = slot;
@@ -170,7 +171,7 @@ namespace LLMUnity
         /// <summary>
         /// Initializes conversation history by clearing current state and loading from file if available.
         /// </summary>
-        protected virtual async Task InitHistory()
+        protected virtual async UniTask InitHistory()
         {
             await ClearHistory();
             if (!string.IsNullOrEmpty(save) && File.Exists(GetSavePath()))
@@ -203,7 +204,7 @@ namespace LLMUnity
         /// <summary>
         /// Clears the entire conversation history.
         /// </summary>
-        public virtual async Task ClearHistory()
+        public virtual async UniTask ClearHistory()
         {
             await CheckCaller(checkConnection: false);
             llmAgent.ClearHistory();
@@ -213,7 +214,7 @@ namespace LLMUnity
         /// Adds a user message to the conversation history.
         /// </summary>
         /// <param name="content">User message content</param>
-        public virtual async Task AddUserMessage(string content)
+        public virtual async UniTask AddUserMessage(string content)
         {
             await CheckCaller();
             llmAgent.AddUserMessage(content);
@@ -223,7 +224,7 @@ namespace LLMUnity
         /// Adds an AI assistant message to the conversation history.
         /// </summary>
         /// <param name="content">Assistant message content</param>
-        public virtual async Task AddAssistantMessage(string content)
+        public virtual async UniTask AddAssistantMessage(string content)
         {
             await CheckCaller();
             llmAgent.AddAssistantMessage(content);

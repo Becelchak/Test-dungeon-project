@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using EventBusSystem;
 using Newtonsoft.Json.Linq;
 using System.Linq;
@@ -57,7 +58,7 @@ public class AIDialogueViewModel : BaseViewModel
         InitializeAsync(npcId);
     }
 
-    private async void InitializeAsync(string npcId)
+    private async UniTaskVoid InitializeAsync(string npcId)
     {
         try
         {
@@ -175,12 +176,9 @@ public class AIDialogueViewModel : BaseViewModel
         Пользователь: {userMessage}
         {_aiData.npcName}:
 
-        ОТВЕЧАЙ ТОЛЬКО В ФОРМАТЕ JSON (без дополнительного текста):
-        {{
-          ""reply"": ""текст ответа NPC"",
-          ""emotions"": [joy, sadness, anger, fear, surprise, trust, arousal, dominance]
-        }}
-        Где каждое значение эмоции от 0 до 1. Эмоции должны меняться в зависимости от хода диалога.";
+        ОТВЕЧАЙ ТОЛЬКО В ФОРМАТЕ JSON (без размышлений):
+        Эмоции (0.0 - 1.0): [joy, sadness, anger, fear, surprise, trust, arousal, dominance].
+        Пример: {{""reply"": ""Текст"", ""emotions"": [0.1, 0.5, 0.0, 0.2, 0.0, 0.8, 0.3, 0.9]}}";
     }
 
     private void OnAIResponse(string response)

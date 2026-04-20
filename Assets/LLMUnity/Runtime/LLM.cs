@@ -1,5 +1,6 @@
 /// @file
 /// @brief File implementing the LLM server component for Unity.
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -490,7 +491,7 @@ namespace LLMUnity
             SetupServer();
         }
 
-        private async Task CreateServiceAsync(string modelPath, List<string> loraPaths)
+        private async UniTask CreateServiceAsync(string modelPath, List<string> loraPaths)
         {
             int numSlots = GetNumClients();
             int effectiveThreads = numThreads;
@@ -501,7 +502,7 @@ namespace LLMUnity
             }
 
             string processorType = SystemInfo.processorType;
-            await Task.Run(() =>
+            await UniTask.RunOnThreadPool(() =>
             {
                 lock (staticLock)
                 {

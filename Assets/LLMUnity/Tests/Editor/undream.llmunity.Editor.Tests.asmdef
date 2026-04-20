@@ -1,10 +1,25 @@
 {
-  "name": "undream.llmunity.Editor.Tests",
-  "references": [
-    "undream.llmunity.Runtime",
-    "Unity.Nuget.Newtonsoft-Json"
-  ],
-  "optionalUnityReferences": [
-    "TestAssemblies"
-  ]
+    "name": "undream.llmunity.Editor.Tests",
+    "rootNamespace": "",
+    "references": [
+        "undream.llmunity.Runtime",
+        "Unity.Nuget.Newtonsoft-Json",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "UniTask",
+        "UniTask.Editor"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

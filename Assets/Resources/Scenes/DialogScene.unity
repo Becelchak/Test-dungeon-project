@@ -910,11 +910,11 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 5000
+  m_ColorTemperature: 3800
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -934,7 +934,7 @@ Transform:
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1154,27 +1154,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50e3140c3ecaaf1c848dbf141cc2074, type: 3}
   m_Name: 
   m_EditorClassIdentifier: undream.llmunity.Runtime::LLMUnity.LLM
-  advancedOptions: 0
+  advancedOptions: 1
   _remote: 0
   _port: 13333
   _APIKey: 
   _SSLCert: 
   _SSLKey: 
-  _numThreads: -1
-  _numGPULayers: 10
+  _numThreads: 11
+  _numGPULayers: 15
   _parallelPrompts: 1
-  _contextSize: 4096
-  _batchSize: 512
-  _model: gemma-2-9b-it-Q4_K_M.gguf
+  _contextSize: 1024
+  _batchSize: 1024
+  _model: gemma-3-4b-it-Q4_K_M.gguf
   _flashAttention: 0
   _reasoning: 0
   _lora: 
   _loraWeights: 
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   _embeddingsOnly: 0
-  _embeddingLength: 3584
+  _embeddingLength: 2560
   minContextLength: 0
-  maxContextLength: 8192
+  maxContextLength: 131072
 --- !u!114 &557532444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1194,20 +1194,29 @@ MonoBehaviour:
   _host: localhost
   _port: 13333
   numRetries: 5
-  _grammar: 
-  numPredict: -1
+  _grammar: 'root   ::= "{" space "\"reply\":" space string "," space "\"emotions\":"
+    space "[" space number ("," space number)* space "]" space "}"
+
+    string ::=
+    "\"" ([^"\\] | "\\" (["\\/bfnrt] | "u" [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F] [0-9a-fA-F]))*
+    "\""
+
+    number ::= ([0-9] | "1") "." [0-9] | "0" | "1"
+
+    space  ::= " "?'
+  numPredict: 256
   cachePrompt: 1
   seed: 0
-  temperature: 0.2
+  temperature: 0.55
   topK: 40
   topP: 0.9
   minP: 0.05
-  repeatPenalty: 1.1
+  repeatPenalty: 1.2
   presencePenalty: 0
   frequencyPenalty: 0
   typicalP: 1
   repeatLastN: 64
-  mirostat: 0
+  mirostat: 1
   mirostatTau: 5
   mirostatEta: 0.1
   nProbs: 0
@@ -16335,8 +16344,8 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1997942242}
   - {fileID: 410087041}
+  - {fileID: 1997942242}
   - {fileID: 832575519}
   - {fileID: 557797589}
   - {fileID: 1525850899}

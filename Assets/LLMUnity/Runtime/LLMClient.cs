@@ -8,6 +8,7 @@ using UndreamAI.LlamaLib;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace LLMUnity
 {
@@ -258,7 +259,7 @@ namespace LLMUnity
         /// <summary>
         /// Sets up the underlying LLM client connection (local or remote).
         /// </summary>
-        protected virtual async Task SetupCaller()
+        protected virtual async UniTask SetupCaller()
         {
             await SetupCallerObject();
             await PostSetupCallerObject();
@@ -267,7 +268,7 @@ namespace LLMUnity
         /// <summary>
         /// Sets up the underlying LLM client connection (local or remote).
         /// </summary>
-        protected virtual async Task SetupCallerObject()
+        protected virtual async UniTask SetupCallerObject()
         {
             await startSemaphore.WaitAsync();
 
@@ -306,7 +307,7 @@ namespace LLMUnity
         /// <summary>
         /// Initialisation after setting up the LLM client (local or remote).
         /// </summary>
-        protected virtual async Task PostSetupCallerObject()
+        protected virtual async UniTask PostSetupCallerObject()
         {
             SetGrammar(grammar);
             completionParametersCache = "";

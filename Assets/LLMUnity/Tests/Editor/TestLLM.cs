@@ -12,6 +12,7 @@ using UnityEngine.TestTools;
 using UnityEditor;
 using UnityEditor.TestTools.TestRunner.Api;
 using LlamaLibCore = UndreamAI.LlamaLib.LlamaLib;
+using Cysharp.Threading.Tasks;
 
 namespace LLMUnityTests
 {
@@ -290,7 +291,7 @@ namespace LLMUnityTests
             }
         }
 
-        public virtual async Task Tests()
+        public virtual async UniTask Tests()
         {
             TestArchitecture();
             await llmAgent.Tokenize("I", TestTokens);
@@ -432,7 +433,7 @@ namespace LLMUnityTests
             loraWeight = 0.9f;
         }
 
-        public override async Task Tests()
+        public override async UniTask Tests()
         {
             await base.Tests();
             TestModelPaths();
@@ -521,7 +522,7 @@ namespace LLMUnityTests
             return llmAgent;
         }
 
-        public override async Task Tests()
+        public override async UniTask Tests()
         {
             await base.Tests();
             TestSave();

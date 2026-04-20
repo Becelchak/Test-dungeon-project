@@ -1,7 +1,22 @@
 {
     "name": "undream.llmunity.Runtime",
+    "rootNamespace": "",
     "references": [
         "Cloud.Unum.USearch",
+        "UniTask",
+        "UniTask.Editor",
+        "UniTask.Addressables",
+        "UniTask.DOTween",
+        "UniTask.Linq",
         "Unity.Nuget.Newtonsoft-Json"
-    ]
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

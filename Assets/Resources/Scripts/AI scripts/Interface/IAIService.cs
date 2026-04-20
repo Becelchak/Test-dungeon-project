@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 
 public interface IAIService
@@ -6,7 +7,7 @@ public interface IAIService
     event Action<bool> OnConnectionStatusChanged;
     event Action<string> OnConnectionError;
 
-    void SendMessage(string message);
+    UniTaskVoid SendMessage(string message);
     bool IsConnected { get; }
     void RetryConnection();
     void ClearConversation();

@@ -81,4 +81,5 @@ crashlytics-build.properties
 *.bin.meta
 /[Aa]ssets/[Ss]treamingAssets/LlamaLib-v2.0.5
 /[Aa]ssets/[Ss]treamingAssets/LlamaLib-v2.0.5.meta
+/[Aa]ssets/_Recovery/
 [Ll][Ll][Mm]UnityBuild/
