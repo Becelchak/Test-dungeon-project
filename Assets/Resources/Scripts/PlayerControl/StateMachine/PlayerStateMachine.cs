@@ -85,7 +85,6 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
 
     public void TransitionToState(PlayerStateBase newState)
     {
-        //if (_currentState == null) return;
         _currentState?.Exit();
         _currentState = newState;
         _currentState.Enter();

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6285242499528830533}
   - component: {fileID: 748679457602821419}
   - component: {fileID: 4185081372094673314}
+  - component: {fileID: 370049400468932136}
   m_Layer: 5
   m_Name: ServiceLocator
   m_TagString: Untagged
@@ -66,8 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35eac9b92dabbf44e92b935a5304b5dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WindowService
-  aiDialogueWindowPrefab: {fileID: 4480076461737639589, guid: aeecf5977c73ee443824cb13d7463838, type: 3}
-  classicalDialogueWindowPrefab: {fileID: 8465022679885319838, guid: 93a6d13e58d6ad445b7de536e9090a2b, type: 3}
+  AiDialogueWindowPrefab: {fileID: 4480076461737639589, guid: aeecf5977c73ee443824cb13d7463838, type: 3}
+  ClassicalDialogueWindowPrefab: {fileID: 8465022679885319838, guid: 93a6d13e58d6ad445b7de536e9090a2b, type: 3}
+  LoadScreenPrefab: {fileID: 5692849397523290970, guid: 43f8f9b681a2bd2468ad17b492e4c003, type: 3}
 --- !u!114 &8288075510705487271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,3 +130,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94ba745dfcf187942a688f6aeb08bfe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
+--- !u!114 &370049400468932136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7281de64353db0844945d736e3c7420f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoadingService
+  minDisplayTime: 1

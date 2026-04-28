@@ -15,5 +15,7 @@ public enum SpawnType
     Loot = 1,
     Wall = 2,
     Spikes = 3,
+    Enemy = 4,
+    Trap = 5,
 
 }

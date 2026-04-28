@@ -40,9 +40,13 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
             }
         });
 
+        var inputService = (InputManagerService)ServiceLocator.Instance.GetService<IInputService>();
+        inputService.OnSubmit += HandleSubmitKeyPress;
+
         // Привязка команды отправки
         sendButton.onClick.AddListener(() => ViewModel.SendMessageCommand.Execute(null));
         closeButton.onClick.AddListener(() => ViewModel.CloseDialogueCommand.Execute(null));
+        userInputField.onSubmit.AddListener((x) => HandleSubmitKeyPress());
 
         // Если ViewModel уже инициализирована, обновляем UI
         if (ViewModel.IsInitialized)
@@ -54,6 +58,15 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
         if (dialogueLogView != null && ViewModel.LogViewModel != null)
         {
             dialogueLogView.Bind(ViewModel.LogViewModel);
+        }
+    }
+
+    private void HandleSubmitKeyPress()
+    {
+        // Отправляем текст только если поле в фокусе и не пустое
+        if (userInputField.isFocused && !string.IsNullOrEmpty(userInputField.text))
+        {
+            ViewModel.SendMessageCommand.Execute(null);
         }
     }
 

@@ -7,6 +7,8 @@ using System;
 using LLMUnity;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using SceneLoad;
+using EventBusSystem;
 
 [System.Serializable]
 public class AIRequest
@@ -63,6 +65,7 @@ public class AIClient : BaseService, IAIService
     [Header("Status")]
     [SerializeField] private bool _isConnected;
 
+    // Подключение LLM
     public bool IsConnected
     {
         get => _isConnected;
@@ -80,6 +83,7 @@ public class AIClient : BaseService, IAIService
     private List<Message> _conversationHistory = new List<Message>();
     private Coroutine _heartbeatCoroutine;
     private Coroutine _currentRequest;
+    //private SceneLoadingService _loadingService;
 
 
     private bool _isWaitingForResponse = false;
@@ -104,17 +108,18 @@ public class AIClient : BaseService, IAIService
             Debug.LogError("[AIClient] LLMAgent не назначен!");
             return;
         }
-        llmAgent.ClearHistory();
-        await InitializeConnectionAsync();
+        await llmAgent.ClearHistory();
+        //if (!IsConnected)
+        //    await UniTask.WaitUntil(() => IsConnected);
+        //_loadingService = ServiceLocator.Instance.GetService<SceneLoadingService>();
+       await InitializeConnectionAsync();
     }
 
-    public void SetSystemPrompt(string systemPrompt)
+    public async UniTaskVoid SetSystemPrompt(string systemPrompt)
     {
-        if (llmAgent != null)
-        {
-            llmAgent.systemPrompt = systemPrompt;
-            llmAgent.ClearHistory();
-        }
+        if (llmAgent == null) return;
+        llmAgent.systemPrompt = systemPrompt;
+        await llmAgent.ClearHistory();
     }
 
     public async UniTask InitializeConnectionAsync()
@@ -132,6 +137,33 @@ public class AIClient : BaseService, IAIService
             Debug.LogError("[AIClient] LLMAgent не назначен!");
         }
     }
+
+    public async UniTask LoadModelAsync(IProgress<float> progress = null)
+    {
+        if (IsConnected) return;
+        // Имитация прогресса (если плагин не даёт реального)
+        await InitializeConnectionAsync();
+        //if (progress != null)
+        //{
+        //    _ = SimulateProgress(progress, loadTask);
+        //}
+        //await loadTask;
+    }
+
+    //private async UniTask SimulateProgress(IProgress<float> progress, UniTask loadTask)
+    //{
+    //    float elapsed = 0f;
+    //    float estimatedDuration = 6f; 
+    //    while (!loadTask.Status.IsCompleted() && elapsed < estimatedDuration)
+    //    {
+    //        elapsed += Time.deltaTime;
+    //        progress?.Report(Mathf.Clamp01(elapsed / estimatedDuration));
+    //        EventBus.RaiseEvent<ISceneLoadProgressSubscriber>(s => s.OnSceneLoadProgress(progress));
+    //        await UniTask.Yield();
+    //    }
+    //    if (!loadTask.Status.IsCompleted())
+    //        progress?.Report(1f);
+    //}
 
     private IEnumerator AutoDetectServer()
     {
@@ -159,20 +191,6 @@ public class AIClient : BaseService, IAIService
             _heartbeatCoroutine = null;
         }
     }
-
-    //private void HandleConnectionLost(string error)
-    //{
-    //    bool wasConnected = IsConnected;
-    //    IsConnected = false;
-    //    StopHeartbeat();
-    //    StopCurrentRequest();
-
-    //    OnConnectionError?.Invoke(error);
-    //    if (wasConnected)
-    //    {
-    //        OnConnectionStatusChanged?.Invoke(false);
-    //    }
-    //}
 
     private void StopCurrentRequest()
     {

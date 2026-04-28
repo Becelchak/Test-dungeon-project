@@ -54,11 +54,10 @@ public class AIDialogueViewModel : BaseViewModel
         SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
         CloseDialogueCommand = new RelayCommand(CloseDialogue);
 
-        // Начинаем асинхронную инициализацию
-        InitializeAsync(npcId);
+        InitializeAsync(npcId).Forget();
     }
 
-    private async UniTaskVoid InitializeAsync(string npcId)
+    private async UniTask InitializeAsync(string npcId)
     {
         try
         {

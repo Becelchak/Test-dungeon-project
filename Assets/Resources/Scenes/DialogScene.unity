@@ -1076,7 +1076,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8214144316221040047, guid: d29cb6a6131d5a84280ff93e099505ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1850950274}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1331523157450152163, guid: d29cb6a6131d5a84280ff93e099505ce, type: 3}
       insertIndex: -1
@@ -14438,7 +14441,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1759878518}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1759878519}
   m_SourcePrefab: {fileID: 100100000, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
 --- !u!4 &923937367 stripped
 Transform:
@@ -15480,6 +15489,46 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 123855145244852606, guid: 73e114ceb56380a46aa8bb4c953e2407, type: 3}
   m_PrefabInstance: {fileID: 1741253201}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1759878515 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+  m_PrefabInstance: {fileID: 923937366}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1759878518
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759878515}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.022691589, y: 0.028849231, z: 0.018355912}
+  m_Center: {x: -0.0038190864, y: 0.0017013574, z: 0.00811387}
+--- !u!114 &1759878519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759878515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93734d3501172314b87bc43f84397698, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCStartDialogueInteractable
+  npcIDString: monk_knight
+  interactionPrompt: "\u041E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u044E"
 --- !u!1 &1762041376
 GameObject:
   m_ObjectHideFlags: 0
@@ -15555,6 +15604,75 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.02, y: 0.020000001, z: 0.019999994}
   m_Center: {x: 0.000000007450581, y: -0.00000047683716, z: -0.0000000018626451}
+--- !u!1 &1850950273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1850950274}
+  - component: {fileID: 1850950275}
+  - component: {fileID: 1850950276}
+  m_Layer: 0
+  m_Name: InteractionTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1850950274
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850950273}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 557532442}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1850950275
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850950273}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.8, y: 2, z: 1.9}
+  m_Center: {x: 0, y: 0.5, z: 0.3}
+--- !u!114 &1850950276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850950273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808794b899c872f48a2eb287d52b2c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCStartAIDialogueInteractable
+  npcIDString: ai_skeleton_no_initial
+  interactionPrompt: "\u041E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0441\u043A\u0435\u043B\u0435\u0442\u0430
+    \u0432 \u043A\u043B\u0435\u0442\u043A\u0435"
 --- !u!43 &1854992059
 Mesh:
   m_ObjectHideFlags: 0

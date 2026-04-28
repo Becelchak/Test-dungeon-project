@@ -59,8 +59,6 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     public void Jump(float force, Vector3 direction)
     {
-
-        //_rigidbody.AddForce((Vector3.up + direction) * force, ForceMode.Impulse);
         _rigidbody.AddForce(Vector3.up * force * _rigidbody.mass, ForceMode.Impulse);
     }
 

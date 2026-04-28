@@ -5,8 +5,9 @@ using UnityEngine;
 public class WindowService : BaseService, IWindowService
 {
     [Header("Window Prefabs")]
-    public GameObject aiDialogueWindowPrefab;
-    public GameObject classicalDialogueWindowPrefab;
+    public GameObject AiDialogueWindowPrefab;
+    public GameObject ClassicalDialogueWindowPrefab;
+    public GameObject LoadScreenPrefab;
 
     private Dictionary<Type, GameObject> _openWindows = new Dictionary<Type, GameObject>();
     private Transform _windowsParent;
@@ -18,14 +19,14 @@ public class WindowService : BaseService, IWindowService
         _windowsParent = GameObject.Find("DialogueWindows")?.transform;
         if (_windowsParent == null)
         {
-            // Создаем родителя если не существует
-            var canvas = FindObjectOfType<Canvas>();
-            if (canvas != null)
-            {
-                var dialogueWindows = new GameObject("DialogueWindows");
-                dialogueWindows.transform.SetParent(canvas.transform);
-                _windowsParent = dialogueWindows.transform;
-            }
+            _windowsParent = GameObject.Find("Canvas UI")?.transform;
+            //var canvas = FindObjectOfType<Canvas>();
+            //if (canvas != null)
+            //{
+            //    var dialogueWindows = new GameObject("DialogueWindows");
+            //    dialogueWindows.transform.SetParent(canvas.transform);
+            //    _windowsParent = dialogueWindows.transform;
+            //}
         }
     }
 
@@ -41,7 +42,7 @@ public class WindowService : BaseService, IWindowService
         var logViewModel = new DialogueLogViewModel();
         var aiViewModel = new AIDialogueViewModel(npcId, logViewModel);
 
-        var windowObj = Instantiate(aiDialogueWindowPrefab, _windowsParent);
+        var windowObj = Instantiate(AiDialogueWindowPrefab, _windowsParent);
         var view = windowObj.GetComponent<AIDialogueView>();
 
         if (view != null)
@@ -62,13 +63,13 @@ public class WindowService : BaseService, IWindowService
             return;
         }
 
-        if (classicalDialogueWindowPrefab == null)
+        if (ClassicalDialogueWindowPrefab == null)
         {
             Debug.LogError("Classical Dialogue Window Prefab not assigned!");
             return;
         }
 
-        var windowObj = Instantiate(classicalDialogueWindowPrefab, _windowsParent);
+        var windowObj = Instantiate(ClassicalDialogueWindowPrefab, _windowsParent);
         var view = windowObj.GetComponent<ClassicalDialogueView>();
 
         if (view != null)
@@ -82,6 +83,24 @@ public class WindowService : BaseService, IWindowService
             Debug.LogError("ClassicalDialogueView component not found on prefab!");
             Destroy(windowObj);
         }
+    }
+
+    public void ShowLoadingScreen()
+    {
+        if (_openWindows.ContainsKey(typeof(LoadingScreenUI)))
+        {
+            Debug.LogWarning("Loading Screen already open");
+            return;
+        }
+
+        if (LoadScreenPrefab == null)
+        {
+            Debug.LogError("Loading Screen Prefab not assigned!");
+            return;
+        }
+
+        var windowObj = Instantiate(LoadScreenPrefab, _windowsParent);
+        //var view = windowObj.GetComponent<LoadingScreenUI>();
     }
 
     public void CloseWindow<T>() where T : IViewModel

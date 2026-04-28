@@ -10,12 +10,14 @@ public class InputManagerService : BaseService, IInputService
     public event Action OnAttack;
     public event Action OnInteract;
     public event Action OnRun;
+    public event Action OnSubmit;
     public event Action<bool> OnSprintInput;
-
+    
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
     public InputAction _attackAction { get; set; }
     public InputAction _interactAction { get; set; }
+    public InputAction _submitAction { get; set; }
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -50,6 +52,9 @@ public class InputManagerService : BaseService, IInputService
         _interactAction = _inputActions.FindAction("Interact");
         _interactAction.performed += ctx => OnInteract?.Invoke();
         //_interactAction.canceled += ctx => OnInteract?.Invoke();
+
+        _submitAction = _inputActions.FindAction("Submit");
+        _submitAction.performed += ctx => OnSubmit?.Invoke();
     }
 
     public Vector2 GetMovementInput()
