@@ -6,7 +6,7 @@ public interface IRoomSpawner
     void SpawnRoomObjects(GameObject roomInstance, RoomPrefab roomData, DungeonModifiers modifiers);
 }
 
-public class RoomSpawner : IRoomSpawner
+public class RoomSpawner : MonoBehaviour ,IRoomSpawner
 {
     private readonly IResourceService _resources;
     public RoomSpawner(IResourceService resources) => _resources = resources;
@@ -19,7 +19,7 @@ public class RoomSpawner : IRoomSpawner
             if (!point.mandatory && Random.value > GetSpawnChance(point, modifiers)) continue;
             var chosenPrefab = ChoosePrefab(point.possibleSpawns);
             if (chosenPrefab == null) continue;
-            Instantiate(chosenPrefab, point.transform.position, point.transform.rotation);
+            var rObj = GameObject.Instantiate(chosenPrefab, point.transform.position, point.transform.rotation);
         }
     }
 
@@ -37,6 +37,32 @@ public class RoomSpawner : IRoomSpawner
 
     private GameObject ChoosePrefab(List<SpawnEntry> entries)
     {
-        // выбор на основе весов
+        if (entries == null || entries.Count == 0) return null;
+
+        // 1. Вычисляем общую сумму всех весов
+        int totalWeight = 0;
+        foreach (var entry in entries)
+        {
+            // Игнорируем отрицательные веса, если они вдруг есть
+            totalWeight += Mathf.Max(0, entry.weight);
+        }
+
+        if (totalWeight <= 0) return null;
+
+        // 2. Выбираем случайное число в диапазоне [0, totalWeight)
+        int randomValue = UnityEngine.Random.Range(0, totalWeight);
+
+        // 3. Проходим по списку и вычитаем вес каждого элемента из случайного числа
+        // Тот элемент, на котором число упадет до нуля или ниже — наш выбор
+        foreach (var entry in entries)
+        {
+            if (randomValue < entry.weight)
+            {
+                return entry.prefab;
+            }
+            randomValue -= entry.weight;
+        }
+
+        return entries[0].prefab; // Запасной вариант
     }
 }

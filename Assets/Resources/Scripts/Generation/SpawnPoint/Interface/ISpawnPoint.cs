@@ -17,5 +17,6 @@ public enum SpawnType
     Spikes = 3,
     Enemy = 4,
     Trap = 5,
+    Object = 6,
 
 }

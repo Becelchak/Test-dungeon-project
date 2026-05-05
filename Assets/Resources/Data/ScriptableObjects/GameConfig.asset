@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9d51b0ed32f4b438da143a0693a379, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: Assembly-CSharp::GameConfig
+  floorsCount: 1
+  bossFloor: 3
+  roomSpacing: 5
+  startRooms:
+  - {fileID: 11400000, guid: cd4bbbc965e9ec2408c4931b8bddcbeb, type: 2}
+  normalRooms:
+  - {fileID: 11400000, guid: 8ede5e2bea51ff74fbf089fdb6645a7e, type: 2}
+  - {fileID: 11400000, guid: 5510811b19be6d64b8c76edd26574511, type: 2}
+  exitRooms:
+  - {fileID: 11400000, guid: f142107baf9d73b4390d8852dc44b81d, type: 2}
+  bossRooms: []
+  uniqueRooms: []
