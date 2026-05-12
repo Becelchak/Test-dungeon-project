@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &3911705142404345435
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 200.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 200.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 200.00002
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -516.02435
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -203.72
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.32
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.27059743
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.27059743
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.6532818
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.65328175
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -585
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      propertyPath: m_Name
+      value: monk_knight_statue
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 610994248627619767}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7727869822816369807}
+  m_SourcePrefab: {fileID: 100100000, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+--- !u!1 &4217694494756786954 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 6dafdc34f01cd0b45bb51a7b21cce8c2, type: 3}
+  m_PrefabInstance: {fileID: 3911705142404345435}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &610994248627619767
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4217694494756786954}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.022691589, y: 0.028849231, z: 0.018355912}
+  m_Center: {x: -0.0038190864, y: 0.0017013574, z: 0.00811387}
+--- !u!114 &7727869822816369807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4217694494756786954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93734d3501172314b87bc43f84397698, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCStartDialogueInteractable
+  npcIDString: monk_knight
+  interactionPrompt: "\u041E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0441\u0442\u0430\u0442\u0443\u044E"

@@ -47,6 +47,7 @@ public class DungeonManagerService : BaseService, IDungeonManagerService
     [SerializeField] private GameConfig gameConfig;
     [SerializeField] private DungeonGenerator dungeonGenerator;
     [SerializeField] private RoomSpawner roomSpawner;
+    [SerializeField] private FloorSettings settings;
 
     private Dictionary<RoomInstance, GameObject> _roomObjects = new Dictionary<RoomInstance, GameObject>();
     private FloorPlan _currentPlan;
@@ -71,14 +72,15 @@ public class DungeonManagerService : BaseService, IDungeonManagerService
     private void Start()
     {
         //LoadModifiersFromProfile();
-        var settings = new FloorSettings
-        {
-            floorIndex = 1,
-            targetRoomsCount = 10,
-            mlModifiers = new DungeonModifiers(),
-            difficultyMultiplier = 1,
-            seed = Random.Range(0, int.MaxValue)
-        };
+        //var settings = new FloorSettings
+        //{
+        //    floorIndex = 1,
+        //    targetRoomsCount = 5,
+        //    mlModifiers = new DungeonModifiers(),
+        //    difficultyMultiplier = 1,
+        //    seed = Random.
+        //    (0, int.MaxValue)
+        //};
         //await UniTask.SwitchToMainThread();
         var plan = dungeonGenerator.GenerateFloor(settings, gameConfig);
         SpawnDungeon(plan);
@@ -103,11 +105,19 @@ public class DungeonManagerService : BaseService, IDungeonManagerService
             _roomObjects[room] = roomObj;
 
             // 2. Заполняем комнату содержимым (через RoomComponent и RoomSpawner)
-            var roomComponent = roomObj.GetComponent<RoomComponent>();
+            var roomComponent = roomObj.GetComponentInChildren<RoomComponent>();
             if (roomComponent != null)
             {
-                roomSpawner.SpawnRoomObjects(roomComponent.gameObject, room.data, gameConfig.floorSettings.mlModifiers);
+                roomSpawner.SpawnRoomObjects(roomComponent, room.data, gameConfig.floorSettings.mlModifiers);
             }
+        }
+
+        var exitInstance = _roomObjects.Keys.FirstOrDefault(room => room.data != null && room.data.roomType == RoomType.Exit);
+        if (exitInstance == null)
+        {
+            var roomInstance = _roomObjects.Keys.LastOrDefault();
+            var roomComponent = _roomObjects[roomInstance].GetComponentInChildren<RoomComponent>();
+            roomSpawner.SpawnRoomObjects(roomComponent, roomInstance.data, gameConfig.floorSettings.mlModifiers, SpawnType.Exit);
         }
 
         // 3. Активируем визуальные соединения (опционально)
@@ -147,7 +157,7 @@ public class DungeonManagerService : BaseService, IDungeonManagerService
             rb.angularVelocity = Vector3.zero;
         }
 
-        Debug.Log($"After {player.transform.position}");
+        //Debug.Log($"After {player.transform.position}");
     }
 
 

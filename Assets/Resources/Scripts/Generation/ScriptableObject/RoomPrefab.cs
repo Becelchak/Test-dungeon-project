@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -32,46 +33,48 @@ public class RoomPrefab : ScriptableObject
     private void Calculate()
     {
         if (prefab == null) return;
+        Transform geometryTransform = prefab.transform.Find("Geometry");
+        if (geometryTransform == null) return;
 
-        Transform cubeTransform = prefab.transform.Find("Geometry/Cube");
-        if (cubeTransform == null) return;
+        Vector3 minPoint = Vector3.one * float.MaxValue;
+        Vector3 maxPoint = Vector3.one * float.MinValue;
+        bool hasFoundAnyVertex = false;
 
-        var pbMesh = cubeTransform.GetComponent<ProBuilderMesh>();
-        if (pbMesh == null) return;
+        var floors = geometryTransform.GetComponentsInChildren<Transform>()
+                     .Where(c => c.CompareTag("GeometryFloor"));
 
-        // Используем Reflection, чтобы достать массив позиций вершин (m_Positions)
-        // так как в вашей версии это поле private/protected
-        FieldInfo positionsField = typeof(ProBuilderMesh).GetField("m_Positions", BindingFlags.Instance | BindingFlags.NonPublic);
-        Vector3[] positions = (Vector3[])positionsField?.GetValue(pbMesh);
-
-        if (positions != null && positions.Length > 0)
+        foreach (var child in floors)
         {
-            // Вычисляем границы (Bounds) вручную по вершинам
-            Vector3 min = positions[0];
-            Vector3 max = positions[0];
+            var pbMesh = child.GetComponent<ProBuilderMesh>();
+            if (pbMesh == null) continue;
 
-            for (int i = 1; i < positions.Length; i++)
+            FieldInfo positionsField = typeof(ProBuilderMesh).GetField("m_Positions", BindingFlags.Instance | BindingFlags.NonPublic);
+            Vector3[] positions = (Vector3[])positionsField?.GetValue(pbMesh);
+
+            if (positions != null && positions.Length > 0)
             {
-                min = Vector3.Min(min, positions[i]);
-                max = Vector3.Max(max, positions[i]);
-            }
+                hasFoundAnyVertex = true;
+                foreach (var pos in positions)
+                {
+                    // 1. Учитываем масштаб меша
+                    Vector3 scaledPos = Vector3.Scale(pos, child.localScale);
+                    // 2. Переводим в локальные координаты ПРЕФАБА (учитываем позицию и поворот дочернего объекта)
+                    Vector3 worldPos = child.localPosition + (child.localRotation * scaledPos);
 
-            Vector3 localSize = max - min;
-            // Учитываем масштаб объекта Cube
-            Vector3 finalSize = Vector3.Scale(localSize, cubeTransform.localScale);
-
-            if (Vector3.Distance(size, finalSize) > 0.001f)
-            {
-                size = finalSize;
-                EditorUtility.SetDirty(this);
+                    // 3. Обновляем общие границы
+                    minPoint = Vector3.Min(minPoint, worldPos);
+                    maxPoint = Vector3.Max(maxPoint, worldPos);
+                }
             }
         }
-        else
+
+        if (hasFoundAnyVertex)
         {
-            // Если Reflection не сработал, пробуем вызвать внутренний метод обновления
-            // pbMesh.Rebuild(); или pbMesh.ToMesh(); 
-            // Но расчет по позициям — самый надежный для префабов в ассетах.
+            size = maxPoint - minPoint;
+            center = minPoint + (size / 2f); // Центр тоже очень важен для OverlapsAny!
         }
+
+        EditorUtility.SetDirty(this);
     }
 #endif
 }

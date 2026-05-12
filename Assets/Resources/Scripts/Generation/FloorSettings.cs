@@ -1,8 +1,11 @@
+п»їusing System;
+
+[Serializable]
 public class FloorSettings
 {
-    public int floorIndex;                            // Текущий слой (0..2)
-    public int targetRoomsCount;                      // Целевое количество комнат
-    public float difficultyMultiplier;                // Общий множитель сложности (от игрока)
-    public DungeonModifiers mlModifiers;              // Модификаторы от ML-агента
-    public int seed;                                  // Seed для детерминизма (опционально)
+    public int floorIndex;                            // РўРµРєСѓС‰РёР№ СЃР»РѕР№ (0..2)
+    public int targetRoomsCount;                      // Р¦РµР»РµРІРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕРјРЅР°С‚
+    public float difficultyMultiplier;                // РћР±С‰РёР№ РјРЅРѕР¶РёС‚РµР»СЊ СЃР»РѕР¶РЅРѕСЃС‚Рё (РѕС‚ РёРіСЂРѕРєР°)
+    public DungeonModifiers mlModifiers;              // РњРѕРґРёС„РёРєР°С‚РѕСЂС‹ РѕС‚ ML-Р°РіРµРЅС‚Р°
+    public int seed;                                  // Seed РґР»СЏ РґРµС‚РµСЂРјРёРЅРёР·РјР° (РѕРїС†РёРѕРЅР°Р»СЊРЅРѕ)
 }

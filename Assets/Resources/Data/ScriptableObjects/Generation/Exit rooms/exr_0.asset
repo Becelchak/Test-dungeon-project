@@ -17,5 +17,5 @@ MonoBehaviour:
   weight: 1
   requiredTags: 
   roomModifiers: 
-  size: {x: 7, y: 0.4, z: 16}
-  center: {x: 0, y: 0, z: 0}
+  size: {x: 7, y: 3.1851625, z: 22.527756}
+  center: {x: 0, y: 1.1974188, z: 3.2638779}

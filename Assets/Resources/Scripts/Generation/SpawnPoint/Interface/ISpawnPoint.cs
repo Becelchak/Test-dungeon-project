@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public interface ISpawnPoint
 {
@@ -18,5 +18,6 @@ public enum SpawnType
     Enemy = 4,
     Trap = 5,
     Object = 6,
+    Exit = 7,
 
 }

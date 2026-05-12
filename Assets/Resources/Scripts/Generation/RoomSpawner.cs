@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public interface IRoomSpawner
 {
-    void SpawnRoomObjects(GameObject roomInstance, RoomPrefab roomData, DungeonModifiers modifiers);
+    void SpawnRoomObjects(RoomComponent roomInstance, RoomPrefab roomData, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null);
 }
 
 public class RoomSpawner : MonoBehaviour ,IRoomSpawner
@@ -11,26 +12,29 @@ public class RoomSpawner : MonoBehaviour ,IRoomSpawner
     private readonly IResourceService _resources;
     public RoomSpawner(IResourceService resources) => _resources = resources;
 
-    public void SpawnRoomObjects(GameObject roomInstance, RoomPrefab roomData, DungeonModifiers modifiers)
+    public void SpawnRoomObjects(RoomComponent roomInstance, RoomPrefab roomData, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null)
     {
-        var spawnPoints = roomInstance.GetComponentsInChildren<RoomSpawnPoint>();
+        var spawnPoints = roomInstance.spawnPoints;
+        if (prefereSpawnPointType != null)
+            spawnPoints.RemoveAll(p => p.spawnType != prefereSpawnPointType);
         foreach (var point in spawnPoints)
         {
-            if (!point.mandatory && Random.value > GetSpawnChance(point, modifiers)) continue;
+            if (!point.mandatory && Random.value > GetSpawnChance(point, modifiers, prefereSpawnPointType)) continue;
             var chosenPrefab = ChoosePrefab(point.possibleSpawns);
             if (chosenPrefab == null) continue;
-            var rObj = GameObject.Instantiate(chosenPrefab, point.transform.position, point.transform.rotation);
+            var rObj = Instantiate(chosenPrefab, point.transform.position, point.transform.rotation);
         }
     }
 
-    private float GetSpawnChance(RoomSpawnPoint point, DungeonModifiers modifiers)
+    private float GetSpawnChance(RoomSpawnPoint point, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null)
     {
-        // Здесь можно добавить логику на основе модификаторов
+        // Р—РґРµСЃСЊ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ Р»РѕРіРёРєСѓ РЅР° РѕСЃРЅРѕРІРµ РјРѕРґРёС„РёРєР°С‚РѕСЂРѕРІ
         return point.spawnType switch
         {
             SpawnType.Enemy => 0.6f * modifiers.enemiesMultiplier,
             SpawnType.Loot => 0.5f * modifiers.lootMultiplier,
             SpawnType.Trap => 0.3f * modifiers.trapMultiplier,
+            SpawnType.Exit => (prefereSpawnPointType == SpawnType.Exit) ? 1f : 0f,
             _ => 0.8f
         };
     }
@@ -39,21 +43,21 @@ public class RoomSpawner : MonoBehaviour ,IRoomSpawner
     {
         if (entries == null || entries.Count == 0) return null;
 
-        // 1. Вычисляем общую сумму всех весов
+        // 1. Р’С‹С‡РёСЃР»СЏРµРј РѕР±С‰СѓСЋ СЃСѓРјРјСѓ РІСЃРµС… РІРµСЃРѕРІ
         int totalWeight = 0;
         foreach (var entry in entries)
         {
-            // Игнорируем отрицательные веса, если они вдруг есть
+            // РРіРЅРѕСЂРёСЂСѓРµРј РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ РІРµСЃР°, РµСЃР»Рё РѕРЅРё РІРґСЂСѓРі РµСЃС‚СЊ
             totalWeight += Mathf.Max(0, entry.weight);
         }
 
         if (totalWeight <= 0) return null;
 
-        // 2. Выбираем случайное число в диапазоне [0, totalWeight)
+        // 2. Р’С‹Р±РёСЂР°РµРј СЃР»СѓС‡Р°Р№РЅРѕРµ С‡РёСЃР»Рѕ РІ РґРёР°РїР°Р·РѕРЅРµ [0, totalWeight)
         int randomValue = UnityEngine.Random.Range(0, totalWeight);
 
-        // 3. Проходим по списку и вычитаем вес каждого элемента из случайного числа
-        // Тот элемент, на котором число упадет до нуля или ниже — наш выбор
+        // 3. РџСЂРѕС…РѕРґРёРј РїРѕ СЃРїРёСЃРєСѓ Рё РІС‹С‡РёС‚Р°РµРј РІРµСЃ РєР°Р¶РґРѕРіРѕ СЌР»РµРјРµРЅС‚Р° РёР· СЃР»СѓС‡Р°Р№РЅРѕРіРѕ С‡РёСЃР»Р°
+        // РўРѕС‚ СЌР»РµРјРµРЅС‚, РЅР° РєРѕС‚РѕСЂРѕРј С‡РёСЃР»Рѕ СѓРїР°РґРµС‚ РґРѕ РЅСѓР»СЏ РёР»Рё РЅРёР¶Рµ вЂ” РЅР°С€ РІС‹Р±РѕСЂ
         foreach (var entry in entries)
         {
             if (randomValue < entry.weight)
@@ -63,6 +67,6 @@ public class RoomSpawner : MonoBehaviour ,IRoomSpawner
             randomValue -= entry.weight;
         }
 
-        return entries[0].prefab; // Запасной вариант
+        return entries[0].prefab; // Р—Р°РїР°СЃРЅРѕР№ РІР°СЂРёР°РЅС‚
     }
 }
