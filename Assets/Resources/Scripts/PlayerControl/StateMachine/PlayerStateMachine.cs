@@ -1,4 +1,4 @@
-using EventBusSystem;
+п»їusing EventBusSystem;
 using UnityEngine;
 
 public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
@@ -8,6 +8,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
     private PlayerStateBase _currentState;
     public CharacterRotator charRotate;
     public Interactor interactor;
+    public Animator playerAnimator;
 
     private void OnEnable()
     {
@@ -27,6 +28,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         charRotate = GetComponent<CharacterRotator>();
         //interactor = GameObject.Find("Interactor").GetComponent<Interactor>();
         interactor = GetComponentInChildren<Interactor>();
+        playerAnimator = GetComponentInChildren<Animator>();
     }
     private void Start()
     {
@@ -48,7 +50,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
     }
     private void HandleMoveInput(Vector2 direction)
     {
-        // Только текущее состояние решает, как обработать ввод
+        // РўРѕР»СЊРєРѕ С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ СЂРµС€Р°РµС‚, РєР°Рє РѕР±СЂР°Р±РѕС‚Р°С‚СЊ РІРІРѕРґ
         _currentState?.HandleMoveInput(direction);
     }
 

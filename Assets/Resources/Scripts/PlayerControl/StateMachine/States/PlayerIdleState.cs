@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class PlayerIdleState : PlayerStateBase
 {
@@ -9,9 +9,9 @@ public class PlayerIdleState : PlayerStateBase
 
     public override void Enter()
     {
-        base.Enter(); // Важно: вызывать базовый Enter!
+        base.Enter(); // Р’Р°Р¶РЅРѕ: РІС‹Р·С‹РІР°С‚СЊ Р±Р°Р·РѕРІС‹Р№ Enter!
         _movementService.CalculateMovementDirection();
-        _movementService.SetMovement(0, _playerStats.CurrentProfile.maxSpeed, _playerStats.CurrentProfile.acceleration);
+        _movementService.SetMovement(0, 0, _playerStats.CurrentProfile.deceleration);
         var cameraService = ServiceLocator.Instance.GetService<ICameraService>();
         cameraService?.SetOrbitMode();
     }
@@ -19,11 +19,12 @@ public class PlayerIdleState : PlayerStateBase
     public override void Update()
     {
         TryRegenerateStamina();
+        
     }
 
     public override void HandleMoveInput(Vector3 direction)
     {
-        // Если получен ввод движения И это не нулевой вектор
+        // Р•СЃР»Рё РїРѕР»СѓС‡РµРЅ РІРІРѕРґ РґРІРёР¶РµРЅРёСЏ Р СЌС‚Рѕ РЅРµ РЅСѓР»РµРІРѕР№ РІРµРєС‚РѕСЂ
         if (direction.magnitude > 0.1f && !_isTransitioning)
         {
             _isTransitioning = true;
@@ -67,7 +68,7 @@ public class PlayerIdleState : PlayerStateBase
 
     private void TryRegenerateStamina()
     {
-        // Пример: восстановление стамины со временем
+        // РџСЂРёРјРµСЂ: РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ СЃС‚Р°РјРёРЅС‹ СЃРѕ РІСЂРµРјРµРЅРµРј
         _playerStats.CurrentProfile.health = (int)Mathf.Floor(
             Mathf.Min(_playerStats.CurrentProfile.maxHealth,
             _playerStats.CurrentProfile.health + Time.deltaTime * _playerStats.CurrentProfile.healthRegenRate)
@@ -76,11 +77,11 @@ public class PlayerIdleState : PlayerStateBase
 
     private bool CanAttackFromIdle()
     {
-        // Проверяем условия для атаки:
-        // 1. Есть ли оружие в руках?
-        // 2. Не перезаряжается ли оружие?
-        // 3. Хватит ли стамины?
-        // Можно получать доступ к сервису экипировки через ServiceLocator
+        // РџСЂРѕРІРµСЂСЏРµРј СѓСЃР»РѕРІРёСЏ РґР»СЏ Р°С‚Р°РєРё:
+        // 1. Р•СЃС‚СЊ Р»Рё РѕСЂСѓР¶РёРµ РІ СЂСѓРєР°С…?
+        // 2. РќРµ РїРµСЂРµР·Р°СЂСЏР¶Р°РµС‚СЃСЏ Р»Рё РѕСЂСѓР¶РёРµ?
+        // 3. РҐРІР°С‚РёС‚ Р»Рё СЃС‚Р°РјРёРЅС‹?
+        // РњРѕР¶РЅРѕ РїРѕР»СѓС‡Р°С‚СЊ РґРѕСЃС‚СѓРї Рє СЃРµСЂРІРёСЃСѓ СЌРєРёРїРёСЂРѕРІРєРё С‡РµСЂРµР· ServiceLocator
 
         //var equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
         //return equipmentService != null && equipmentService.HasWeaponEquipped();

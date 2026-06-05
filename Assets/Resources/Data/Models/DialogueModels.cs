@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,7 +20,7 @@ public class DialogueData
             npcPortrait = Resources.Load<Sprite>(npcPortraitPath);
             if (npcPortrait == null)
             {
-                Debug.LogWarning($"Не удалось загрузить портрет по пути: {npcPortraitPath}");
+                Debug.LogWarning($"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РїРѕСЂС‚СЂРµС‚ РїРѕ РїСѓС‚Рё: {npcPortraitPath}");
             }
         }
     }
@@ -84,7 +84,7 @@ public class AIDialogueData
             npcPortrait = Resources.Load<Sprite>(npcPortraitPath);
             if (npcPortrait == null)
             {
-                Debug.LogWarning($"Не удалось загрузить портрет по пути: {npcPortraitPath}");
+                Debug.LogWarning($"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РїРѕСЂС‚СЂРµС‚ РїРѕ РїСѓС‚Рё: {npcPortraitPath}");
             }
         }
     }
@@ -98,7 +98,7 @@ public class AIDialogueConstraint
     public string value;
 }
 
-// Зачем?
+// Р—Р°С‡РµРј?
 [System.Serializable]
 public class AICharacterData
 {
@@ -117,42 +117,42 @@ public class AICharacterData
 public class PlayerProfile
 {
     public string playerId = "player";
-    public string playerName = "Рыцарь печального образа";
+    public string playerName = "Р С‹С†Р°СЂСЊ РїРµС‡Р°Р»СЊРЅРѕРіРѕ РѕР±СЂР°Р·Р°";
     public string avatarPath = "Sprites/Portraits/player_portrait";
 
-    // Характеристики механические
+    // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё РјРµС…Р°РЅРёС‡РµСЃРєРёРµ
     public int level;
     public int health;
     public int maxHealth;
     public int mana;
     public int maxMana;
-    // Характеристики движения
-    public float maxSpeed = 7f;
-    public float speedMove = 5f;
-    public float speedRun;
+    // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё РґРІРёР¶РµРЅРёСЏ
+    public float maxSpeed = 8f;
+    public float speedMove = 4f;
+    public float speedRun = 8f;
     public float acceleration = 15f;
     public float deceleration = 10f;
     public float rotationSpeed = 10f;
     public float jumpForce = 8f;
-    // Характеристики ролевые
+    // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё СЂРѕР»РµРІС‹Рµ
     public int strength;
     public int intelligence;
     public int agility;
-    // Характеристики регенерации
+    // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё СЂРµРіРµРЅРµСЂР°С†РёРё
     public float healthRegenRate;
     public float manahRegenRate;
 
-    // Инвентарь
+    // РРЅРІРµРЅС‚Р°СЂСЊ
     public List<InventoryItem> inventory = new List<InventoryItem>();
     public int goldCount;
 
-    // Статистика
+    // РЎС‚Р°С‚РёСЃС‚РёРєР°
     public PlayerStats stats = new PlayerStats();
 
-    // Прогресс квестов
+    // РџСЂРѕРіСЂРµСЃСЃ РєРІРµСЃС‚РѕРІ
     public Dictionary<string, QuestProgress> quests = new Dictionary<string, QuestProgress>();
 
-    // Данные с диалогов
+    // Р”Р°РЅРЅС‹Рµ СЃ РґРёР°Р»РѕРіРѕРІ
     [SerializeField] private float[] _lastEmotions = new float[8]; // joy, sadness, anger, fear, surprise, trust, arousal, dominance
     public float[] LastEmotions
     {
@@ -170,7 +170,7 @@ public class PlayerProfile
             avatar = Resources.Load<Sprite>(avatarPath);
             if (avatar == null)
             {
-                Debug.LogWarning($"Не удалось загрузить портрет игрока по пути: {avatarPath}");
+                Debug.LogWarning($"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РїРѕСЂС‚СЂРµС‚ РёРіСЂРѕРєР° РїРѕ РїСѓС‚Рё: {avatarPath}");
             }
         }
     }
@@ -184,7 +184,7 @@ public class InventoryItem
     public string description;
     public int quantity = 1;
     public ItemType type;
-    public Dictionary<string, int> attributes; // Дополнительные атрибуты
+    public Dictionary<string, int> attributes; // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ Р°С‚СЂРёР±СѓС‚С‹
 }
 
 [System.Serializable]

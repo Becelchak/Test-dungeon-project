@@ -1,9 +1,9 @@
-using EventBusSystem;
+п»їusing EventBusSystem;
 using System;
 using UnityEngine;
 
 /// <summary>
-/// Базовый абстрактный класс для всех состояний игрока
+/// Р‘Р°Р·РѕРІС‹Р№ Р°Р±СЃС‚СЂР°РєС‚РЅС‹Р№ РєР»Р°СЃСЃ РґР»СЏ РІСЃРµС… СЃРѕСЃС‚РѕСЏРЅРёР№ РёРіСЂРѕРєР°
 /// </summary>
 public abstract class PlayerStateBase
 {
@@ -28,13 +28,13 @@ public abstract class PlayerStateBase
     public virtual void Enter()
     {
         _timeEnteredState = Time.time;
-        Debug.Log($"Вошли в состояние: {GetType().Name}");
+        Debug.Log($"Р’РѕС€Р»Рё РІ СЃРѕСЃС‚РѕСЏРЅРёРµ: {GetType().Name}");
 
         EventBus.RaiseEvent<IPlayerStateSubscriber>(s => s.OnPlayerStateChanged(GetType().Name));
     }
     public virtual void Exit()
     {
-        Debug.Log($"Вышли из состояния: {GetType().Name}");
+        Debug.Log($"Р’С‹С€Р»Рё РёР· СЃРѕСЃС‚РѕСЏРЅРёСЏ: {GetType().Name}");
     }
 
     public virtual void Update() { }

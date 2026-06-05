@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public interface IPlayerMovementService
 {
 
-    Rigidbody _rigidbody {  get; set; }
+    CharacterController charController {  get; set; }
     float _currentSpeed  {  get; set; }
     void Initialize();
     void Jump(float force, Vector3 direction);

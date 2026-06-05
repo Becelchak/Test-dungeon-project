@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,4 +21,5 @@ public interface IInputService
     Vector2 GetMovementInput();
     void EnableGameplayInput();
     void DisableGameplayInput();
+    Vector3 GetMouseWorldDirection(Camera cam, Transform playerTransform, float planeY = 0f);
 }

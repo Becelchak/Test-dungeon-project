@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.EventSystems;
 
 public class PlayerMoveState : PlayerStateBase
@@ -29,7 +29,7 @@ public class PlayerMoveState : PlayerStateBase
             _playerStats.CurrentProfile.acceleration);
 
         var moveService = (PlayerMovementService)_movementService;
-        _stateMachine.charRotate.RotateTowards(moveService.MoveDirection, _playerStats.CurrentProfile.rotationSpeed);
+        //_stateMachine.charRotate.RotateTowards(moveService.MoveDirection, _playerStats.CurrentProfile.rotationSpeed);
     }
 
     public override void HandleMoveInput(Vector3 direction)
@@ -53,7 +53,7 @@ public class PlayerMoveState : PlayerStateBase
     public override void HandleJumpInput(Vector3 direction)
     {
         Debug.Log("JUMP");
-        if (_movementService.CheckGround()) // можно прыгать только с земли
+        if (_movementService.CheckGround()) // РјРѕР¶РЅРѕ РїСЂС‹РіР°С‚СЊ С‚РѕР»СЊРєРѕ СЃ Р·РµРјР»Рё
         {
             var jumpState = new PlayerJumpState(_stateMachine, _movementService, direction);
             _stateMachine.TransitionToState(jumpState);

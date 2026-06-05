@@ -1,15 +1,37 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Profiling;
 
 public class CharacterRotator : MonoBehaviour, IRotator
 {
     [SerializeField] private Transform model;
-    private Transform targetRotation;
+    [SerializeField] private float rotationSpeed = 1f;
+
+    private PlayerMovementService _movement;
+    private IInputService _input;
+    private PlayerProfileService _profile;
 
     public void Start()
     {
-        var servise = (PlayerMovementService)ServiceLocator.Instance.GetService<IPlayerMovementService>();
-        model = servise.Hips;
+        _movement = (PlayerMovementService) ServiceLocator.Instance.GetService<IPlayerMovementService>();
+        _profile = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        rotationSpeed = _profile.CurrentProfile.rotationSpeed;
+        _input = ServiceLocator.Instance.GetService<IInputService>();
+        if (model == null) model = transform; // или hips
+    }
+
+    private void Update()
+    {
+        Vector3 targetDir = _input.GetMouseWorldDirection(Camera.main, transform);
+        Debug.DrawRay(transform.position, targetDir);
+        if (targetDir != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(targetDir);
+            Vector3 euler = targetRot.eulerAngles;
+            euler.x = 0;
+            euler.z = 0;
+            model.rotation = Quaternion.Slerp(model.rotation, Quaternion.Euler(euler), rotationSpeed * Time.deltaTime);
+        }
     }
 
     public void RotateTowards(Vector3 direction, float rotationSpeed)
@@ -23,8 +45,5 @@ public class CharacterRotator : MonoBehaviour, IRotator
         );
     }
 
-    public void SetTarget(Transform target)
-    {
-        targetRotation = target;
-    }
+    public void SetTarget(Transform target) => model = target;
 }

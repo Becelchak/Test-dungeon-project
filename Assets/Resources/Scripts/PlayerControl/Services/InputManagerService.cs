@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -61,6 +61,20 @@ public class InputManagerService : BaseService, IInputService
     {
         if (_moveAction == null) return Vector2.zero;
         return _moveAction.ReadValue<Vector2>();
+    }
+
+    public Vector3 GetMouseWorldDirection(Camera cam, Transform playerTransfrom, float planeY = 0f)
+    {
+        var ray = cam.ScreenPointToRay(Input.mousePosition);
+        var plane = new Plane(Vector3.up, new Vector3(0, planeY, 0));
+        if (plane.Raycast(ray, out float distance))
+        {
+            Vector3 point = ray.GetPoint(distance);
+            Vector3 fromPlayer = point - playerTransfrom.position;
+            fromPlayer.y = 0;
+            return fromPlayer.normalized;
+        }
+        return playerTransfrom.forward;
     }
 
     public void EnableGameplayInput() => _inputActions.Enable();

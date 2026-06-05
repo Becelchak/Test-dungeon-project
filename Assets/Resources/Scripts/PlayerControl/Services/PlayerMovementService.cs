@@ -1,52 +1,59 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovementService : BaseService, IPlayerMovementService
 {
 
-    [Header("��������� ������")]
-    // ��������� � ������ ������
+    [Header("НАСТРОЙКИ ПРЫЖКА")]
+    // Перенести в модель игрока
     [SerializeField] private float jumpForce = 8f;
     [SerializeField] private float groundCheckDistance = 0.2f;
     [SerializeField] private LayerMask groundLayer;
 
-    [Header("������")]
+    [Header("ССЫЛКИ")]
     [SerializeField] private Camera playerCamera;
     [SerializeField] private GameObject playerObject;
     [SerializeField] private Transform hips;
 
     private Vector3 moveDuraction;
-    public Rigidbody _rigidbody { get; set; }
+    public CharacterController charController { get; set; }
 
     private Vector3 _currentInput;
     private Vector2 _rawInput;
     private Vector3 _moveDirection;
+    public Vector3 LookDirection { get; private set; }
+
     private Vector3 _currentVelocity;
+    private float _verticalVelocity;
 
     private bool _isGrounded;
     private bool _isMoving;
 
     public Transform Hips => hips;
 
-    public float _currentSpeed { get; set; }
-    public float CurrentSpeed => _rigidbody.linearVelocity.magnitude;
+    private float _internalSpeed;
+    public float _currentSpeed
+    {
+        get { return _internalSpeed; }
+        set { _internalSpeed = value < 0 ? 0 : value; }
+    }
     public Vector3 MoveDirection => _moveDirection;
 
     protected override void Awake()
     {
-        Debug.Log("PlayerMovementService ���������");
+        Debug.Log("PlayerMovementService проснулся");
         base.Awake();
     }
 
     public void Initialize()
     {
-        _rigidbody = playerObject.GetComponent<Rigidbody>();
+        charController = playerObject.GetComponent<CharacterController>();
 
-        _rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-        _rigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX |
-                                 RigidbodyConstraints.FreezeRotationZ;
+        //charController.interpolation = RigidbodyInterpolation.Interpolate;
+        //charController.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        //charController.constraints = RigidbodyConstraints.FreezeRotationX |
+        //                         RigidbodyConstraints.FreezeRotationZ;
 
         if (playerCamera == null)
         {
@@ -59,7 +66,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     public void Jump(float force, Vector3 direction)
     {
-        _rigidbody.AddForce(Vector3.up * force * _rigidbody.mass, ForceMode.Impulse);
+        charController.Move(Vector3.up * force);
     }
 
     public void StartRun()
@@ -76,19 +83,43 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         moveDuraction = Vector3.zero;
     }
 
+    public void UpdateLookDirection(Vector3 direction)
+    {
+        if (direction.magnitude > 0.01f)
+            LookDirection = direction.normalized;
+    }
+
+    public Vector2 GetLocalMovementInput(Transform reference)
+    {
+        Vector3 worldDir = _moveDirection;
+        Vector3 localDir = reference.InverseTransformDirection(worldDir);
+        return new Vector2(localDir.x, localDir.z);
+    }
+
     public void SetMovement(float speed, float maxSpeed, float acceleration)
     {
         Vector3 targetVelocity = _moveDirection * Math.Max((_currentSpeed * speed), maxSpeed);
-        targetVelocity.y = _rigidbody.linearVelocity.y;
-
-        _rigidbody.linearVelocity = Vector3.Lerp(_rigidbody.linearVelocity, targetVelocity, acceleration * Time.fixedDeltaTime);
-
-        Vector3 horizontalVelocity = new Vector3(_rigidbody.linearVelocity.x, 0, _rigidbody.linearVelocity.z);
-        if (horizontalVelocity.magnitude > maxSpeed)
+        if (_moveDirection == Vector3.zero)
         {
-            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
-            _rigidbody.linearVelocity = new Vector3(horizontalVelocity.x, _rigidbody.linearVelocity.y, horizontalVelocity.z);
+            _currentSpeed = 0;
         }
+        else
+        {
+            float targetSpd = Mathf.Clamp(_currentSpeed * speed, 0f, maxSpeed);
+            _currentSpeed = Mathf.Lerp(_currentSpeed, targetSpd, acceleration * Time.fixedDeltaTime);
+        }
+        float verticalVelocity = _verticalVelocity;
+        if (CheckGround() && verticalVelocity < 0)
+            verticalVelocity = -2f; // Небольшое прижатие к земле, чтобы персонаж не "летал"
+
+        // Применяем гравитацию
+        verticalVelocity += Physics.gravity.y * Time.deltaTime;
+
+        // Формируем итоговое перемещение (горизонтальное движение + гравитация)
+        Vector3 move = _moveDirection * _currentSpeed * Time.deltaTime;
+        move.y = verticalVelocity;
+
+        charController.Move(move);
     }
 
     protected override Type GetServiceType() => typeof(IPlayerMovementService);
@@ -133,19 +164,6 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     {
         return _currentInput.magnitude > 0.1f;
     }
-
-    //public void ModifySpeed(float multiplier, float duration)
-    //{
-    //    moveSpeed *= multiplier;
-    //    maxSpeed *= multiplier;
-    //    Invoke(nameof(ResetSpeed), duration);
-    //}
-
-    //private void ResetSpeed()
-    //{
-    //    moveSpeed = 8f;
-    //    maxSpeed = 12f;
-    //}
 
     private void OnDrawGizmosSelected()
     {
