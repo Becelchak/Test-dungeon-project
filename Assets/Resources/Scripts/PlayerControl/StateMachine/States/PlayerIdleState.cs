@@ -12,6 +12,9 @@ public class PlayerIdleState : PlayerStateBase
         base.Enter(); // Важно: вызывать базовый Enter!
         _movementService.CalculateMovementDirection();
         _movementService.SetMovement(0, 0, _playerStats.CurrentProfile.deceleration);
+        _stateMachine.playerAnimator.SetBool("IsGrounded", _movementService.CheckGround());
+
+
         var cameraService = ServiceLocator.Instance.GetService<ICameraService>();
         cameraService?.SetOrbitMode();
     }
@@ -50,6 +53,7 @@ public class PlayerIdleState : PlayerStateBase
             direction = Vector3.up;
         if (_movementService.CheckGround())
         {
+            Debug.Log($"JUMP");
             var jumpState = new PlayerJumpState(_stateMachine, _movementService, direction);
             _stateMachine.TransitionToState(jumpState);
         }

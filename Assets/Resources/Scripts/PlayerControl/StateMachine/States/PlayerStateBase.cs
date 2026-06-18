@@ -5,13 +5,14 @@ using UnityEngine;
 /// <summary>
 /// Базовый абстрактный класс для всех состояний игрока
 /// </summary>
-public abstract class PlayerStateBase
+public abstract class PlayerStateBase : MonoBehaviour
 {
     protected PlayerStateMachine _stateMachine;
     protected IPlayerMovementService _movementService;
     protected PlayerProfileService _playerStats;
     protected IInputService _inputService;
     protected Vector3 _currentInput;
+    protected PlayerAnimationController _animationController;
 
     protected float _timeEnteredState;
 
@@ -19,7 +20,6 @@ public abstract class PlayerStateBase
     {
         _stateMachine = stateMachine ?? throw new ArgumentNullException(nameof(stateMachine));
         _movementService = movementService ?? throw new ArgumentNullException(nameof(movementService));
-
         _inputService = ServiceLocator.Instance.GetService<IInputService>();
         _movementService = (PlayerMovementService) ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _playerStats = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();

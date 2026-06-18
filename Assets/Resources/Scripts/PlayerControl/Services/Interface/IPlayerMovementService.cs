@@ -5,10 +5,11 @@ using UnityEngine.EventSystems;
 public interface IPlayerMovementService
 {
 
-    CharacterController charController {  get; set; }
+    CharacterController charController { get; set; }
     float _currentSpeed  {  get; set; }
+    float _verticalVelocity { get; }
     void Initialize();
-    void Jump(float force, Vector3 direction);
+    void Jump();
     bool CheckGround();
     void StartRun();
     void StopRun();

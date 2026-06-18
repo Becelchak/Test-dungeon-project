@@ -10,6 +10,7 @@ public class CharacterRotator : MonoBehaviour, IRotator
     private PlayerMovementService _movement;
     private IInputService _input;
     private PlayerProfileService _profile;
+    public Transform rotationModel => model;
 
     public void Start()
     {

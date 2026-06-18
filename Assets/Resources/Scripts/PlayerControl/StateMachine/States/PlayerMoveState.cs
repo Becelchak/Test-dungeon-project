@@ -14,6 +14,8 @@ public class PlayerMoveState : PlayerStateBase
         speedMove = _playerStats.CurrentProfile.speedMove;
         var cameraService = ServiceLocator.Instance.GetService<ICameraService>();
         cameraService?.SetFollowMode();
+        Vector2 input = _inputService.GetMovementInput();
+        _movementService.UpdateMovementInput(input);
     }
 
     public override void Update()

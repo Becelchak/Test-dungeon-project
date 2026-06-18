@@ -10,6 +10,8 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     [SerializeField] private float jumpForce = 8f;
     [SerializeField] private float groundCheckDistance = 0.2f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float gravity = -9.81f;
+    private bool _jumpRequested;
 
     [Header("ССЫЛКИ")]
     [SerializeField] private Camera playerCamera;
@@ -18,6 +20,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     private Vector3 moveDuraction;
     public CharacterController charController { get; set; }
+    private PlayerProfileService playerProfileService;
 
     private Vector3 _currentInput;
     private Vector2 _rawInput;
@@ -25,7 +28,9 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     public Vector3 LookDirection { get; private set; }
 
     private Vector3 _currentVelocity;
-    private float _verticalVelocity;
+    public float _verticalVelocity
+    { get; private set; }
+    private Vector3 _horizontalMove;
 
     private bool _isGrounded;
     private bool _isMoving;
@@ -64,9 +69,15 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         input?.EnableGameplayInput();
     }
 
-    public void Jump(float force, Vector3 direction)
+    public void Start()
     {
-        charController.Move(Vector3.up * force);
+        playerProfileService = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        jumpForce = playerProfileService.CurrentProfile.jumpForce;
+    }
+
+    public void Jump()
+    {
+        _jumpRequested = true;
     }
 
     public void StartRun()
@@ -98,28 +109,34 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     public void SetMovement(float speed, float maxSpeed, float acceleration)
     {
-        Vector3 targetVelocity = _moveDirection * Math.Max((_currentSpeed * speed), maxSpeed);
-        if (_moveDirection == Vector3.zero)
-        {
-            _currentSpeed = 0;
-        }
-        else
+        if (_moveDirection.magnitude > 0.01f)
         {
             float targetSpd = Mathf.Clamp(_currentSpeed * speed, 0f, maxSpeed);
             _currentSpeed = Mathf.Lerp(_currentSpeed, targetSpd, acceleration * Time.fixedDeltaTime);
         }
-        float verticalVelocity = _verticalVelocity;
-        if (CheckGround() && verticalVelocity < 0)
-            verticalVelocity = -2f; // Небольшое прижатие к земле, чтобы персонаж не "летал"
+        else
+        {
+            _currentSpeed = 0;
+        }
+        _horizontalMove = _moveDirection * _currentSpeed;
+    }
 
-        // Применяем гравитацию
-        verticalVelocity += Physics.gravity.y * Time.deltaTime;
+    public void FixedUpdate()
+    {
+        // Гравитация по умолчанию
+        _isGrounded = charController.isGrounded;
+        //Debug.Log($"1) _verticalVelocity =  {_verticalVelocity} and {_isGrounded}");
+        if (_isGrounded && _verticalVelocity < 0)
+            _verticalVelocity = -2f; // небольшое прижатие к земле
 
-        // Формируем итоговое перемещение (горизонтальное движение + гравитация)
-        Vector3 move = _moveDirection * _currentSpeed * Time.deltaTime;
-        move.y = verticalVelocity;
-
-        charController.Move(move);
+        if (_jumpRequested && _isGrounded)
+        {
+            _verticalVelocity = Mathf.Sqrt(jumpForce * -2f * gravity);
+            _jumpRequested = false;
+        }
+        _verticalVelocity += gravity * Time.fixedDeltaTime;
+        Vector3 finalMove = (_horizontalMove + Vector3.up * _verticalVelocity) * Time.fixedDeltaTime;
+        charController.Move(finalMove);
     }
 
     protected override Type GetServiceType() => typeof(IPlayerMovementService);
