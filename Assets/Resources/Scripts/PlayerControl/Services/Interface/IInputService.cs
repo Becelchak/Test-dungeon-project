@@ -14,6 +14,7 @@ public interface IInputService
 
     InputAction _moveAction { get; set; }
     InputAction _jumpAction { get; set; }
+    InputAction _sprintAction { get; set; }
     InputAction _attackAction { get; set; }
     InputAction _interactAction { get; set; }
     InputAction _submitAction { get; set; }

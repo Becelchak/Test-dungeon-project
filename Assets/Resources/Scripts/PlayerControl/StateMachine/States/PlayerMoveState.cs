@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class PlayerMoveState : PlayerStateBase
 {
@@ -26,12 +27,21 @@ public class PlayerMoveState : PlayerStateBase
     public override void FixedUpdate()
     {
         base.FixedUpdate();
-        _movementService.SetMovement(_movementService._currentSpeed,
-            _playerStats.CurrentProfile.maxSpeed,
-            _playerStats.CurrentProfile.acceleration);
+        CallMove();
+
 
         var moveService = (PlayerMovementService)_movementService;
-        //_stateMachine.charRotate.RotateTowards(moveService.MoveDirection, _playerStats.CurrentProfile.rotationSpeed);
+    }
+
+    public void CallMove()
+    {
+        float targetSpeed = _movementService.IsRunning
+    ? _playerStats.CurrentProfile.speedRun
+    : _playerStats.CurrentProfile.speedMove;
+
+        float acceleration = _playerStats.CurrentProfile.acceleration;
+
+        _movementService.SetMovement(targetSpeed, acceleration);
     }
 
     public override void HandleMoveInput(Vector3 direction)
@@ -41,9 +51,7 @@ public class PlayerMoveState : PlayerStateBase
             direction, 
             _playerStats.CurrentProfile.acceleration * Time.deltaTime);
         _movementService.UpdateMovementInput(direction);
-        _movementService._currentSpeed = Mathf.Lerp(speedMove, 
-            _playerStats.CurrentProfile.maxSpeed, 
-            _playerStats.CurrentProfile.acceleration * Time.deltaTime);
+        CallMove();
 
         if (direction.magnitude < 0.1f)
         {
@@ -54,12 +62,16 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void HandleJumpInput(Vector3 direction)
     {
-        Debug.Log("JUMP");
         if (_movementService.CheckGround()) // можно прыгать только с земли
         {
             var jumpState = new PlayerJumpState(_stateMachine, _movementService, direction);
             _stateMachine.TransitionToState(jumpState);
         }
+    }
+
+    public override void HandleSprintInput(bool sprintInpitPressed)
+    {
+        _movementService.IsRunning = sprintInpitPressed;
     }
 
     public override void HandleInteractionInput()
@@ -75,11 +87,7 @@ public class PlayerMoveState : PlayerStateBase
 
         if (direction.magnitude > 0.1f)
         {
-            _movementService._currentSpeed = Mathf.Lerp(
-                speedMove,
-                _playerStats.CurrentProfile.maxSpeed,
-                _playerStats.CurrentProfile.acceleration * Time.deltaTime
-            );
+            CallMove();
         }
         else
         {

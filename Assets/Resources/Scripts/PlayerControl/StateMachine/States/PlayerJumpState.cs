@@ -21,6 +21,7 @@ public class PlayerJumpState : PlayerStateBase
         _hasJumped = true;
         _hasStartedFall = false;
         _isLandingHandled = false;
+        _movementService.IsRunning = false;
 
     }
 
@@ -85,6 +86,7 @@ public class PlayerJumpState : PlayerStateBase
         }
         _hasJumped = false;
         _stateMachine.playerAnimator.SetTrigger("JumpLand");
+        _stateMachine.playerAnimator.ResetTrigger("JumpFall");
         // Анимация полностью завершилась — проверяем можно ли перейти в иное состояние
         CheckExitToMovement();
     }
@@ -103,10 +105,10 @@ public class PlayerJumpState : PlayerStateBase
         var isGrounded = _movementService.CheckGround();
         _stateMachine.playerAnimator.SetBool("InAir", !isGrounded);
         _stateMachine.playerAnimator.SetBool("IsGrounded", isGrounded);
+        _stateMachine.playerAnimator.ResetTrigger("JumpStart");
 
         Debug.Log($"grounded exit = {isGrounded}");
         base.Exit();
-        // _inputService.EnableGameplayInput(); // УДАЛИТЬ
     }
 
 }

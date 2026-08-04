@@ -34,6 +34,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     private bool _isGrounded;
     private bool _isMoving;
+    private bool _isRunning;
 
     public Transform Hips => hips;
 
@@ -44,6 +45,12 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         set { _internalSpeed = value < 0 ? 0 : value; }
     }
     public Vector3 MoveDirection => _moveDirection;
+
+    public bool IsRunning { get => _isRunning; set 
+        {
+            _isRunning = value;
+        } 
+    }
 
     protected override void Awake()
     {
@@ -107,17 +114,19 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         return new Vector2(localDir.x, localDir.z);
     }
 
-    public void SetMovement(float speed, float maxSpeed, float acceleration)
+    public void SetMovement(float targetSpeed, float acceleration)
     {
         if (_moveDirection.magnitude > 0.01f)
         {
-            float targetSpd = Mathf.Clamp(_currentSpeed * speed, 0f, maxSpeed);
-            _currentSpeed = Mathf.Lerp(_currentSpeed, targetSpd, acceleration * Time.fixedDeltaTime);
+            var tempSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
+            _currentSpeed = tempSpeed;
+            Debug.Log($"tempSpeed = {tempSpeed}  IsRunning = {IsRunning}  targetSpeed = {targetSpeed}");
         }
         else
         {
             _currentSpeed = 0;
         }
+
         _horizontalMove = _moveDirection * _currentSpeed;
     }
 

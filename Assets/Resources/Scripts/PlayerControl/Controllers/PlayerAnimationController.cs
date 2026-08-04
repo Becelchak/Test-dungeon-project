@@ -30,6 +30,6 @@ public class PlayerAnimationController : MonoBehaviour
         animator.SetFloat("ForwardVelocity", forward);
         animator.SetFloat("RightVelocity", right);
         animator.SetFloat("Speed", Mathf.Clamp01(movement._currentSpeed / playerProfile.CurrentProfile.maxSpeed));
-        //Debug.Log($"localInput: {localInput}, modelRot: {characterRotator.rotationModel.eulerAngles}, moveDir: {movement.MoveDirection}");
+        Debug.Log($"_currentSpeed: {movement._currentSpeed}, maxSpeed: {playerProfile.CurrentProfile.maxSpeed}");
     }
 }

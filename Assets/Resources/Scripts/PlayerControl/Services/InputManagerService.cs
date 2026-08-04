@@ -18,6 +18,7 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _attackAction { get; set; }
     public InputAction _interactAction { get; set; }
     public InputAction _submitAction { get; set; }
+    public InputAction _sprintAction { get; set; }
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -44,6 +45,10 @@ public class InputManagerService : BaseService, IInputService
         _jumpAction = _inputActions.FindAction("Jump");
         _jumpAction.performed += ctx => OnJump?.Invoke();
         _jumpAction.canceled += ctx => OnJump?.Invoke();
+
+        _sprintAction = _inputActions.FindAction("Sprint");
+        _sprintAction.performed += ctx => OnSprintInput?.Invoke(true);
+        _sprintAction.canceled += ctx => OnSprintInput?.Invoke(false);
 
         _attackAction = _inputActions.FindAction("Attack");
         _attackAction.performed += ctx => OnAttack?.Invoke();

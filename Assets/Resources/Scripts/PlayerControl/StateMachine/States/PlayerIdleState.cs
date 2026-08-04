@@ -11,8 +11,9 @@ public class PlayerIdleState : PlayerStateBase
     {
         base.Enter(); // Важно: вызывать базовый Enter!
         _movementService.CalculateMovementDirection();
-        _movementService.SetMovement(0, 0, _playerStats.CurrentProfile.deceleration);
+        _movementService.SetMovement( 0, _playerStats.CurrentProfile.deceleration);
         _stateMachine.playerAnimator.SetBool("IsGrounded", _movementService.CheckGround());
+        _movementService.IsRunning = false;
 
 
         var cameraService = ServiceLocator.Instance.GetService<ICameraService>();
@@ -37,7 +38,7 @@ public class PlayerIdleState : PlayerStateBase
         else
         {
             _movementService._currentSpeed = Mathf.Lerp(_movementService._currentSpeed, 0f, _playerStats.CurrentProfile.deceleration * Time.deltaTime);
-            _movementService.SetMovement(0f, 0f, _playerStats.CurrentProfile.deceleration);
+            _movementService.SetMovement(0f, _playerStats.CurrentProfile.deceleration);
         }
     }
 
