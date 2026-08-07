@@ -11,6 +11,7 @@ public abstract class PlayerStateBase : MonoBehaviour
     protected IPlayerMovementService _movementService;
     protected PlayerProfileService _playerStats;
     protected IInputService _inputService;
+    protected IEquipmentStatsService _equipmentStatsService;
     protected Vector3 _currentInput;
     protected PlayerAnimationController _animationController;
 
@@ -23,6 +24,7 @@ public abstract class PlayerStateBase : MonoBehaviour
         _inputService = ServiceLocator.Instance.GetService<IInputService>();
         _movementService = (PlayerMovementService) ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _playerStats = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        _equipmentStatsService = ServiceLocator.Instance.GetService<IEquipmentStatsService>();
     }
 
     public virtual void Enter()
@@ -48,6 +50,7 @@ public abstract class PlayerStateBase : MonoBehaviour
     public virtual void HandleJumpInput(Vector3 direction) { }
     public virtual void HandleDashInput() { }
     public virtual void HandleSprintInput(bool inputPressed) { }
+    public virtual void HandleBlockInput(bool isBlocking) { }
     public virtual void HandleMovement(Vector3 direction) { }
     public virtual void HandleInteractionInput() { }
 }

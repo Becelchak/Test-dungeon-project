@@ -4,7 +4,9 @@ using UnityEngine.Rendering;
 
 public class PlayerMoveState : PlayerStateBase
 {
+    private const float BLOCK_MOVE_MULTIPLIER = 0.8f;
     private float speedMove;
+    private bool _isBlocking;
 
     public PlayerMoveState(PlayerStateMachine stateMachine, IPlayerMovementService movementService, Vector3 direction) : base(stateMachine, movementService)
     {}
@@ -12,11 +14,14 @@ public class PlayerMoveState : PlayerStateBase
     public override void Enter()
     {
         base.Enter();
+        _isBlocking = _stateMachine.CombatService.IsBlocking;
+        _stateMachine.playerAnimator.SetBool("Block", _isBlocking);
         speedMove = _playerStats.CurrentProfile.speedMove;
         var cameraService = ServiceLocator.Instance.GetService<ICameraService>();
         cameraService?.SetFollowMode();
         Vector2 input = _inputService.GetMovementInput();
         _movementService.UpdateMovementInput(input);
+        _movementService.IsRunning = false;
     }
 
     public override void Update()
@@ -35,11 +40,17 @@ public class PlayerMoveState : PlayerStateBase
 
     public void CallMove()
     {
-        float targetSpeed = _movementService.IsRunning
-    ? _playerStats.CurrentProfile.speedRun
-    : _playerStats.CurrentProfile.speedMove;
+        var stats = _equipmentStatsService?.CurrentStats;
+        if (stats == null)
+        {
+            _movementService.SetMovement(0f, 0f);
+            return;
+        }
 
-        float acceleration = _playerStats.CurrentProfile.acceleration;
+        float targetSpeed = _movementService.IsRunning ? stats.RunSpeed : stats.MoveSpeed;
+        if (_isBlocking)
+            targetSpeed *= BLOCK_MOVE_MULTIPLIER;
+        float acceleration = stats.Acceleration;
 
         _movementService.SetMovement(targetSpeed, acceleration);
     }
@@ -74,6 +85,13 @@ public class PlayerMoveState : PlayerStateBase
         _movementService.IsRunning = sprintInpitPressed;
     }
 
+    public override void HandleBlockInput(bool isBlocking)
+    {
+        _isBlocking = isBlocking;
+        _stateMachine.playerAnimator.SetBool("Block", isBlocking);
+        CallMove();
+    }
+
     public override void HandleInteractionInput()
     {
         Debug.Log("MOVE INTERACT");
@@ -94,5 +112,11 @@ public class PlayerMoveState : PlayerStateBase
             var idleState = new PlayerIdleState(_stateMachine, _movementService);
             _stateMachine.TransitionToState(idleState);
         }
+    }
+
+    public override void HandleAttackInput()
+    {
+        var attackState = new PlayerAttackState(_stateMachine, _movementService);
+        _stateMachine.TransitionToState(attackState);
     }
 }

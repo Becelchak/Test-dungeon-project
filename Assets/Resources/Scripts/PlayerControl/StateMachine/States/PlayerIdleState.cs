@@ -9,10 +9,11 @@ public class PlayerIdleState : PlayerStateBase
 
     public override void Enter()
     {
-        base.Enter(); // Важно: вызывать базовый Enter!
+        base.Enter();
         _movementService.CalculateMovementDirection();
         _movementService.SetMovement( 0, _playerStats.CurrentProfile.deceleration);
         _stateMachine.playerAnimator.SetBool("IsGrounded", _movementService.CheckGround());
+        _stateMachine.playerAnimator.SetBool("Block", _stateMachine.CombatService.IsBlocking);
         _movementService.IsRunning = false;
 
 
@@ -37,8 +38,9 @@ public class PlayerIdleState : PlayerStateBase
         }
         else
         {
-            _movementService._currentSpeed = Mathf.Lerp(_movementService._currentSpeed, 0f, _playerStats.CurrentProfile.deceleration * Time.deltaTime);
-            _movementService.SetMovement(0f, _playerStats.CurrentProfile.deceleration);
+            float deceleration = _equipmentStatsService?.CurrentStats?.Deceleration ?? _playerStats.CurrentProfile.deceleration;
+            _movementService._currentSpeed = Mathf.Lerp(_movementService._currentSpeed, 0f, deceleration * Time.deltaTime);
+            _movementService.SetMovement(0f, deceleration);
         }
     }
 
@@ -46,6 +48,11 @@ public class PlayerIdleState : PlayerStateBase
     {
         Debug.Log("INTERACT");
         _stateMachine.interactor.TryInteract();
+    }
+
+    public override void HandleBlockInput(bool isBlocking)
+    {
+        _stateMachine.playerAnimator.SetBool("Block", isBlocking);
     }
 
     public override void HandleJumpInput(Vector3 direction)
@@ -65,9 +72,8 @@ public class PlayerIdleState : PlayerStateBase
         if (CanAttackFromIdle())
         {
             Debug.Log($"ATTACK");
-            //_isTransitioning = true;
-            //var attackState = new PlayerAttackState(_stateMachine, _movementService);
-            //_stateMachine.TransitionToState(attackState);
+            var attackState = new PlayerAttackState(_stateMachine, _movementService);
+            _stateMachine.TransitionToState(attackState);
         }
     }
 

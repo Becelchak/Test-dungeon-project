@@ -9,16 +9,19 @@ public class InputManagerService : BaseService, IInputService
     public event Action OnJump;
     public event Action OnAttack;
     public event Action OnInteract;
-    public event Action OnRun;
     public event Action OnSubmit;
-    public event Action<bool> OnSprintInput;
-    
+    public event Action<bool> OnSprint;
+    public event Action<int> OnSwitchWeaponSlot;
+    public event Action<bool> OnBlock;
+
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
     public InputAction _attackAction { get; set; }
     public InputAction _interactAction { get; set; }
     public InputAction _submitAction { get; set; }
     public InputAction _sprintAction { get; set; }
+    public InputAction _switchWeaponSlotAction { get; set; }
+    public InputAction _blockAction { get; set; }
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -47,8 +50,8 @@ public class InputManagerService : BaseService, IInputService
         _jumpAction.canceled += ctx => OnJump?.Invoke();
 
         _sprintAction = _inputActions.FindAction("Sprint");
-        _sprintAction.performed += ctx => OnSprintInput?.Invoke(true);
-        _sprintAction.canceled += ctx => OnSprintInput?.Invoke(false);
+        _sprintAction.performed += ctx => OnSprint?.Invoke(true);
+        _sprintAction.canceled += ctx => OnSprint?.Invoke(false);
 
         _attackAction = _inputActions.FindAction("Attack");
         _attackAction.performed += ctx => OnAttack?.Invoke();
@@ -60,6 +63,24 @@ public class InputManagerService : BaseService, IInputService
 
         _submitAction = _inputActions.FindAction("Submit");
         _submitAction.performed += ctx => OnSubmit?.Invoke();
+
+        _switchWeaponSlotAction = _inputActions.FindAction("SwitchSlots");
+        if (_switchWeaponSlotAction != null)
+        {
+            _switchWeaponSlotAction.performed += ctx =>
+            {
+                // displayName для клавиш 1, 2, 3 вернет "1", "2", "3"
+                if (int.TryParse(ctx.control.displayName, out int slotNumber) && slotNumber >= 1 && slotNumber <= 3)
+                    OnSwitchWeaponSlot?.Invoke(slotNumber - 1);
+            };
+        }
+
+        _blockAction = _inputActions.FindAction("Block");
+        if (_blockAction != null)
+        {
+            _blockAction.performed += ctx => OnBlock?.Invoke(true);
+            _blockAction.canceled += ctx => OnBlock?.Invoke(false);
+        }
     }
 
     public Vector2 GetMovementInput()

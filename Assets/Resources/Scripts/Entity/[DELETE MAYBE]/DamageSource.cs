@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class DamageSource : MonoBehaviour
 {
@@ -6,30 +6,39 @@ public class DamageSource : MonoBehaviour
     [SerializeField] private bool destroyOnHit = false;
     [SerializeField] private float cooldown = 1f;
 
-    private float _lastDamageTime;
     private bool _canDamage = true;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!_canDamage || !other.CompareTag("Player")) return;
-
-        var playerService = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        playerService.ModifyHealth(-damageAmount);
-        Debug.Log("»√–Œ  œŒÀ”◊»À ”–ŒÕ! [“–»√√≈–]");
-
-        _canDamage = false;
-        Invoke(nameof(ResetCooldown), cooldown);
-
-        if (destroyOnHit) Destroy(gameObject);
+        if (!CanDamage(other)) return;
+        ApplyDamage();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!_canDamage || !collision.collider.CompareTag("Player")) return;
+        if (!CanDamage(collision.collider)) return;
+        ApplyDamage();
+    }
 
-        var playerService = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        playerService.ModifyHealth(-damageAmount);
-        Debug.Log("»√–Œ  œŒÀ”◊»À ”–ŒÕ! [—ŒÀÀ»ƒ≈–]");
+    private bool CanDamage(Collider collider)
+    {
+        return _canDamage && collider.CompareTag("Player");
+    }
+
+    private void ApplyDamage()
+    {
+        var combatService = ServiceLocator.Instance.GetService<IPlayerCombatService>();
+        if (combatService != null)
+        {
+            combatService.ApplyDamage(damageAmount, gameObject);
+        }
+        else
+        {
+            // Fallback: –µ—Å–ª–∏ —Å–µ—Ä–≤–∏—Å–∞ –Ω–µ—Ç, –Ω–∞–Ω–æ—Å–∏–º —É—Ä–æ–Ω –Ω–∞–ø—Ä—è–º—É—é
+            var playerService = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
+            playerService.ModifyHealth(-damageAmount);
+            Debug.Log("–ò–ì–†–û–ö –ü–û–õ–£–ß–ò–õ –£–†–û–ù! [fallback]");
+        }
 
         _canDamage = false;
         Invoke(nameof(ResetCooldown), cooldown);

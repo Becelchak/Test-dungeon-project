@@ -5,12 +5,13 @@ using UnityEngine.InputSystem;
 public interface IInputService
 {
     event Action<Vector2> OnMove;
-    event Action OnRun;
     event Action OnAttack;
     event Action OnInteract;
     event Action OnJump;
     event Action OnSubmit;
-    event Action<bool> OnSprintInput;
+    event Action<bool> OnSprint;
+    event Action<int> OnSwitchWeaponSlot;
+    event Action<bool> OnBlock;
 
     InputAction _moveAction { get; set; }
     InputAction _jumpAction { get; set; }
@@ -18,6 +19,8 @@ public interface IInputService
     InputAction _attackAction { get; set; }
     InputAction _interactAction { get; set; }
     InputAction _submitAction { get; set; }
+    InputAction _switchWeaponSlotAction { get; set; }
+    InputAction _blockAction { get; set; }
 
     Vector2 GetMovementInput();
     void EnableGameplayInput();

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb97a34184cf54e4791a379d957b8dc8, type: 3}
+  m_Name: Unarmed
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponType: 0
+  handling: 0
+  attackAnimationClips:
+  - {fileID: 7400000, guid: ed7113d92da7cbd4cb2aabd5b60b7f24, type: 2}
+  - {fileID: 7400000, guid: f5757730e4eac3c44b7a7c762f6f740e, type: 2}
+  weaponPrefab: {fileID: 8221754931635029613, guid: 5ac3bab6d01599b4ea05d19980e59d5d, type: 3}
+  weaponHolderOffset: {x: 0, y: 0, z: 0}
+  weaponHolderRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  rightHandPositionOffset: {x: 0, y: 0, z: 0}
+  rightHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  leftHandPositionOffset: {x: 0, y: 0, z: 0}
+  leftHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  jsonFile: {fileID: 4900000, guid: 85c264457ae54104e8a2b5ce739f9018, type: 3}
+  stats:
+    weaponId: hands_01
+    damage: 0.5
+    range: 1
+    attackDuration: 0.1

@@ -46,6 +46,8 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     }
     public Vector3 MoveDirection => _moveDirection;
 
+    private IEquipmentStatsService _equipmentStatsService;
+
     public bool IsRunning { get => _isRunning; set 
         {
             _isRunning = value;
@@ -79,7 +81,8 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     public void Start()
     {
         playerProfileService = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        jumpForce = playerProfileService.CurrentProfile.jumpForce;
+        _equipmentStatsService = ServiceLocator.Instance.GetService<IEquipmentStatsService>();
+        jumpForce = _equipmentStatsService?.CurrentStats?.JumpForce ?? playerProfileService.CurrentProfile.jumpForce;
     }
 
     public void Jump()
@@ -120,7 +123,6 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         {
             var tempSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
             _currentSpeed = tempSpeed;
-            Debug.Log($"tempSpeed = {tempSpeed}  IsRunning = {IsRunning}  targetSpeed = {targetSpeed}");
         }
         else
         {
@@ -134,7 +136,6 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     {
         // Гравитация по умолчанию
         _isGrounded = charController.isGrounded;
-        //Debug.Log($"1) _verticalVelocity =  {_verticalVelocity} and {_isGrounded}");
         if (_isGrounded && _verticalVelocity < 0)
             _verticalVelocity = -2f; // небольшое прижатие к земле
 

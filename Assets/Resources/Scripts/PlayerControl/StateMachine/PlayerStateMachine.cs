@@ -5,10 +5,16 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
 {
     private IInputService _input;
     private IPlayerMovementService _movement;
+    private IEquipmentService _equipment;
+    private IPlayerCombatService _combat;
+
+    public IPlayerCombatService CombatService => _combat;
     private PlayerStateBase _currentState;
     public CharacterRotator charRotate;
     public Interactor interactor;
     public Animator playerAnimator;
+    public PlayerAnimationController playerAnimationController;
+    public WeaponIKController weaponIKController;
 
     private void OnEnable()
     {
@@ -25,19 +31,25 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         _input = ServiceLocator.Instance.GetService<IInputService>();
         _movement = ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _movement.Initialize();
+        _equipment = ServiceLocator.Instance.GetService<IEquipmentService>();
+        _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
+        if (_combat == null)
+            Debug.LogError("[PlayerStateMachine] PlayerCombatService не найден в ServiceLocator! Добавьте компонент PlayerCombatService на сцену.");
         charRotate = GetComponent<CharacterRotator>();
+        playerAnimationController = GetComponent<PlayerAnimationController>();
         //interactor = GameObject.Find("Interactor").GetComponent<Interactor>();
         interactor = GetComponentInChildren<Interactor>();
         playerAnimator = GetComponentInChildren<Animator>();
+        weaponIKController = GetComponentInChildren<WeaponIKController>();
     }
     private void Start()
     {
         _input.OnMove += HandleMoveInput;
         _input.OnAttack += HandleAttackInput;
-        _input.OnSprintInput += HandleSprintInput;
-        _input.OnRun += HandleRunInput;
+        _input.OnSprint += HandleSprintInput;
         _input.OnInteract += HandleInteractionInput;
         _input.OnJump += HandleJumpInput;
+        _input.OnBlock += HandleBlockInput;
 
         TransitionToState(new PlayerIdleState(this, _movement));
     }
@@ -80,9 +92,14 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         _currentState?.HandleAttackInput();
     }
 
-    private void HandleRunInput()
+    private void HandleBlockInput(bool isBlocking)
     {
-        _currentState?.HandleAttackInput();
+        if (_combat == null)
+            _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
+
+        _combat?.SetBlocking(isBlocking);
+        _currentState?.HandleBlockInput(isBlocking);
+        playerAnimationController?.SetBlocking(isBlocking);
     }
 
     public void TransitionToState(PlayerStateBase newState)
@@ -117,10 +134,10 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         {
             _input.OnMove -= HandleMoveInput;
             _input.OnAttack -= HandleAttackInput;
-            _input.OnSprintInput -= HandleSprintInput;
-            _input.OnRun -= HandleRunInput;
+            _input.OnSprint -= HandleSprintInput;
             _input.OnInteract -= HandleInteractionInput;
             _input.OnJump -= HandleJumpInput;
+            _input.OnBlock -= HandleBlockInput;
         }
     }
 }

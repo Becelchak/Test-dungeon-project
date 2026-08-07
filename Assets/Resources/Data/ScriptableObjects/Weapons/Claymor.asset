@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb97a34184cf54e4791a379d957b8dc8, type: 3}
+  m_Name: Claymor
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  weaponType: 3
+  handling: 2
+  attackAnimationClips:
+  - {fileID: 7400000, guid: 050f63a31f3ef3a4987df2805d03d981, type: 2}
+  weaponPrefab: {fileID: 5649426590539653510, guid: 964975a60606c7b468532068a37b0235, type: 3}
+  weaponHolderOffset: {x: 0, y: 0.22, z: 0.421}
+  weaponHolderRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  rightHandPositionOffset: {x: -0.000741, y: -0.000116, z: -0.000014}
+  rightHandRotationOffsetEuler: {x: 0, y: 0, z: -80}
+  leftHandPositionOffset: {x: -0.00094, y: 0.0002, z: 0.00047}
+  leftHandRotationOffsetEuler: {x: 0, y: 0, z: -75}
+  twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
+  jsonFile: {fileID: 4900000, guid: 5efa9e71a2709e24caaaa40d77646948, type: 3}
+  stats:
+    weaponId: great_sword_01
+    damage: 25.5
+    range: 2.5
+    attackDuration: 1.8

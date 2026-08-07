@@ -1,4 +1,4 @@
-using EventBusSystem;
+п»їusing EventBusSystem;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +8,11 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
     private const string PROFILE_KEY = "player_profile";
     private PlayerProfile _currentProfile;
 
-    public PlayerProfile CurrentProfile => _currentProfile ??= LoadProfile();
+    public PlayerProfile CurrentProfile
+    {
+        get => _currentProfile ??= LoadProfile();
+        set => _currentProfile = value;
+    }
 
     private PlayerProfile LoadProfile()
     {
@@ -20,11 +24,11 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
             {
                 var json = PlayerPrefs.GetString(PROFILE_KEY);
                 profile = JsonUtility.FromJson<PlayerProfile>(json);
-                Debug.Log("Профиль игрока загружен из сохранения");
+                Debug.Log("РџСЂРѕС„РёР»СЊ РёРіСЂРѕРєР° Р·Р°РіСЂСѓР¶РµРЅ РёР· СЃРѕС…СЂР°РЅРµРЅРёСЏ");
             }
             catch (Exception e)
             {
-                Debug.LogError($"Ошибка загрузки профиля: {e.Message}");
+                Debug.LogError($"РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё РїСЂРѕС„РёР»СЏ: {e.Message}");
                 profile = CreateDefaultProfile();
             }
         }
@@ -42,7 +46,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         PlayerPrefs.DeleteKey(PROFILE_KEY);
         _currentProfile = null;
         var _ = CurrentProfile;
-        Debug.Log("Профиль игрока сброшен и создан заново");
+        Debug.Log("РџСЂРѕС„РёР»СЊ РёРіСЂРѕРєР° СЃР±СЂРѕС€РµРЅ Рё СЃРѕР·РґР°РЅ Р·Р°РЅРѕРІРѕ");
     }
 
     private PlayerProfile CreateDefaultProfile()
@@ -51,10 +55,10 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
 
         profile.stats = new PlayerStats { firstPlayDate = DateTime.Now };
 
-        // Рандомное выставление параметров игрока
+        // Р Р°РЅРґРѕРјРЅРѕРµ РІС‹СЃС‚Р°РІР»РµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ РёРіСЂРѕРєР°
         CreateRandomParameters(profile);
 
-        Debug.Log("Создан новый профиль игрока по умолчанию");
+        Debug.Log("РЎРѕР·РґР°РЅ РЅРѕРІС‹Р№ РїСЂРѕС„РёР»СЊ РёРіСЂРѕРєР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ");
         return profile;
     }
 
@@ -91,11 +95,11 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
             PlayerPrefs.SetString(PROFILE_KEY, json);
             PlayerPrefs.Save();
             _currentProfile = profile;
-            Debug.Log("Профиль игрока сохранен");
+            Debug.Log("РџСЂРѕС„РёР»СЊ РёРіСЂРѕРєР° СЃРѕС…СЂР°РЅРµРЅ");
         }
         catch (Exception e)
         {
-            Debug.LogError($"Ошибка сохранения профиля: {e.Message}");
+            Debug.LogError($"РћС€РёР±РєР° СЃРѕС…СЂР°РЅРµРЅРёСЏ РїСЂРѕС„РёР»СЏ: {e.Message}");
         }
     }
 

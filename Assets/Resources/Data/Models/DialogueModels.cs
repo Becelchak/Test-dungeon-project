@@ -208,8 +208,6 @@ public class QuestProgress
     public int currentStep;
     public Dictionary<string, bool> objectives;
 }
-
-public enum ItemType { Weapon, Armor, Consumable, Quest, Miscellaneous }
 public enum QuestStatus { NotStarted, InProgress, Completed, Failed }
 
 [System.Serializable]
