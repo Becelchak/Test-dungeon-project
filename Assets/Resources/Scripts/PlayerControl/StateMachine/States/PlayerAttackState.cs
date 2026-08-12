@@ -56,7 +56,6 @@ public class PlayerAttackState : PlayerStateBase
         if (!_hasAttacked && _attackTimer > _attackDuration * 0.7f)
         {
             _hasAttacked = true;
-            // Здесь можно вызвать событие нанесения урона
         }
         if (_attackTimer >= _attackDuration)
         {

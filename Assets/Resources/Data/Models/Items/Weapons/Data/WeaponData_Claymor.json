@@ -2,5 +2,7 @@
   "weaponId": "great_sword_01",
   "damage": 25.5,
   "range": 2.5,
-  "attackDuration": 1.8
+  "attackDuration": 1.8,
+  "perfectBlockWindow": 0.095,
+  "blockDamageReduction":  0.2
 }

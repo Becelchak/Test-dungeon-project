@@ -1,4 +1,4 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 using System.ComponentModel;
@@ -21,17 +21,17 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
     protected override void SetupBindings()
     {
 
-        // Сначала устанавливаем значения по умолчанию
-        npcNameText.text = "Загрузка...";
+        // РЎРЅР°С‡Р°Р»Р° СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
+        npcNameText.text = "Р—Р°РіСЂСѓР·РєР°...";
         dialogueText.text = "...";
         userInputField.text = "";
         sendButton.interactable = false;
         closeButton.interactable = true;
 
-        // Подписка на изменения свойств
+        // РџРѕРґРїРёСЃРєР° РЅР° РёР·РјРµРЅРµРЅРёСЏ СЃРІРѕР№СЃС‚РІ
         ViewModel.PropertyChanged += OnPropertyChanged;
 
-        // Привязка поля ввода - двусторонняя
+        // РџСЂРёРІСЏР·РєР° РїРѕР»СЏ РІРІРѕРґР° - РґРІСѓСЃС‚РѕСЂРѕРЅРЅСЏСЏ
         userInputField.onValueChanged.AddListener(value =>
         {
             if (ViewModel.UserInput != value)
@@ -40,21 +40,21 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
             }
         });
 
-        var inputService = (InputManagerService)ServiceLocator.Instance.GetService<IInputService>();
+        var inputService = ServiceLocator.Instance.GetService<IInputService>();
         inputService.OnSubmit += HandleSubmitKeyPress;
 
-        // Привязка команды отправки
+        // РџСЂРёРІСЏР·РєР° РєРѕРјР°РЅРґС‹ РѕС‚РїСЂР°РІРєРё
         sendButton.onClick.AddListener(() => ViewModel.SendMessageCommand.Execute(null));
         closeButton.onClick.AddListener(() => ViewModel.CloseDialogueCommand.Execute(null));
         userInputField.onSubmit.AddListener((x) => HandleSubmitKeyPress());
 
-        // Если ViewModel уже инициализирована, обновляем UI
+        // Р•СЃР»Рё ViewModel СѓР¶Рµ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅР°, РѕР±РЅРѕРІР»СЏРµРј UI
         if (ViewModel.IsInitialized)
         {
             UpdateUI();
         }
 
-        // Привязка DialogueLogView
+        // РџСЂРёРІСЏР·РєР° DialogueLogView
         if (dialogueLogView != null && ViewModel.LogViewModel != null)
         {
             dialogueLogView.Bind(ViewModel.LogViewModel);
@@ -63,7 +63,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
 
     private void HandleSubmitKeyPress()
     {
-        // Отправляем текст только если поле в фокусе и не пустое
+        // РћС‚РїСЂР°РІР»СЏРµРј С‚РµРєСЃС‚ С‚РѕР»СЊРєРѕ РµСЃР»Рё РїРѕР»Рµ РІ С„РѕРєСѓСЃРµ Рё РЅРµ РїСѓСЃС‚РѕРµ
         if (userInputField.isFocused && !string.IsNullOrEmpty(userInputField.text))
         {
             ViewModel.SendMessageCommand.Execute(null);
@@ -82,7 +82,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
                 break;
 
             case nameof(ViewModel.NpcName):
-                npcNameText.text = ViewModel.NpcName ?? "Неизвестный NPC";
+                npcNameText.text = ViewModel.NpcName ?? "РќРµРёР·РІРµСЃС‚РЅС‹Р№ NPC";
                 break;
 
             case nameof(ViewModel.DialogueText):
@@ -106,7 +106,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
 
     private void UpdateUI()
     {
-        npcNameText.text = ViewModel.NpcName ?? "Неизвестный NPC";
+        npcNameText.text = ViewModel.NpcName ?? "РќРµРёР·РІРµСЃС‚РЅС‹Р№ NPC";
         dialogueText.text = ViewModel.DialogueText ?? "...";
         userInputField.text = ViewModel.UserInput ?? "";
         UpdateSendButtonInteractable();

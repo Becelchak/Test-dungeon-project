@@ -98,6 +98,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
             _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
 
         _combat?.SetBlocking(isBlocking);
+        weaponIKController.SetBLockMode(isBlocking, true);
         _currentState?.HandleBlockInput(isBlocking);
         playerAnimationController?.SetBlocking(isBlocking);
     }

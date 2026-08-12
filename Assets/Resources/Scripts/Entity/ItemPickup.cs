@@ -42,7 +42,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         LogInventory(profileService.CurrentProfile);
 
         // Проигрываем анимацию подбора поверх текущего состояния
-        var animController = interactor.GetComponentInChildren<PlayerAnimationController>();
+        var animController = interactor.GetComponentInParent<PlayerAnimationController>();
         if (animController != null)
             animController.TriggerPickup();
 
@@ -51,7 +51,10 @@ public class ItemPickup : MonoBehaviour, IInteractable
         );
 
         if (destroyOnPickup)
+        {
             Destroy(gameObject);
+            item = null;
+        }
         else
             _canInteract = false;
     }

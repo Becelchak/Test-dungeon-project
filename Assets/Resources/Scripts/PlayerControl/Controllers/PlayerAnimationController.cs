@@ -43,12 +43,9 @@ public class PlayerAnimationController : MonoBehaviour
         overrideController = animator.runtimeAnimatorController as AnimatorOverrideController ;
         if (overrideController == null)
         {
-            // Если это обычный контроллер, нужно создать обертку-оверрайд
             overrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
             animator.runtimeAnimatorController = overrideController;
         }
-
-        // TODO: Вынести в отдельный метод замену базовых анимаций оружия
         TriggerRandomAttack(weapon);
 
         currentWeapon = weapon;
@@ -74,7 +71,7 @@ public class PlayerAnimationController : MonoBehaviour
         if (overrideController != null)
         {
             AnimationClip clip = overrideController["Base_Attack"];
-            if (clip != null) return clip.length; // Возвращает длину файла в секундах
+            if (clip != null) return clip.length;
         }
         return 1f;
     }
@@ -84,8 +81,11 @@ public class PlayerAnimationController : MonoBehaviour
     /// </summary>
     public void SetBlocking(bool isBlocking)
     {
-        if (animator != null)
-            animator.SetBool("Block", isBlocking);
+        if (animator == null)
+            return;
+        animator.SetBool("Block", isBlocking);
+        
+
     }
 
     /// <summary>

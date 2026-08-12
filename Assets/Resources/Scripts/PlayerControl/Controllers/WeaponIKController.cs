@@ -37,6 +37,7 @@ public class WeaponIKController : MonoBehaviour
     private float _targetLeftWeight;
 
     private bool _isAttacking;
+    private bool _isBlocking;
     private Coroutine _transitionCoroutine;
 
     private void Start()
@@ -106,6 +107,46 @@ public class WeaponIKController : MonoBehaviour
             WeaponHandling.BothHands => _isAttacking ? (0f, 0.285f) : (1f, 1f),
             _ => (0f, 0f)
         };
+    }
+
+    public void SetBLockMode(bool isBlocking, bool instantly = false)
+    {
+        if (_currentWeaponData == null || _currentWeaponData.handling != WeaponHandling.BothHands)
+            return;
+
+        if (weaponIdleParent == null)
+            return;
+
+        _isBlocking = isBlocking;
+
+        if (_transitionCoroutine != null)
+        {
+            StopCoroutine(_transitionCoroutine);
+            _transitionCoroutine = null;
+        }
+
+        Transform newParent = isBlocking ? weaponHolder_R : weaponIdleParent;
+        if (_currentWeaponObject != null && newParent != null)
+        {
+            var tempLocalRotation = _currentWeaponObject.transform.localRotation;
+            _currentWeaponObject.transform.SetParent(newParent, worldPositionStays: true);
+            _currentWeaponObject.transform.localPosition = isBlocking
+           ? _currentWeaponData.twoHandedAttackPositionOffset
+           : _currentWeaponData.weaponHolderOffset;
+            _currentWeaponObject.transform.localRotation = tempLocalRotation;
+        }
+
+        // Перестраиваем граф Rig, т.к. цели IK сменили родителя
+        if (rigBuilder != null)
+            rigBuilder.Build();
+
+        var (rightWeight, leftWeight) = GetTargetWeightsFor(WeaponHandling.BothHands);
+        SetIKWeights(rightWeight, leftWeight, instantly);
+
+        if (!isBlocking && _currentWeaponObject != null)
+        {
+            _transitionCoroutine = StartCoroutine(TransitionToIdlePose());
+        }
     }
 
     public void SetAttackMode(bool isAttacking, bool instantly = false)

@@ -2,5 +2,7 @@
   "weaponId": "hands_01",
   "damage": 0.5,
   "range": 1.0,
-  "attackDuration": 0.45
+  "attackDuration": 0.45,
+  "perfectBlockWindow": 0,
+  "blockDamageReduction": 0.05
 }

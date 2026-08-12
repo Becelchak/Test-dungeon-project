@@ -48,6 +48,9 @@ public class EquipmentService : BaseService, IEquipmentService
         var anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Claymor");
         if (anotherWeapon != null)
             Equip(anotherWeapon, EquipmentSlotType.Weapon2);
+        anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Boardsword");
+        if (anotherWeapon != null)
+            Equip(anotherWeapon, EquipmentSlotType.Weapon3);
     }
 
     private void Start()
