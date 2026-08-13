@@ -19,6 +19,11 @@ public interface IEquipmentService
     WeaponData CurrentWeapon { get; }
 
     /// <summary>
+    /// Текущий экипированный щит (OffHand) из любого оружейного слота.
+    /// </summary>
+    WeaponData CurrentShield { get; }
+
+    /// <summary>
     /// Вызывается при изменении любого слота экипировки.
     /// </summary>
     event Action<EquipmentSlotType, ItemData> OnEquipmentChanged;
@@ -27,6 +32,11 @@ public interface IEquipmentService
     /// Вызывается при смене активного оружия.
     /// </summary>
     event Action<WeaponData> OnWeaponChanged;
+
+    /// <summary>
+    /// Вызывается при смене/снятии щита.
+    /// </summary>
+    event Action<WeaponData> OnShieldChanged;
 
     /// <summary>
     /// Выбрать активный оружейный слот (0..2).

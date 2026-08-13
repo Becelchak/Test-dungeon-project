@@ -30,8 +30,25 @@ public class EquipmentService : BaseService, IEquipmentService
         }
     }
 
+    public WeaponData CurrentShield
+    {
+        get
+        {
+            foreach (var slot in _slots)
+            {
+                if (slot.slotType < EquipmentSlotType.Weapon1 || slot.slotType > EquipmentSlotType.Weapon3)
+                    continue;
+
+                if (slot.Item is WeaponData weapon && weapon.handling == WeaponHandling.OffHand)
+                    return weapon;
+            }
+            return null;
+        }
+    }
+
     public event Action<EquipmentSlotType, ItemData> OnEquipmentChanged;
     public event Action<WeaponData> OnWeaponChanged;
+    public event Action<WeaponData> OnShieldChanged;
 
     protected override Type GetServiceType() => typeof(IEquipmentService);
 
@@ -107,7 +124,17 @@ public class EquipmentService : BaseService, IEquipmentService
             return false;
         }
 
+        if (item is WeaponData weaponData && weaponData.handling == WeaponHandling.OffHand)
+        {
+            if (slotType < EquipmentSlotType.Weapon1 || slotType > EquipmentSlotType.Weapon3)
+            {
+                Debug.LogWarning($"[EquipmentService] Щит {item.displayName} можно экипировать только в оружейный слот.");
+                return false;
+            }
+        }
+
         var previousWeapon = CurrentWeapon;
+        var previousShield = CurrentShield;
 
         if (!slot.Equip(item))
         {
@@ -123,6 +150,10 @@ public class EquipmentService : BaseService, IEquipmentService
         if (newWeapon != previousWeapon)
             OnWeaponChanged?.Invoke(newWeapon);
 
+        var newShield = CurrentShield;
+        if (newShield != previousShield)
+            OnShieldChanged?.Invoke(newShield);
+
         return true;
     }
 
@@ -133,6 +164,7 @@ public class EquipmentService : BaseService, IEquipmentService
             return false;
 
         var previousWeapon = CurrentWeapon;
+        var previousShield = CurrentShield;
         var removedItem = slot.Unequip();
 
         Debug.Log($"[EquipmentService] Снято {removedItem.displayName} из слота {slotType}.");
@@ -142,6 +174,10 @@ public class EquipmentService : BaseService, IEquipmentService
         var newWeapon = CurrentWeapon;
         if (newWeapon != previousWeapon)
             OnWeaponChanged?.Invoke(newWeapon);
+
+        var newShield = CurrentShield;
+        if (newShield != previousShield)
+            OnShieldChanged?.Invoke(newShield);
 
         return true;
     }
@@ -154,13 +190,21 @@ public class EquipmentService : BaseService, IEquipmentService
             return;
         }
 
+        var selectedItem = GetItemInSlot(EquipmentSlotType.Weapon1 + index);
+        if (selectedItem is WeaponData selectedWeapon && selectedWeapon.handling == WeaponHandling.OffHand)
+        {
+            Debug.Log("[EquipmentService] Слот со щитом нельзя сделать активным оружием.");
+            return;
+        }
+
         if (_activeWeaponSlotIndex == index)
             return;
 
         _previousWeaponSlotIndex = _activeWeaponSlotIndex;
         _activeWeaponSlotIndex = index;
-        OnEquipmentChanged?.Invoke(EquipmentSlotType.Weapon1 + index, GetItemInSlot(EquipmentSlotType.Weapon1 + index));
+        OnEquipmentChanged?.Invoke(EquipmentSlotType.Weapon1 + index, selectedItem);
         OnWeaponChanged?.Invoke(CurrentWeapon);
+        OnShieldChanged?.Invoke(CurrentShield);
     }
 
     public ItemData GetItemInSlot(EquipmentSlotType slotType)
@@ -210,6 +254,7 @@ public class EquipmentService : BaseService, IEquipmentService
         var itemById = allItems.ToDictionary(i => i.itemId, i => i);
 
         var previousWeapon = CurrentWeapon;
+        var previousShield = CurrentShield;
 
         foreach (var slotSave in saveData.slots)
         {
@@ -235,6 +280,10 @@ public class EquipmentService : BaseService, IEquipmentService
         var newWeapon = CurrentWeapon;
         if (newWeapon != previousWeapon)
             OnWeaponChanged?.Invoke(newWeapon);
+
+        var newShield = CurrentShield;
+        if (newShield != previousShield)
+            OnShieldChanged?.Invoke(newShield);
     }
 
     private EquipmentSlot GetSlot(EquipmentSlotType slotType)

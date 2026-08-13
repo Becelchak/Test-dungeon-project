@@ -126,6 +126,8 @@ public class PlayerProfile
     public int maxHealth;
     public int mana;
     public int maxMana;
+    public int stamina;
+    public int maxStamina;
     // Характеристики движения
     public float maxSpeed = 8f;
     public float speedMove = 4f;

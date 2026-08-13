@@ -16,4 +16,10 @@ public class WeaponStats
     [Tooltip("Поглощение урона обычным блоком (0 = блок не поглощает, 1 = поглощает весь урон).")]
     [Range(0f, 1f)]
     public float blockDamageReduction = 0.5f;
+
+    [Tooltip("Окно парирования в секундах после нажатия кнопки парирования. Обычно меньше, чем perfectBlockWindow.")]
+    public float parryWindow = 0.2f;
+
+    [Tooltip("Стоимость парирования в единицах стамины. Зависит от веса оружия/щита.")]
+    public float parryStaminaCost = 15f;
 }

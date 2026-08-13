@@ -6,4 +6,5 @@ public interface IPlayerProfileService
     void SaveProfile(PlayerProfile profile);
     void ResetProfile();
     void ModifyHealth(int delta);
+    void ModifyStamina(int delta);
 }

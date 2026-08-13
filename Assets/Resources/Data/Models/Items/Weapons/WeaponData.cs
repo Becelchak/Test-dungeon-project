@@ -19,6 +19,20 @@ public class WeaponData : ItemData
     [Tooltip("Поворот модели оружия внутри WeaponHolder (Euler).")]
     public Vector3 weaponHolderRotationOffsetEuler;
 
+    [Header("Attack Weapon Holder Offset")]
+    [Tooltip("Смещение модели оружия внутри WeaponHolder только на время атаки.")]
+    public Vector3 weaponHolderAttackOffset;
+    [Tooltip("Поворот модели оружия внутри WeaponHolder только на время атаки (Euler).")]
+    public Vector3 weaponHolderAttackRotationOffsetEuler;
+
+    [Header("Block Animation")]
+    [Tooltip("Анимация блока данным оружием/щитом. Если не назначена — используется базовая.")]
+    public AnimationClip blockAnimationClip;
+
+    [Header("Parry Animation")]
+    [Tooltip("Анимация парирования данным оружием/щитом. Если не назначена — используется базовая.")]
+    public AnimationClip parryAnimationClip;
+
     [Header("Grip IK Offsets")]
     [Tooltip("Смещение правой руки относительно RightGrip. " +
              "Используется, если включен Use Right Hand IK в WeaponIKController.")]
@@ -71,6 +85,7 @@ public class WeaponData : ItemData
     private void OnEnable()
     {
         LoadDataFromJson();
+        SyncItemId();
     }
 
     private void OnValidate()
@@ -78,5 +93,18 @@ public class WeaponData : ItemData
         // Вызывается в редакторе при изменении полей. 
         // Помогает сразу увидеть изменения, если поменяли файл JSON.
         LoadDataFromJson();
+        SyncItemId();
+    }
+
+    /// <summary>
+    /// Если глобальный itemId не задан, берёт его из JSON-поля weaponId.
+    /// Это позволяет не дублировать ID вручную.
+    /// </summary>
+    private void SyncItemId()
+    {
+        if (string.IsNullOrWhiteSpace(itemId) && stats != null && !string.IsNullOrWhiteSpace(stats.weaponId))
+        {
+            itemId = stats.weaponId;
+        }
     }
 }

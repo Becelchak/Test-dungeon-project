@@ -29,13 +29,17 @@ public class PlayerAnimationController : MonoBehaviour
         characterRotator = GetComponent<CharacterRotator>();
         equipment = (EquipmentService) ServiceLocator.Instance.GetService<IEquipmentService>();
         equipment.OnWeaponChanged += OnWeaponChanged;
+        equipment.OnShieldChanged += OnShieldChanged;
         OnWeaponChanged(equipment.CurrentWeapon);
     }
 
     private void OnDestroy()
     {
         if (equipment != null)
+        {
             equipment.OnWeaponChanged -= OnWeaponChanged;
+            equipment.OnShieldChanged -= OnShieldChanged;
+        }
     }
 
     private void OnWeaponChanged(WeaponData weapon)
@@ -47,10 +51,62 @@ public class PlayerAnimationController : MonoBehaviour
             animator.runtimeAnimatorController = overrideController;
         }
         TriggerRandomAttack(weapon);
+        RefreshBlockAnimation();
+        RefreshParryAnimation();
 
         currentWeapon = weapon;
         animator.SetFloat("WeaponType", (int)weapon.weaponType);
         Debug.Log($"Текущее оружие {currentWeapon}");
+    }
+
+    private void OnShieldChanged(WeaponData shield)
+    {
+        RefreshBlockAnimation();
+        RefreshParryAnimation();
+    }
+
+    /// <summary>
+    /// Подменяет клип блока: щит (если активен), иначе активное оружие.
+    /// </summary>
+    private void RefreshBlockAnimation()
+    {
+        if (overrideController == null || equipment == null)
+            return;
+
+        var blocker = GetActiveBlocker();
+        if (blocker != null && blocker.blockAnimationClip != null)
+            overrideController["Base_Block"] = blocker.blockAnimationClip;
+    }
+
+    /// <summary>
+    /// Подменяет клип парирования: щит (если активен), иначе активное оружие.
+    /// </summary>
+    private void RefreshParryAnimation()
+    {
+        if (overrideController == null || equipment == null)
+            return;
+
+        var blocker = GetActiveBlocker();
+        if (blocker != null && blocker.parryAnimationClip != null)
+            overrideController["Base_Parry"] = blocker.parryAnimationClip;
+    }
+
+    private WeaponData GetActiveBlocker()
+    {
+        var shield = equipment.CurrentShield;
+        var weapon = equipment.CurrentWeapon;
+        return (shield != null && weapon != null && weapon.handling != WeaponHandling.BothHands)
+            ? shield
+            : weapon;
+    }
+
+    /// <summary>
+    /// Проигрывает триггер анимации парирования.
+    /// </summary>
+    public void TriggerParry()
+    {
+        if (animator != null)
+            animator.SetTrigger("Parry");
     }
 
     public void TriggerRandomAttack(WeaponData weapon)

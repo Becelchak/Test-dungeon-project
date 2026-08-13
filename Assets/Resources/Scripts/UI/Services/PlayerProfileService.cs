@@ -38,7 +38,19 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         }
 
         profile.LoadAvatar();
+        EnsureStamina(profile);
         return profile;
+    }
+
+    /// <summary>
+    /// Гарантирует, что у профиля есть поля стамины (для совместимости со старыми сохранениями).
+    /// </summary>
+    private void EnsureStamina(PlayerProfile profile)
+    {
+        if (profile.maxStamina <= 0)
+            profile.maxStamina = 100;
+        if (profile.stamina <= 0 || profile.stamina > profile.maxStamina)
+            profile.stamina = profile.maxStamina;
     }
 
     public void ResetProfile()
@@ -69,6 +81,8 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         profile.maxHealth = UnityEngine.Random.RandomRange(10, 250);
         profile.mana = UnityEngine.Random.RandomRange(0, 200);
         profile.maxMana = UnityEngine.Random.RandomRange(0, 200);
+        profile.stamina = UnityEngine.Random.RandomRange(0, 200);
+        profile.maxStamina = UnityEngine.Random.RandomRange(10, 200);
         profile.strength = UnityEngine.Random.RandomRange(0, 20);
         profile.intelligence = UnityEngine.Random.RandomRange(0, 20);
         profile.agility = UnityEngine.Random.RandomRange(0, 20);
@@ -85,6 +99,13 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         EventBus.RaiseEvent<IHealthChangedEventSubscriber>(
             s => s.OnHealthChanged(new HealthChangedEvent(profile.health, profile.maxHealth))
         );
+    }
+
+    public void ModifyStamina(int delta)
+    {
+        var profile = CurrentProfile;
+        profile.stamina = Mathf.Clamp(profile.stamina + delta, 0, profile.maxStamina);
+        SaveProfile(profile);
     }
 
     public void SaveProfile(PlayerProfile profile)
@@ -111,6 +132,14 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
 
     public void AddInventoryItem(InventoryItem item)
     {
+        if (string.IsNullOrWhiteSpace(item.itemId))
+        {
+            Debug.LogWarning($"[PlayerProfileService] Попытка добавить предмет без itemId ({item.itemName}). Предмет будет добавлен как отдельная запись, но это может привести к дублированию.");
+            CurrentProfile.inventory.Add(item);
+            SaveProfile(CurrentProfile);
+            return;
+        }
+
         var existingItem = CurrentProfile.inventory.Find(i => i.itemId == item.itemId);
         if (existingItem != null)
         {

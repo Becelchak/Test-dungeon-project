@@ -4,5 +4,7 @@
   "range": 1.0,
   "attackDuration": 0.45,
   "perfectBlockWindow": 0,
-  "blockDamageReduction": 0.05
+  "blockDamageReduction": 0.05,
+  "parryWindow": 0.1,
+  "parryStaminaCost": 2
 }

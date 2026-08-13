@@ -13,6 +13,7 @@ public class InputManagerService : BaseService, IInputService
     public event Action<bool> OnSprint;
     public event Action<int> OnSwitchWeaponSlot;
     public event Action<bool> OnBlock;
+    public event Action OnParry;
 
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
@@ -22,6 +23,7 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _sprintAction { get; set; }
     public InputAction _switchWeaponSlotAction { get; set; }
     public InputAction _blockAction { get; set; }
+    public InputAction _parryAction { get; set; }
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -80,6 +82,12 @@ public class InputManagerService : BaseService, IInputService
         {
             _blockAction.performed += ctx => OnBlock?.Invoke(true);
             _blockAction.canceled += ctx => OnBlock?.Invoke(false);
+        }
+
+        _parryAction = _inputActions.FindAction("Parry");
+        if (_parryAction != null)
+        {
+            _parryAction.performed += ctx => OnParry?.Invoke();
         }
     }
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb97a34184cf54e4791a379d957b8dc8, type: 3}
   m_Name: Boardsword
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  itemId: 
+  itemId: sword_01
   displayName: "\u0421\u0442\u0430\u0440\u044B\u0439 \u043F\u0430\u043B\u0430\u0448"
   description: "\u0418\u0437\u0443\u0432\u0435\u0447\u0435\u043D\u043D\u044B\u0439
     \u0432\u0440\u0435\u043C\u0435\u043D\u0435\u043C \u0438 \u043D\u0435\u0441\u043A\u043E\u043D\u0447\u0430\u0435\u043C\u044B\u043C\u0438
@@ -37,6 +37,10 @@ MonoBehaviour:
   weaponPrefab: {fileID: 3249083749712518619, guid: c521a73cc43793347b746969a0276431, type: 3}
   weaponHolderOffset: {x: 0, y: 0, z: 0}
   weaponHolderRotationOffsetEuler: {x: 305, y: 215, z: 209.99998}
+  weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
+  weaponHolderAttackRotationOffsetEuler: {x: 305, y: 215, z: 209.99998}
+  blockAnimationClip: {fileID: 7400000, guid: 7adba4905bd3d52458530591b5ca9b02, type: 2}
+  parryAnimationClip: {fileID: 7400000, guid: a0b8fdb51de733e40831088ebeb8b997, type: 2}
   rightHandPositionOffset: {x: 0, y: 0, z: 0}
   rightHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
   leftHandPositionOffset: {x: 0, y: 0, z: 0}
@@ -50,3 +54,5 @@ MonoBehaviour:
     attackDuration: 0.85
     perfectBlockWindow: 0.1
     blockDamageReduction: 0.12
+    parryWindow: 0.18
+    parryStaminaCost: 20

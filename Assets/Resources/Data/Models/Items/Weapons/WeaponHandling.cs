@@ -4,5 +4,6 @@ public enum WeaponHandling
 {
     RightHand, 
     LeftHand, 
-    BothHands
+    BothHands,
+    OffHand
 }

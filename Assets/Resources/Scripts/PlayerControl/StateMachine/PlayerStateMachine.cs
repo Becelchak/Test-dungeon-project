@@ -50,6 +50,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         _input.OnInteract += HandleInteractionInput;
         _input.OnJump += HandleJumpInput;
         _input.OnBlock += HandleBlockInput;
+        _input.OnParry += HandleParryInput;
 
         TransitionToState(new PlayerIdleState(this, _movement));
     }
@@ -103,6 +104,14 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         playerAnimationController?.SetBlocking(isBlocking);
     }
 
+    private void HandleParryInput()
+    {
+        if (_combat == null)
+            _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
+
+        _currentState?.HandleParryInput();
+    }
+
     public void TransitionToState(PlayerStateBase newState)
     {
         _currentState?.Exit();
@@ -139,6 +148,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
             _input.OnInteract -= HandleInteractionInput;
             _input.OnJump -= HandleJumpInput;
             _input.OnBlock -= HandleBlockInput;
+            _input.OnParry -= HandleParryInput;
         }
     }
 }

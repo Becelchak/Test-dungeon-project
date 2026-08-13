@@ -92,6 +92,20 @@ public class PlayerMoveState : PlayerStateBase
         CallMove();
     }
 
+    public override void HandleParryInput()
+    {
+        TryParry();
+    }
+
+    private void TryParry()
+    {
+        var combatService = _stateMachine.CombatService;
+        if (combatService != null && combatService.TryStartParry())
+        {
+            _stateMachine.playerAnimationController?.TriggerParry();
+        }
+    }
+
     public override void HandleInteractionInput()
     {
         Debug.Log("MOVE INTERACT");

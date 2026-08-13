@@ -22,6 +22,11 @@ public class ItemPickup : MonoBehaviour, IInteractable
     {
         if (!_canInteract || item == null) return;
 
+        if (string.IsNullOrWhiteSpace(item.itemId))
+        {
+            Debug.LogWarning($"[ItemPickup] У предмета '{item.displayName}' не задан itemId. Подбор возможен, но стакирование и сохранение будут работать некорректно.");
+        }
+
         var profileService = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
         if (profileService == null)
         {

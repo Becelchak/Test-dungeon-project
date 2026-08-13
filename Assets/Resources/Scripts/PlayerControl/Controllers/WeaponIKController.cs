@@ -30,6 +30,8 @@ public class WeaponIKController : MonoBehaviour
     private IEquipmentService _equipment;
     private GameObject _currentWeaponObject;
     private WeaponData _currentWeaponData;
+    private GameObject _currentShieldObject;
+    private WeaponData _currentShieldData;
 
     private float _currentRightWeight;
     private float _currentLeftWeight;
@@ -59,6 +61,7 @@ public class WeaponIKController : MonoBehaviour
         _currentLeftWeight = leftGrip != null ? leftGrip.weight : 0f;
 
         _equipment.OnWeaponChanged += OnWeaponChanged;
+        _equipment.OnShieldChanged += OnShieldChanged;
         OnWeaponChanged(_equipment.CurrentWeapon);
     }
 
@@ -78,7 +81,10 @@ public class WeaponIKController : MonoBehaviour
     private void OnDestroy()
     {
         if (_equipment != null)
+        {
             _equipment.OnWeaponChanged -= OnWeaponChanged;
+            _equipment.OnShieldChanged -= OnShieldChanged;
+        }
     }
 
     public void SetIKWeights(float rightWeight, float leftWeight, bool instantly = false)
@@ -105,6 +111,7 @@ public class WeaponIKController : MonoBehaviour
             WeaponHandling.RightHand => (useRightHandIK ? 1f : 0f, 0f),
             WeaponHandling.LeftHand => (0f, useRightHandIK ? 1f : 0f),
             WeaponHandling.BothHands => _isAttacking ? (0f, 0.285f) : (1f, 1f),
+            WeaponHandling.OffHand => (0f, 0f),
             _ => (0f, 0f)
         };
     }
@@ -128,12 +135,8 @@ public class WeaponIKController : MonoBehaviour
         Transform newParent = isBlocking ? weaponHolder_R : weaponIdleParent;
         if (_currentWeaponObject != null && newParent != null)
         {
-            var tempLocalRotation = _currentWeaponObject.transform.localRotation;
             _currentWeaponObject.transform.SetParent(newParent, worldPositionStays: true);
-            _currentWeaponObject.transform.localPosition = isBlocking
-           ? _currentWeaponData.twoHandedAttackPositionOffset
-           : _currentWeaponData.weaponHolderOffset;
-            _currentWeaponObject.transform.localRotation = tempLocalRotation;
+            ApplyWeaponTransform(_currentWeaponObject.transform, isBlocking);
         }
 
         // Перестраиваем граф Rig, т.к. цели IK сменили родителя
@@ -151,10 +154,7 @@ public class WeaponIKController : MonoBehaviour
 
     public void SetAttackMode(bool isAttacking, bool instantly = false)
     {
-        if (_currentWeaponData == null || _currentWeaponData.handling != WeaponHandling.BothHands)
-            return;
-
-        if (weaponIdleParent == null)
+        if (_currentWeaponData == null || _currentWeaponData.handling == WeaponHandling.OffHand)
             return;
 
         _isAttacking = isAttacking;
@@ -165,28 +165,44 @@ public class WeaponIKController : MonoBehaviour
             _transitionCoroutine = null;
         }
 
-        Transform newParent = isAttacking ? weaponHolder_R : weaponIdleParent;
-        if (_currentWeaponObject != null && newParent != null)
+        if (_currentWeaponObject == null)
+            return;
+
+        // Для двуручного оружия меняем родителя между IDLE-родителем и правой рукой
+        if (_currentWeaponData.handling == WeaponHandling.BothHands && weaponIdleParent != null)
         {
-            var tempLocalRotation = _currentWeaponObject.transform.localRotation;
+            Transform newParent = isAttacking ? weaponHolder_R : weaponIdleParent;
             _currentWeaponObject.transform.SetParent(newParent, worldPositionStays: true);
-            _currentWeaponObject.transform.localPosition = isAttacking
-           ? _currentWeaponData.twoHandedAttackPositionOffset
-           : _currentWeaponData.weaponHolderOffset;
-            _currentWeaponObject.transform.localRotation = tempLocalRotation;
         }
+
+        ApplyWeaponTransform(_currentWeaponObject.transform, isAttacking);
 
         // Перестраиваем граф Rig, т.к. цели IK сменили родителя
         if (rigBuilder != null)
             rigBuilder.Build();
 
-        var (rightWeight, leftWeight) = GetTargetWeightsFor(WeaponHandling.BothHands);
+        var (rightWeight, leftWeight) = GetTargetWeightsFor(_currentWeaponData.handling);
         SetIKWeights(rightWeight, leftWeight, instantly);
 
-        if (!isAttacking && _currentWeaponObject != null)
+        if (!isAttacking)
         {
             _transitionCoroutine = StartCoroutine(TransitionToIdlePose());
         }
+    }
+
+    private void ApplyWeaponTransform(Transform weaponTransform, bool isAttacking)
+    {
+        if (weaponTransform == null || _currentWeaponData == null) return;
+
+        Vector3 targetPos = isAttacking
+            ? _currentWeaponData.weaponHolderAttackOffset
+            : _currentWeaponData.weaponHolderOffset;
+        Quaternion targetRot = Quaternion.Euler(isAttacking
+            ? _currentWeaponData.weaponHolderAttackRotationOffsetEuler
+            : _currentWeaponData.weaponHolderRotationOffsetEuler);
+
+        weaponTransform.localPosition = targetPos;
+        weaponTransform.localRotation = targetRot;
     }
 
     private System.Collections.IEnumerator TransitionToIdlePose()
@@ -233,13 +249,18 @@ public class WeaponIKController : MonoBehaviour
         if (_currentWeaponObject != null)
             Destroy(_currentWeaponObject);
 
+        if (_currentShieldObject != null)
+            Destroy(_currentShieldObject);
+
         ClearHolders();
         _currentWeaponData = weapon;
+        _currentShieldData = null;
         _isAttacking = false;
 
         if (weapon == null || weapon.weaponPrefab == null)
         {
             SetIKWeights(0f, 0f, true);
+            RefreshShield();
             return;
         }
 
@@ -283,8 +304,52 @@ public class WeaponIKController : MonoBehaviour
 
         SetIKWeights(rightWeight, leftWeight, true);
 
+        RefreshShield();
+
         if (rigBuilder != null)
             rigBuilder.Build();
+    }
+
+    private void OnShieldChanged(WeaponData shield)
+    {
+        RefreshShield();
+    }
+
+    private void RefreshShield()
+    {
+        if (_currentShieldObject != null)
+        {
+            Destroy(_currentShieldObject);
+            _currentShieldObject = null;
+            _currentShieldData = null;
+        }
+
+        var shield = _equipment?.CurrentShield;
+        if (shield == null || shield.weaponPrefab == null)
+            return;
+
+        if (_currentWeaponData == null)
+            return;
+
+        // Щит не отображается вместе с двуручным оружием
+        if (_currentWeaponData.handling == WeaponHandling.BothHands)
+            return;
+
+        // Щит встаёт в руку, противоположную основному оружию
+        Transform shieldHolder = _currentWeaponData.handling == WeaponHandling.RightHand
+            ? weaponHolder_L
+            : weaponHolder_R;
+
+        if (shieldHolder == null)
+        {
+            Debug.LogWarning("[WeaponIKController] WeaponHolder для щита не назначен.");
+            return;
+        }
+
+        _currentShieldData = shield;
+        _currentShieldObject = Instantiate(shield.weaponPrefab, shieldHolder);
+        _currentShieldObject.transform.localPosition = shield.weaponHolderOffset;
+        _currentShieldObject.transform.localRotation = Quaternion.Euler(shield.weaponHolderRotationOffsetEuler);
     }
 
     private void AttachIKTarget(Transform target, Transform grip, Vector3 positionOffset, Quaternion rotationOffset)

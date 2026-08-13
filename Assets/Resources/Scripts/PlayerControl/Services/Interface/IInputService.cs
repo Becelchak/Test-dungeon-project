@@ -12,6 +12,7 @@ public interface IInputService
     event Action<bool> OnSprint;
     event Action<int> OnSwitchWeaponSlot;
     event Action<bool> OnBlock;
+    event Action OnParry;
 
     InputAction _moveAction { get; set; }
     InputAction _jumpAction { get; set; }
@@ -21,6 +22,7 @@ public interface IInputService
     InputAction _submitAction { get; set; }
     InputAction _switchWeaponSlotAction { get; set; }
     InputAction _blockAction { get; set; }
+    InputAction _parryAction { get; set; }
 
     Vector2 GetMovementInput();
     void EnableGameplayInput();

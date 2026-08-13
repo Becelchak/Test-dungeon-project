@@ -55,6 +55,20 @@ public class PlayerIdleState : PlayerStateBase
         _stateMachine.playerAnimator.SetBool("Block", isBlocking);
     }
 
+    public override void HandleParryInput()
+    {
+        TryParry();
+    }
+
+    private void TryParry()
+    {
+        var combatService = _stateMachine.CombatService;
+        if (combatService != null && combatService.TryStartParry())
+        {
+            _stateMachine.playerAnimationController?.TriggerParry();
+        }
+    }
+
     public override void HandleJumpInput(Vector3 direction)
     {
         if (direction.magnitude < 0.5f)
