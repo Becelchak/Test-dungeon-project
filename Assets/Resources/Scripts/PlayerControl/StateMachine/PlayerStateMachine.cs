@@ -1,7 +1,8 @@
 ﻿using EventBusSystem;
+using System.Collections;
 using UnityEngine;
 
-public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
+public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlayerDiedEventSubscriber
 {
     private IInputService _input;
     private IPlayerMovementService _movement;
@@ -10,6 +11,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
 
     public IPlayerCombatService CombatService => _combat;
     private PlayerStateBase _currentState;
+    private Coroutine _parryResetCoroutine;
     public CharacterRotator charRotate;
     public Interactor interactor;
     public Animator playerAnimator;
@@ -90,6 +92,8 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
     }
     private void HandleAttackInput()
     {
+        if (_combat == null)
+            _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
         _currentState?.HandleAttackInput();
     }
 
@@ -99,7 +103,9 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
             _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
 
         _combat?.SetBlocking(isBlocking);
-        weaponIKController.SetBLockMode(isBlocking, true);
+        weaponIKController.SetPose(
+            isBlocking ? WeaponIKController.WeaponPose.Block : WeaponIKController.WeaponPose.Idle,
+            true);
         _currentState?.HandleBlockInput(isBlocking);
         playerAnimationController?.SetBlocking(isBlocking);
     }
@@ -109,7 +115,29 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
         if (_combat == null)
             _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
 
+        if (_combat == null || !_combat.TryStartParry())
+            return;
+
+        weaponIKController.SetPose(WeaponIKController.WeaponPose.Parry, false);
         _currentState?.HandleParryInput();
+        playerAnimationController?.TriggerParry();
+
+        float waitTime = playerAnimationController.GetCurrentParryClipLength();
+        if (_parryResetCoroutine != null)
+            StopCoroutine(_parryResetCoroutine);
+        _parryResetCoroutine = StartCoroutine(ResetParryPoseAfter(waitTime));
+    }
+
+    private IEnumerator ResetParryPoseAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _parryResetCoroutine = null;
+
+        weaponIKController.SetPose(
+            _combat != null && _combat.IsBlocking
+                ? WeaponIKController.WeaponPose.Block
+                : WeaponIKController.WeaponPose.Idle,
+            true);
     }
 
     public void TransitionToState(PlayerStateBase newState)
@@ -136,6 +164,20 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber
     public void OnResponseSelected(string responseId)
     {
         
+    }
+
+    public void OnPlayerDied(PlayerDiedEvent evt)
+    {
+        if (_currentState is PlayerDeadState) return;
+        TransitionToState(new PlayerDeadState(this, _movement));
+    }
+
+    public void RevivePlayer()
+    {
+        _combat?.Revive();
+        if (!(_currentState is PlayerIdleState))
+            TransitionToState(new PlayerIdleState(this, _movement));
+        playerAnimator.SetBool("IsAlive", true);
     }
 
     public void OnDestroy()

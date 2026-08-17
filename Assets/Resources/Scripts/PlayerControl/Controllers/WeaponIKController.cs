@@ -27,19 +27,36 @@ public class WeaponIKController : MonoBehaviour
              "Only relevant if weaponIdleParent is not assigned.")]
     [SerializeField] private bool useRightHandIK = false;
 
+    /// <summary>
+    /// Текущая боевая поза оружия. Влияет на родителя оружия,
+    /// IK-веса и смещения для двуручного хвата.
+    /// </summary>
+    public enum WeaponPose { Idle, Block, Parry, Attack }
+
     private IEquipmentService _equipment;
     private GameObject _currentWeaponObject;
     private WeaponData _currentWeaponData;
     private GameObject _currentShieldObject;
     private WeaponData _currentShieldData;
 
+    /// <summary>Текущий runtime-объект оружия в руках персонажа.</summary>
+    public GameObject CurrentWeaponObject => _currentWeaponObject;
+
+    /// <summary>Источник урона текущего runtime-оружия (ищется в дочерних объектах).</summary>
+    public WeaponDamageSource CurrentWeaponDamageSource =>
+        _currentWeaponObject != null
+            ? _currentWeaponObject.GetComponentInChildren<WeaponDamageSource>(true)
+            : null;
+
+    /// <summary>Animator персонажа, используемый WeaponIKController.</summary>
+    public Animator PlayerAnimator => animator;
+
     private float _currentRightWeight;
     private float _currentLeftWeight;
     private float _targetRightWeight;
     private float _targetLeftWeight;
 
-    private bool _isAttacking;
-    private bool _isBlocking;
+    private WeaponPose _currentPose = WeaponPose.Idle;
     private Coroutine _transitionCoroutine;
 
     private void Start()
@@ -104,27 +121,47 @@ public class WeaponIKController : MonoBehaviour
         }
     }
 
-    public (float right, float left) GetTargetWeightsFor(WeaponHandling handling)
+    public (float right, float left) GetTargetWeightsFor(WeaponHandling handling, bool useCombatPose)
     {
         return handling switch
         {
-            WeaponHandling.RightHand => (useRightHandIK ? 1f : 0f, 0f),
-            WeaponHandling.LeftHand => (0f, useRightHandIK ? 1f : 0f),
-            WeaponHandling.BothHands => _isAttacking ? (0f, 0.285f) : (1f, 1f),
+            WeaponHandling.RightHand => (useRightHandIK && !useCombatPose ? 1f : 0f, 0f),
+            WeaponHandling.LeftHand => (0f, useRightHandIK && !useCombatPose ? 1f : 0f),
+            WeaponHandling.BothHands => useCombatPose ? (0f, 0.285f) : (1f, 1f),
             WeaponHandling.OffHand => (0f, 0f),
             _ => (0f, 0f)
         };
     }
 
-    public void SetBLockMode(bool isBlocking, bool instantly = false)
+    /// <summary>
+    /// Возвращает IK-веса для текущей позы оружия.
+    /// </summary>
+    public (float right, float left) GetTargetWeightsFor(WeaponHandling handling)
     {
-        if (_currentWeaponData == null || _currentWeaponData.handling != WeaponHandling.BothHands)
-            return;
+        bool isBothHands = handling == WeaponHandling.BothHands;
+        bool useCombatPose = _currentPose == WeaponPose.Attack
+            || (isBothHands && (_currentPose == WeaponPose.Block || _currentPose == WeaponPose.Parry));
+        return GetTargetWeightsFor(handling, useCombatPose);
+    }
 
-        if (weaponIdleParent == null)
-            return;
+    /// <summary>
+    /// Переключает текущую позу оружия (Idle, Block, Parry, Attack).
+    /// Для двуручного оружия Block/Parry используют боевую позу, как и Attack.
+    /// </summary>
+    public void SetPose(WeaponPose pose, bool instantly = false)
+    {
+        _currentPose = pose;
+        ApplyCurrentPose(instantly);
+    }
 
-        _isBlocking = isBlocking;
+    /// <summary>
+    /// Применяет текущую позу оружия на основе _currentPose.
+    /// Гарантирует корректные переходы между Idle, Block, Parry и Attack для двуручного оружия.
+    /// </summary>
+    private void ApplyCurrentPose(bool instantly = false)
+    {
+        if (_currentWeaponObject == null || _currentWeaponData == null)
+            return;
 
         if (_transitionCoroutine != null)
         {
@@ -132,72 +169,37 @@ public class WeaponIKController : MonoBehaviour
             _transitionCoroutine = null;
         }
 
-        Transform newParent = isBlocking ? weaponHolder_R : weaponIdleParent;
-        if (_currentWeaponObject != null && newParent != null)
+        bool isBothHands = _currentWeaponData.handling == WeaponHandling.BothHands;
+
+        // Для двуручного оружия Block/Parry/Attack используют одну и ту же "боевую" позу.
+        // Для одноручного — только Attack смещает оружие.
+        bool useCombatPose = _currentPose == WeaponPose.Attack
+            || (isBothHands && (_currentPose == WeaponPose.Block || _currentPose == WeaponPose.Parry));
+
+        if (isBothHands && weaponIdleParent != null)
         {
-            _currentWeaponObject.transform.SetParent(newParent, worldPositionStays: true);
-            ApplyWeaponTransform(_currentWeaponObject.transform, isBlocking);
+            Transform desiredParent = useCombatPose ? weaponHolder_R : weaponIdleParent;
+            if (desiredParent != null && _currentWeaponObject.transform.parent != desiredParent)
+                _currentWeaponObject.transform.SetParent(desiredParent, worldPositionStays: true);
         }
 
-        // Перестраиваем граф Rig, т.к. цели IK сменили родителя
+        ApplyWeaponTransform(_currentWeaponObject.transform, useCombatPose);
+
         if (rigBuilder != null)
             rigBuilder.Build();
 
-        var (rightWeight, leftWeight) = GetTargetWeightsFor(WeaponHandling.BothHands);
+        var (rightWeight, leftWeight) = GetTargetWeightsFor(_currentWeaponData.handling, useCombatPose);
         SetIKWeights(rightWeight, leftWeight, instantly);
-
-        if (!isBlocking && _currentWeaponObject != null)
-        {
-            _transitionCoroutine = StartCoroutine(TransitionToIdlePose());
-        }
     }
 
-    public void SetAttackMode(bool isAttacking, bool instantly = false)
-    {
-        if (_currentWeaponData == null || _currentWeaponData.handling == WeaponHandling.OffHand)
-            return;
-
-        _isAttacking = isAttacking;
-
-        if (_transitionCoroutine != null)
-        {
-            StopCoroutine(_transitionCoroutine);
-            _transitionCoroutine = null;
-        }
-
-        if (_currentWeaponObject == null)
-            return;
-
-        // Для двуручного оружия меняем родителя между IDLE-родителем и правой рукой
-        if (_currentWeaponData.handling == WeaponHandling.BothHands && weaponIdleParent != null)
-        {
-            Transform newParent = isAttacking ? weaponHolder_R : weaponIdleParent;
-            _currentWeaponObject.transform.SetParent(newParent, worldPositionStays: true);
-        }
-
-        ApplyWeaponTransform(_currentWeaponObject.transform, isAttacking);
-
-        // Перестраиваем граф Rig, т.к. цели IK сменили родителя
-        if (rigBuilder != null)
-            rigBuilder.Build();
-
-        var (rightWeight, leftWeight) = GetTargetWeightsFor(_currentWeaponData.handling);
-        SetIKWeights(rightWeight, leftWeight, instantly);
-
-        if (!isAttacking)
-        {
-            _transitionCoroutine = StartCoroutine(TransitionToIdlePose());
-        }
-    }
-
-    private void ApplyWeaponTransform(Transform weaponTransform, bool isAttacking)
+    private void ApplyWeaponTransform(Transform weaponTransform, bool useCombatPose)
     {
         if (weaponTransform == null || _currentWeaponData == null) return;
 
-        Vector3 targetPos = isAttacking
+        Vector3 targetPos = useCombatPose
             ? _currentWeaponData.weaponHolderAttackOffset
             : _currentWeaponData.weaponHolderOffset;
-        Quaternion targetRot = Quaternion.Euler(isAttacking
+        Quaternion targetRot = Quaternion.Euler(useCombatPose
             ? _currentWeaponData.weaponHolderAttackRotationOffsetEuler
             : _currentWeaponData.weaponHolderRotationOffsetEuler);
 
@@ -255,7 +257,7 @@ public class WeaponIKController : MonoBehaviour
         ClearHolders();
         _currentWeaponData = weapon;
         _currentShieldData = null;
-        _isAttacking = false;
+        _currentPose = WeaponPose.Idle;
 
         if (weapon == null || weapon.weaponPrefab == null)
         {

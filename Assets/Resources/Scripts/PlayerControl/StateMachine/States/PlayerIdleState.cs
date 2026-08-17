@@ -57,16 +57,7 @@ public class PlayerIdleState : PlayerStateBase
 
     public override void HandleParryInput()
     {
-        TryParry();
-    }
-
-    private void TryParry()
-    {
-        var combatService = _stateMachine.CombatService;
-        if (combatService != null && combatService.TryStartParry())
-        {
-            _stateMachine.playerAnimationController?.TriggerParry();
-        }
+        // Парирование обрабатывается централизованно в PlayerStateMachine.
     }
 
     public override void HandleJumpInput(Vector3 direction)
@@ -83,34 +74,33 @@ public class PlayerIdleState : PlayerStateBase
 
     public override void HandleAttackInput()
     {
-        if (CanAttackFromIdle())
+        if (!CanAttackFromIdle()) return;
+
+        var combatService = _stateMachine.CombatService;
+        if (combatService == null) return;
+
+        if (combatService.TryStartAttack(out bool isWeakAttack))
         {
-            Debug.Log($"ATTACK");
-            var attackState = new PlayerAttackState(_stateMachine, _movementService);
+            Debug.Log($"ATTACK (weak={isWeakAttack})");
+            var attackState = new PlayerAttackState(_stateMachine, _movementService, isWeakAttack);
             _stateMachine.TransitionToState(attackState);
         }
     }
 
     private void TryRegenerateStamina()
     {
-        // Пример: восстановление стамины со временем
-        _playerStats.CurrentProfile.health = (int)Mathf.Floor(
-            Mathf.Min(_playerStats.CurrentProfile.maxHealth,
-            _playerStats.CurrentProfile.health + Time.deltaTime * _playerStats.CurrentProfile.healthRegenRate)
-            );
+        var profile = _playerStats.CurrentProfile;
+        if (profile == null) return;
+
+        int regen = Mathf.RoundToInt(Time.deltaTime * profile.staminaRegenRate);
+        if (regen > 0 && profile.stamina < profile.maxStamina)
+            _playerStats.ModifyStamina(regen);
+        Debug.Log($"Теущая стамина: {_playerStats.CurrentProfile.stamina}");
     }
 
     private bool CanAttackFromIdle()
     {
-        // Проверяем условия для атаки:
-        // 1. Есть ли оружие в руках?
-        // 2. Не перезаряжается ли оружие?
-        // 3. Хватит ли стамины?
-        // Можно получать доступ к сервису экипировки через ServiceLocator
-
-        //var equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
-        //return equipmentService != null && equipmentService.HasWeaponEquipped();
-        return _playerStats.CurrentProfile.health > 0;
+        return _stateMachine.CombatService != null && !_stateMachine.CombatService.IsDead;
     }
 
     public override void Exit()

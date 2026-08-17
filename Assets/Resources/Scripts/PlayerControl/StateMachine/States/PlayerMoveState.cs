@@ -94,16 +94,7 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void HandleParryInput()
     {
-        TryParry();
-    }
-
-    private void TryParry()
-    {
-        var combatService = _stateMachine.CombatService;
-        if (combatService != null && combatService.TryStartParry())
-        {
-            _stateMachine.playerAnimationController?.TriggerParry();
-        }
+        // Парирование обрабатывается централизованно в PlayerStateMachine.
     }
 
     public override void HandleInteractionInput()
@@ -130,7 +121,13 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void HandleAttackInput()
     {
-        var attackState = new PlayerAttackState(_stateMachine, _movementService);
-        _stateMachine.TransitionToState(attackState);
+        var combatService = _stateMachine.CombatService;
+        if (combatService == null || combatService.IsDead) return;
+
+        if (combatService.TryStartAttack(out bool isWeakAttack))
+        {
+            var attackState = new PlayerAttackState(_stateMachine, _movementService, isWeakAttack);
+            _stateMachine.TransitionToState(attackState);
+        }
     }
 }

@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 4185081372094673314}
   - component: {fileID: 370049400468932136}
   - component: {fileID: 8801645924411173381}
+  - component: {fileID: 4702218001350383187}
+  - component: {fileID: 4279527608736803576}
   m_Layer: 5
   m_Name: ServiceLocator
   m_TagString: Untagged
@@ -156,3 +158,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48000533f618ce4b80559c6c8867645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentService
+  _slots: []
+  _activeWeaponSlotIndex: 0
+--- !u!114 &4702218001350383187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf3c9b35af52e494db8ba1dddbe1a76f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EquipmentStatsCalculator
+  healthPerStrength: 5
+  baseStamina: 100
+  staminaPerAgility: 2
+  speedPerAgility: 0.02
+  baseStaminaRegen: 5
+--- !u!114 &4279527608736803576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da4d91e2c6e823419087d49925c1ef9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatService

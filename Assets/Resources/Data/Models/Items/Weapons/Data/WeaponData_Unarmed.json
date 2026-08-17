@@ -1,10 +1,13 @@
 ﻿{
   "weaponId": "hands_01",
   "damage": 0.5,
-  "range": 1.0,
+  "range": 1.5,
   "attackDuration": 0.45,
   "perfectBlockWindow": 0,
   "blockDamageReduction": 0.05,
   "parryWindow": 0.1,
-  "parryStaminaCost": 2
+  "parryStaminaCost": 2,
+  "attackStaminaCost": 2,
+  "weakAttackSpeedMultiplier": 1.55,
+  "weakAttackDamageMultiplier": 0.5
 }

@@ -15,12 +15,12 @@ TagManager:
   - UI
   - Ground
   - Target
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - PlayerWeapon
+  - EnemyWeapon
+  - PlayerHitbox
+  - EnemyHitbox
   - 
   - 
   - 

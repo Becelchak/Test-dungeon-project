@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System.ComponentModel.Design;
 using System;
 using UnityEngine;
@@ -31,9 +31,9 @@ public class ServiceLocator : MonoBehaviour
                         _instance = obj.GetComponent<ServiceLocator>();
                         if (_instance == null)
                         {
-                            Debug.LogError("Префаб ServiceLocator не содержит компонент ServiceLocator!");
+                            Debug.LogError("РџСЂРµС„Р°Р± ServiceLocator РЅРµ СЃРѕРґРµСЂР¶РёС‚ РєРѕРјРїРѕРЅРµРЅС‚ ServiceLocator!");
                             Destroy(obj);
-                            // Создаём пустой объект как запасной вариант
+                            // РЎРѕР·РґР°С‘Рј РїСѓСЃС‚РѕР№ РѕР±СЉРµРєС‚ РєР°Рє Р·Р°РїР°СЃРЅРѕР№ РІР°СЂРёР°РЅС‚
                             obj = new GameObject("ServiceLocator");
                             _instance = obj.AddComponent<ServiceLocator>();
                         }
@@ -54,7 +54,7 @@ public class ServiceLocator : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("ЗАПУСТИЛСЯ ЛОКАТОР");
+        Debug.Log("Р—РђРџРЈРЎРўРР›РЎРЇ Р›РћРљРђРўРћР ");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -65,7 +65,7 @@ public class ServiceLocator : MonoBehaviour
         if (Application.isPlaying)
             DontDestroyOnLoad(_instance.gameObject);
 
-        // Автоматически находит и регистрирует все сервисы на этом GameObject
+        // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅР°С…РѕРґРёС‚ Рё СЂРµРіРёСЃС‚СЂРёСЂСѓРµС‚ РІСЃРµ СЃРµСЂРІРёСЃС‹ РЅР° СЌС‚РѕРј GameObject
         RegisterServicesOnThisObject();
     }
 
@@ -74,7 +74,7 @@ public class ServiceLocator : MonoBehaviour
         var services = GetComponents<BaseService>();
         foreach (var service in services)
         {
-            // Сервисы зарегистрируют себя автоматически через BaseService.Awake()
+            // РЎРµСЂРІРёСЃС‹ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂСѓСЋС‚ СЃРµР±СЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё С‡РµСЂРµР· BaseService.Awake()
             Debug.Log($"Found service: {service.GetType().Name}");
         }
     }
@@ -131,7 +131,7 @@ public class ServiceLocator : MonoBehaviour
 
     public void OnDestroy()
     {
-        Debug.Log("УНИЧТОЖИЛСЯ ЛОКАТОР");
+        Debug.Log("РЈРќРР§РўРћР–РР›РЎРЇ Р›РћРљРђРўРћР ");
     }
 
     public void DebugServices(string context)

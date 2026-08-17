@@ -84,6 +84,14 @@ crashlytics-build.properties
 /[Aa]ssets/_Recovery/
 [Ll][Ll][Mm]UnityBuild/
 
+# A* Pathfinding Project Pro (embedded package + imported samples).
+# The plugin is installed locally; do NOT commit its 7k+ files.
+# Fresh clones must restore the package from the original .tgz/.unitypackage.
+/Packages/com.arongranberg.astar/
+/Packages/com.arongranberg.astar.meta
+/Assets/Samples/A_ Pathfinding Project/
+/Assets/Samples/A_ Pathfinding Project.meta
+
 # Other
 *.csv
 *.xlsx

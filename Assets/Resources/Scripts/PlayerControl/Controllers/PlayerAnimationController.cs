@@ -53,6 +53,8 @@ public class PlayerAnimationController : MonoBehaviour
         TriggerRandomAttack(weapon);
         RefreshBlockAnimation();
         RefreshParryAnimation();
+        RefreshHitAnimation();
+        RefreshDeathAnimation();
 
         currentWeapon = weapon;
         animator.SetFloat("WeaponType", (int)weapon.weaponType);
@@ -101,12 +103,61 @@ public class PlayerAnimationController : MonoBehaviour
     }
 
     /// <summary>
+    /// Подменяет клип получения урона: щит (если активен), иначе активное оружие.
+    /// </summary>
+    private void RefreshHitAnimation()
+    {
+        if (overrideController == null || equipment == null)
+            return;
+
+        var blocker = GetActiveBlocker();
+        if (blocker != null && blocker.hitAnimationClip != null)
+            overrideController["Base_Hit"] = blocker.hitAnimationClip;
+    }
+
+    /// <summary>
+    /// Подменяет клип смерти текущим оружием.
+    /// </summary>
+    private void RefreshDeathAnimation()
+    {
+        if (overrideController == null || equipment == null)
+            return;
+
+        var weapon = equipment.CurrentWeapon;
+        if (weapon != null && weapon.deathAnimationClip != null)
+            overrideController["Base_Death"] = weapon.deathAnimationClip;
+    }
+
+    /// <summary>
+    /// Проигрывает анимацию получения урона.
+    /// </summary>
+    public void PlayHitAnimation()
+    {
+        if (animator == null)
+            return;
+        RefreshHitAnimation();
+        animator.SetTrigger("GetHit");
+    }
+
+    /// <summary>
     /// Проигрывает триггер анимации парирования.
     /// </summary>
     public void TriggerParry()
     {
         if (animator != null)
             animator.SetTrigger("Parry");
+    }
+
+    /// <summary>
+    /// Проигрывает анимацию смерти.
+    /// </summary>
+    public void TriggerDeath()
+    {
+        if (animator == null)
+            return;
+        RefreshDeathAnimation();
+        animator.SetTrigger("Death");
+        animator.SetBool("IsAlive", false);
     }
 
     public void TriggerRandomAttack(WeaponData weapon)
@@ -127,6 +178,17 @@ public class PlayerAnimationController : MonoBehaviour
         if (overrideController != null)
         {
             AnimationClip clip = overrideController["Base_Attack"];
+            if (clip != null) return clip.length;
+        }
+        return 1f;
+    }
+
+    public float GetCurrentParryClipLength()
+    {
+        AnimatorOverrideController overrideController = animator.runtimeAnimatorController as AnimatorOverrideController;
+        if (overrideController != null)
+        {
+            AnimationClip clip = overrideController["Base_Parry"];
             if (clip != null) return clip.length;
         }
         return 1f;

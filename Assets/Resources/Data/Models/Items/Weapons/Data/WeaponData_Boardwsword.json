@@ -6,5 +6,8 @@
   "perfectBlockWindow": 0.1,
   "blockDamageReduction": 0.12,
   "parryWindow": 0.18,
-  "parryStaminaCost":  20
+  "parryStaminaCost": 20,
+  "attackStaminaCost": 10,
+  "weakAttackSpeedMultiplier": 1.5,
+  "weakAttackDamageMultiplier": 0.55
 }

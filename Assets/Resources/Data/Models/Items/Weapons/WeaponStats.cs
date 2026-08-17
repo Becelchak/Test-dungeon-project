@@ -22,4 +22,14 @@ public class WeaponStats
 
     [Tooltip("Стоимость парирования в единицах стамины. Зависит от веса оружия/щита.")]
     public float parryStaminaCost = 15f;
+
+    [Tooltip("Стоимость обычной атаки в единицах стамины.")]
+    public float attackStaminaCost = 10f;
+
+    [Tooltip("Множитель скорости атаки при нехватке стамины. Значение 2 = атака в 2 раза медленнее.")]
+    public float weakAttackSpeedMultiplier = 2.5f;
+
+    [Tooltip("Множитель урона при слабой атаке (нехватка стамины).")]
+    [Range(0f, 1f)]
+    public float weakAttackDamageMultiplier = 0.5f;
 }

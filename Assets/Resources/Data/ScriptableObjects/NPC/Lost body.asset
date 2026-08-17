@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d9b273725e77744f9726fdebbfcaabe, type: 3}
+  m_Name: Lost body
+  m_EditorClassIdentifier: Assembly-CSharp::NpcData
+  maxHealth: 100
+  moveSpeed: 3.5
+  rotationSpeed: 5
+  detectionRadius: 10
+  detectionAngle: 120
+  targetLostDelay: 3
+  attackRange: 2
+  attackDamage: 15
+  attackDuration: 1.5
+  attackWindup: 0.5
+  attackCooldown: 1.5

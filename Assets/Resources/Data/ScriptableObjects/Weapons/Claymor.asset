@@ -34,6 +34,8 @@ MonoBehaviour:
   weaponHolderAttackRotationOffsetEuler: {x: 0, y: 0, z: 120}
   blockAnimationClip: {fileID: 7400000, guid: c2a0eb0c4b6a4144383649b9bbda2115, type: 2}
   parryAnimationClip: {fileID: 7400000, guid: 9b1baa5128016c4499b787387b551567, type: 2}
+  hitAnimationClip: {fileID: -5694488986427802680, guid: adc1feaf8563f6247989bffd0737b6ad, type: 3}
+  deathAnimationClip: {fileID: 0}
   rightHandPositionOffset: {x: -0.000741, y: -0.000116, z: -0.000014}
   rightHandRotationOffsetEuler: {x: 0, y: 0, z: -80}
   leftHandPositionOffset: {x: -0.00094, y: 0.0002, z: 0.00047}
@@ -49,3 +51,6 @@ MonoBehaviour:
     blockDamageReduction: 0.2
     parryWindow: 0.21
     parryStaminaCost: 30
+    attackStaminaCost: 15
+    weakAttackSpeedMultiplier: 0.3
+    weakAttackDamageMultiplier: 0.45

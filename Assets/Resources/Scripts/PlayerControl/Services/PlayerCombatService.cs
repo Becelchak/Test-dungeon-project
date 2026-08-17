@@ -13,12 +13,20 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
     public bool IsParrying { get; private set; }
     public float ParryStartTime { get; private set; }
     public float ParryWindow { get; private set; }
+    public bool IsDead { get; private set; }
+    public bool IsGodMode { get; set; }
 
     private IPlayerProfileService _profileService;
     private IEquipmentService _equipmentService;
+    private WeaponIKController _weaponIKController;
+    private Animator _animatorController;
+    private PlayerAnimationController _playerAnimationController;
 
     private IPlayerProfileService ProfileService => _profileService ??= ServiceLocator.Instance.GetService<IPlayerProfileService>();
     private IEquipmentService EquipmentService => _equipmentService ??= ServiceLocator.Instance.GetService<IEquipmentService>();
+    private WeaponIKController WeaponIK => _weaponIKController ??= UnityEngine.Object.FindObjectOfType<WeaponIKController>();
+    private Animator PlayerAnimator => WeaponIK?.PlayerAnimator;
+    private PlayerAnimationController PlayerAnimController => _playerAnimationController ??= WeaponIK?.GetComponent<PlayerAnimationController>();
 
     protected override Type GetServiceType() => typeof(IPlayerCombatService);
 
@@ -59,7 +67,12 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
 
     public void ApplyDamage(int damage, GameObject source = null)
     {
-        if (damage <= 0) return;
+        if (damage <= 0 || IsDead) return;
+        if (IsGodMode)
+        {
+            Debug.Log("[PlayerCombatService] GodMode: урон игнорирован.");
+            return;
+        }
 
         int finalDamage = damage;
 
@@ -67,7 +80,6 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         if (IsParrying && Time.time - ParryStartTime <= ParryWindow)
         {
             IsParrying = false;
-            finalDamage = 0;
             Debug.Log("[PlayerCombatService] Парирование успешно! Урон нивелирован.");
             return;
         }
@@ -96,8 +108,82 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         if (finalDamage > 0)
         {
             ProfileService?.ModifyHealth(-finalDamage);
-            Debug.Log($"[PlayerCombatService] Игрок получил урон: {finalDamage}");
+            PlayerAnimController?.PlayHitAnimation();
+            Debug.Log($"[PlayerCombatService] Игрок получил урон: {finalDamage}. Текущее здоровье {ProfileService.CurrentProfile.health}");
+
+            if (ProfileService.CurrentProfile.health <= 0)
+                Die(source);
         }
+    }
+
+    private void Die(GameObject source = null)
+    {
+        if (IsDead) return;
+        IsDead = true;
+
+        PlayerAnimController?.TriggerDeath();
+        EventBus.RaiseEvent<IPlayerDiedEventSubscriber>(
+            s => s.OnPlayerDied(new PlayerDiedEvent(Vector3.zero))
+        );
+        Debug.Log("[PlayerCombatService] Игрок погиб.");
+    }
+
+    public bool TryStartAttack(out bool isWeakAttack)
+    {
+        isWeakAttack = false;
+        if (IsDead) return false;
+
+        var weapon = EquipmentService.CurrentWeapon;
+        float cost = weapon?.Stats?.attackStaminaCost ?? 0f;
+        int stamina = ProfileService?.CurrentProfile?.stamina ?? 0;
+
+        if (stamina >= cost)
+        {
+            ProfileService?.ModifyStamina(-Mathf.RoundToInt(cost));
+            return true;
+        }
+
+        // Не хватает стамины: слабая атака, снимаем остатки, если они есть
+        if (stamina > 0)
+            ProfileService?.ModifyStamina(-stamina);
+
+        isWeakAttack = true;
+        return true;
+    }
+
+    public void Revive()
+    {
+        IsDead = false;
+        if (ProfileService?.CurrentProfile != null)
+        {
+            ProfileService.ModifyHealth(ProfileService.CurrentProfile.maxHealth);
+            ProfileService.ModifyStamina(ProfileService.CurrentProfile.maxStamina);
+        }
+        Debug.Log("[PlayerCombatService] Игрок воскрешён.");
+    }
+
+    public void SetWeaponDamageSource(bool isAttack, bool isWeakAttack = false)
+    {
+        var source = WeaponIK?.CurrentWeaponDamageSource;
+        if (source == null)
+        {
+            Debug.LogWarning("[PlayerCombatService] Не найден WeaponDamageSource на текущем runtime-оружии. Убедись, что на префабе оружия есть компонент WeaponDamageSource с триггер-коллайдером.");
+            return;
+        }
+
+        var weapon = EquipmentService.CurrentWeapon;
+        if (weapon != null && weapon.Stats != null)
+        {
+            float damage = weapon.Stats.damage;
+            if (isWeakAttack)
+                damage *= weapon.Stats.weakAttackDamageMultiplier;
+            source.BaseDamage = damage;
+        }
+
+        if (isAttack)
+            source.ResetHits();
+
+        source.IsActive = isAttack;
     }
 
     /// <summary>

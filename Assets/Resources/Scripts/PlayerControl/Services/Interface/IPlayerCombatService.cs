@@ -34,4 +34,31 @@ public interface IPlayerCombatService
     /// <param name="damage">Базовый урон.</param>
     /// <param name="source">Источник урона (может быть null).</param>
     void ApplyDamage(int damage, GameObject source = null);
+
+    /// <summary>
+    /// Отвечает за включение/выключение триггера у текущего оружия игрока
+    /// </summary>
+    /// <param name="isAttack"></param>
+    /// <param name="isWeakAttack">Является ли атака ослабленной (нехватка стамины).</param>
+    void SetWeaponDamageSource(bool isAttack, bool isWeakAttack = false);
+
+    /// <summary>
+    /// Возвращает true, если игрок мёртв.
+    /// </summary>
+    bool IsDead { get; }
+
+    /// <summary>
+    /// Режим неуязвимости (для отладки).
+    /// </summary>
+    bool IsGodMode { get; set; }
+
+    /// <summary>
+    /// Пытается начать атаку. Расходует стамину и возвращает флаг слабой атаки.
+    /// </summary>
+    bool TryStartAttack(out bool isWeakAttack);
+
+    /// <summary>
+    /// Воскрешает игрока (для консоли разработчика/респауна).
+    /// </summary>
+    void Revive();
 }

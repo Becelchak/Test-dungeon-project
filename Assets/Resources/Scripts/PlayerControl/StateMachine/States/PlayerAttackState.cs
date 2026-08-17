@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 public class PlayerAttackState : PlayerStateBase
 {
@@ -6,12 +7,14 @@ public class PlayerAttackState : PlayerStateBase
     private float _attackTimer;
     private float _attackDuration;
     private bool _hasAttacked;
+    private bool _isWeakAttack;
     private float _attackMoveSpeedMultiplier = 0.5f;
 
-    public PlayerAttackState(PlayerStateMachine stateMachine, IPlayerMovementService movementService)
+    public PlayerAttackState(PlayerStateMachine stateMachine, IPlayerMovementService movementService, bool isWeakAttack = false)
         : base(stateMachine, movementService)
     {
         _equipment = ServiceLocator.Instance.GetService<IEquipmentService>();
+        _isWeakAttack = isWeakAttack;
     }
 
     public override void Enter()
@@ -25,15 +28,18 @@ public class PlayerAttackState : PlayerStateBase
             return;
         }
 
-        _attackDuration = weapon.Stats.attackDuration;
+        _attackDuration = weapon.Stats.attackDuration * (_isWeakAttack ? weapon.Stats.weakAttackSpeedMultiplier : 1f);
         var ikController = _stateMachine.weaponIKController;
 
         if (ikController != null)
         {
-            // Переключаем двуручное оружие в режим атаки:
-            // оружие возвращается в иерархию правой руки, левая рука остается на хвате.
-            ikController.SetAttackMode(true, instantly: true);
+            // Переключаем оружие в боевую позу.
+            // Для двуручного — возвращаем в иерархию правой руки, сохраняя хват левой руки.
+            ikController.SetPose(WeaponIKController.WeaponPose.Attack, instantly: true);
         }
+
+        // Активируем хитбокс оружия с учётом слабой атаки
+        _stateMachine.CombatService.SetWeaponDamageSource(true, _isWeakAttack);
 
         _stateMachine.playerAnimationController.TriggerRandomAttack(weapon);
 
@@ -74,13 +80,24 @@ public class PlayerAttackState : PlayerStateBase
         // Возвращаем двуручное оружие в IDLE-родителя и восстанавливаем веса хвата
         var ikController = _stateMachine.weaponIKController;
         var weapon = _equipment.CurrentWeapon;
+        var combatService = _stateMachine.CombatService;
+
         if (ikController != null && weapon != null)
         {
-            ikController.SetAttackMode(false, instantly: false);
+            // Если игрок всё ещё блокирует — не возвращаем в Idle, а восстанавливаем позу блока
+            if (combatService != null && combatService.IsBlocking)
+            {
+                ikController.SetPose(WeaponIKController.WeaponPose.Block, instantly: true);
+            }
+            else
+            {
+                ikController.SetPose(WeaponIKController.WeaponPose.Idle, instantly: false);
+            }
         }
 
         // Восстанавливаем состояние блока, если кнопка всё ещё удерживается
-        _stateMachine.playerAnimator.SetBool("Block", _stateMachine.CombatService.IsBlocking);
+        _stateMachine.playerAnimator.SetBool("Block", combatService.IsBlocking);
+        combatService.SetWeaponDamageSource(false);
     }
 
     public override void HandleMovement(Vector3 direction)

@@ -141,8 +141,9 @@ public class PlayerProfile
     public int intelligence;
     public int agility;
     // Характеристики регенерации
-    public float healthRegenRate;
-    public float manahRegenRate;
+    public float healthRegenRate = 3f;
+    public float manahRegenRate = 2.5f;
+    public float staminaRegenRate = 5;
 
     // Инвентарь
     public List<InventoryItem> inventory = new List<InventoryItem>();

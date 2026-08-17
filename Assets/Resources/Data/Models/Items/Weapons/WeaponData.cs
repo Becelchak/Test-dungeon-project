@@ -33,6 +33,14 @@ public class WeaponData : ItemData
     [Tooltip("Анимация парирования данным оружием/щитом. Если не назначена — используется базовая.")]
     public AnimationClip parryAnimationClip;
 
+    [Header("Hit Animation")]
+    [Tooltip("Анимация получения урона данным оружием/щитом. Если не назначена — используется базовая.")]
+    public AnimationClip hitAnimationClip;
+
+    [Header("Death Animation")]
+    [Tooltip("Анимация смерти с этим оружием. Если не назначена — используется базовая.")]
+    public AnimationClip deathAnimationClip;
+
     [Header("Grip IK Offsets")]
     [Tooltip("Смещение правой руки относительно RightGrip. " +
              "Используется, если включен Use Right Hand IK в WeaponIKController.")]
