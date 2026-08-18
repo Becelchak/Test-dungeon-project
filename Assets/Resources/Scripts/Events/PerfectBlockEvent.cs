@@ -23,3 +23,12 @@ public interface IPerfectBlockEventSubscriber : IGlobalSubscriber
 {
     void OnPerfectBlock(PerfectBlockEvent evt);
 }
+
+//public class PerfectBlockEventSubscriber : IPerfectBlockEventSubscriber
+//{
+
+//    public void OnPerfectBlock(PerfectBlockEvent evt)
+//    {
+
+//    }
+//}

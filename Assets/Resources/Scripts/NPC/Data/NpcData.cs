@@ -43,4 +43,10 @@ public class NpcData : ScriptableObject
 
     [Tooltip("Минимальное время между атаками")]
     public float attackCooldown = 1.5f;
+
+    [Tooltip("Минимальное время проводимое в состоянии стаггера")]
+    public float minStaggerTime = 1f;
+
+    [Tooltip("Максимальное время проводимое в состоянии стаггера")]
+    public float maxStaggerTime = 2f;
 }

@@ -23,3 +23,5 @@ MonoBehaviour:
   attackDuration: 1.5
   attackWindup: 0.5
   attackCooldown: 1.5
+  minStaggerTime: 1.5
+  maxStaggerTime: 3

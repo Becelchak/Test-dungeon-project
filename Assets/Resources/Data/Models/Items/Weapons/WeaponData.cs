@@ -55,6 +55,22 @@ public class WeaponData : ItemData
     public Vector3 leftHandRotationOffsetEuler;
     public Vector3 twoHandedAttackPositionOffset;
 
+    [Header("Aiming")]
+    [Tooltip("Локальная ось оружия, вокруг которой выполняется вертикальный навод (pitch). " +
+             "Обычно Vector3.right для клинков, направленных вперёд по Z.")]
+    public Vector3 aimRotationAxis = Vector3.right;
+    [Tooltip("Смещение pivot'а прицеливания относительно трансформа оружия. " +
+             "Если модель оружия не отцентрована по хвату, задай точку хвата.")]
+    public Vector3 aimPivotOffset = Vector3.zero;
+    [Tooltip("Максимальный угол подъёма оружия при прицеливании.")]
+    public float maxAimAngleUp = 60f;
+    [Tooltip("Максимальный угол опускания оружия при прицеливании.")]
+    public float maxAimAngleDown = 45f;
+    [Tooltip("Скорость сглаживания прицеливания (градусов в секунду).")]
+    public float aimSpeed = 180f;
+    [Tooltip("Слои для raycast курсора: враги + земля. Должны исключать коллайдеры игрока.")]
+    public LayerMask aimLayers;
+
     [Header("Data Source (JSON)")]
     [Tooltip("Ссылка на JSON файл в проекте")]
     [SerializeField] private TextAsset jsonFile;

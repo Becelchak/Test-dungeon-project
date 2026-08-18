@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerProfileService : BaseService, IPlayerProfileService
+public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfectBlockEventSubscriber
 {
     private const string PROFILE_KEY = "player_profile";
     private PlayerProfile _currentProfile;
@@ -164,6 +164,15 @@ public class PlayerProfileService : BaseService, IPlayerProfileService
         }
         SaveProfile(CurrentProfile);
     }
+    public void OnPerfectBlock(PerfectBlockEvent evt)
+    {
+        if (evt.Weapon.weaponType == WeaponType.Shield)
+        {
+            ModifyStamina((int)evt.Weapon.Stats.attackStaminaCost);
+        }
+
+    }
 
     protected override Type GetServiceType() => typeof(IPlayerProfileService);
+
 }

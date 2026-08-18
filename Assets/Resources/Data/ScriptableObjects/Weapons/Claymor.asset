@@ -41,6 +41,14 @@ MonoBehaviour:
   leftHandPositionOffset: {x: -0.00094, y: 0.0002, z: 0.00047}
   leftHandRotationOffsetEuler: {x: 0, y: 0, z: -75}
   twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
+  aimRotationAxis: {x: 0, y: 1, z: 0}
+  aimPivotOffset: {x: 0, y: 0, z: 0}
+  maxAimAngleUp: 60
+  maxAimAngleDown: 45
+  aimSpeed: 180
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 8768
   jsonFile: {fileID: 4900000, guid: 5efa9e71a2709e24caaaa40d77646948, type: 3}
   stats:
     weaponId: great_sword_01
@@ -52,5 +60,5 @@ MonoBehaviour:
     parryWindow: 0.21
     parryStaminaCost: 30
     attackStaminaCost: 15
-    weakAttackSpeedMultiplier: 0.3
+    weakAttackSpeedMultiplier: 1.7
     weakAttackDamageMultiplier: 0.45

@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using EventBusSystem;
+using UnityEngine;
 using UnityEngine.AI;
 
 /// <summary>
 /// State Machine NPC. Хранит ссылки на все сервисы и управляет текущим состоянием.
 /// </summary>
-public class NpcStateMachine : MonoBehaviour
+public class NpcStateMachine : MonoBehaviour, IParryEventSubscriber
 {
     public NpcController Controller { get; private set; }
     public Animator Animator { get; private set; }
@@ -27,6 +28,7 @@ public class NpcStateMachine : MonoBehaviour
         Agent = GetComponent<NavMeshAgent>();
 
         TransitionToState(new NpcIdleState(this));
+        EventBus.Subscribe(this);
     }
 
     private void Update()
@@ -46,5 +48,21 @@ public class NpcStateMachine : MonoBehaviour
         _currentState?.Exit();
         _currentState = newState;
         _currentState?.Enter();
+    }
+
+    public void OnParryEvent(ParrySuccessEvent parryEvent)
+    {
+        if (Perception.CurrentTarget == null)
+            return;
+        if (parryEvent.sourceParry == Perception.CurrentTarget.gameObject)
+        {
+            TransitionToState(new NpcStaggerState(this));
+            Debug.Log($"Успешно застанили {parryEvent.targetParry}!");
+        }
+    }
+
+    void OnDestroy()
+    {
+        EventBus.Unsubscribe(this);
     }
 }

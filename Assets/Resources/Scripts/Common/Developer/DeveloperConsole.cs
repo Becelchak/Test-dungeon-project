@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 /// <summary>
 /// Простая runtime-консоль разработчика на IMGUI.
@@ -38,7 +36,7 @@ public class DeveloperConsole : MonoBehaviour
         {
             ToggleVisibility();
         }
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Return))
             SubmitCommand();
     }
 
@@ -277,10 +275,5 @@ public class DeveloperConsole : MonoBehaviour
 
         _scrollPosition = new Vector2(0, float.MaxValue);
         Debug.Log($"[DevConsole] {message}");
-    }
-
-    private void OnDestroy()
-    {
-        //_inputService.OnSubmit -= SubmitCommand;
     }
 }

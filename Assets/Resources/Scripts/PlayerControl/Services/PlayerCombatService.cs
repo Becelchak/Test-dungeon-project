@@ -81,6 +81,8 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         {
             IsParrying = false;
             Debug.Log("[PlayerCombatService] Парирование успешно! Урон нивелирован.");
+            var playerRoot = WeaponIK != null ? WeaponIK.gameObject : gameObject;
+            EventBus.RaiseEvent<IParryEventSubscriber>(x => x.OnParryEvent(new ParrySuccessEvent(playerRoot, source)));
             return;
         }
 

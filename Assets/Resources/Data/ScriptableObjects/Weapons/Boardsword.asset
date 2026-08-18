@@ -41,11 +41,21 @@ MonoBehaviour:
   weaponHolderAttackRotationOffsetEuler: {x: 305, y: 215, z: 209.99998}
   blockAnimationClip: {fileID: 7400000, guid: 7adba4905bd3d52458530591b5ca9b02, type: 2}
   parryAnimationClip: {fileID: 7400000, guid: a0b8fdb51de733e40831088ebeb8b997, type: 2}
+  hitAnimationClip: {fileID: 0}
+  deathAnimationClip: {fileID: 0}
   rightHandPositionOffset: {x: 0, y: 0, z: 0}
   rightHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
   leftHandPositionOffset: {x: 0, y: 0, z: 0}
   leftHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
   twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
+  aimRotationAxis: {x: 0, y: 0, z: 1}
+  aimPivotOffset: {x: 0, y: 0, z: 0}
+  maxAimAngleUp: 60
+  maxAimAngleDown: 40
+  aimSpeed: 90
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 8256
   jsonFile: {fileID: 4900000, guid: e0f576dbff09d2e4ea012e0ad2547d8c, type: 3}
   stats:
     weaponId: sword_01
@@ -56,3 +66,6 @@ MonoBehaviour:
     blockDamageReduction: 0.12
     parryWindow: 0.18
     parryStaminaCost: 20
+    attackStaminaCost: 10
+    weakAttackSpeedMultiplier: 1.5
+    weakAttackDamageMultiplier: 0.55

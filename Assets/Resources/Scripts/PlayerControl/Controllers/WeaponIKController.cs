@@ -59,6 +59,25 @@ public class WeaponIKController : MonoBehaviour
     private WeaponPose _currentPose = WeaponPose.Idle;
     private Coroutine _transitionCoroutine;
 
+    private Camera _mainCamera;
+    private float _currentAimPitch;
+    private float _targetAimPitch;
+    private Quaternion _aimRotation = Quaternion.identity;
+    private Vector3 _currentAimPoint;
+
+    [Header("Debug Aiming")]
+    [Tooltip("Показывать ли временную визуализацию точки прицеливания.")]
+    [SerializeField] private bool _showAimDebug = true;
+    [Tooltip("Размер маркера точки прицеливания.")]
+    [SerializeField] private float _aimMarkerSize = 0.08f;
+    [Tooltip("Цвет линии от оружия к точке прицеливания.")]
+    [SerializeField] private Color _aimLineColor = Color.yellow;
+    [Tooltip("Цвет маркера точки прицеливания.")]
+    [SerializeField] private Color _aimMarkerColor = Color.red;
+
+    private LineRenderer _aimLine;
+    private Transform _aimMarkerTransform;
+
     private void Start()
     {
         _equipment = ServiceLocator.Instance.GetService<IEquipmentService>();
@@ -72,7 +91,12 @@ public class WeaponIKController : MonoBehaviour
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
+        _mainCamera = Camera.main;
+        if (_mainCamera == null)
+            Debug.LogWarning("[WeaponIKController] Main camera not found. Aiming will not work.");
+
         EnsureRigConstraints();
+        CreateDebugAimObjects();
 
         _currentRightWeight = rightGrip != null ? rightGrip.weight : 0f;
         _currentLeftWeight = leftGrip != null ? leftGrip.weight : 0f;
@@ -93,6 +117,206 @@ public class WeaponIKController : MonoBehaviour
             rightGrip.weight = _currentRightWeight;
         if (leftGrip != null)
             leftGrip.weight = _currentLeftWeight;
+    }
+
+    private void LateUpdate()
+    {
+        if (_currentWeaponObject == null || _currentWeaponData == null)
+            return;
+
+        if (_currentPose == WeaponPose.Attack)
+            UpdateAimPitch();
+        else
+            _targetAimPitch = 0f;
+
+        float speed = _currentWeaponData.aimSpeed > 0f ? _currentWeaponData.aimSpeed : 360f;
+        _currentAimPitch = Mathf.MoveTowards(_currentAimPitch, _targetAimPitch, Time.deltaTime * speed);
+        _aimRotation = Quaternion.AngleAxis(_currentAimPitch, GetAimAxis());
+
+        ApplyAimRotation();
+        UpdateDebugAimVisuals();
+    }
+
+    private Vector3 GetAimAxis()
+    {
+        if (_currentWeaponData == null)
+            return Vector3.right;
+
+        Vector3 axis = _currentWeaponData.aimRotationAxis;
+        return axis.sqrMagnitude < 0.0001f ? Vector3.right : axis.normalized;
+    }
+
+    /// <summary>
+    /// Вычисляет целевой вертикальный угол оружия на основе положения курсора.
+    /// </summary>
+    private void UpdateAimPitch()
+    {
+        if (_mainCamera == null)
+        {
+            _targetAimPitch = 0f;
+            return;
+        }
+
+        if (_currentWeaponData.aimLayers == 0)
+        {
+            _targetAimPitch = 0f;
+            return;
+        }
+
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        float maxDistance = _currentWeaponData.Stats != null && _currentWeaponData.Stats.range > 0f
+            ? _currentWeaponData.Stats.range
+            : 50f;
+
+        Vector3 aimPoint = GetAimPointFromCursor(ray, maxDistance);
+        _currentAimPoint = aimPoint;
+
+        Transform weaponTransform = _currentWeaponObject.transform;
+        Vector3 pivotWorld = weaponTransform.TransformPoint(_currentWeaponData.aimPivotOffset);
+        Vector3 toTarget = aimPoint - pivotWorld;
+
+        if (toTarget.sqrMagnitude < 0.0001f)
+        {
+            _targetAimPitch = 0f;
+            return;
+        }
+
+        toTarget.Normalize();
+
+        // Вычисляем pitch относительно вертикальной плоскости взгляда персонажа
+        Transform characterRoot = transform;
+        Vector3 forward = characterRoot.forward;
+        Vector3 up = characterRoot.up;
+
+        float y = Vector3.Dot(toTarget, up);
+        float z = Vector3.Dot(toTarget, forward);
+        float pitch = Mathf.Atan2(y, z) * Mathf.Rad2Deg;
+
+        pitch = Mathf.Clamp(pitch,
+            -_currentWeaponData.maxAimAngleDown,
+            _currentWeaponData.maxAimAngleUp);
+
+        _targetAimPitch = pitch;
+    }
+
+    /// <summary>
+    /// Бросает луч из камеры через курсор и возвращает мировую точку прицеливания.
+    /// Приоритет отдаётся коллайдерам с NpcHitbox, чтобы можно было целиться в конкретные части тела.
+    /// </summary>
+    private Vector3 GetAimPointFromCursor(Ray ray, float maxDistance)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(
+            ray, maxDistance, _currentWeaponData.aimLayers, QueryTriggerInteraction.Collide);
+
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (var hit in hits)
+        {
+            if (hit.transform.root == transform.root)
+                continue;
+
+            if (hit.collider.GetComponent<NpcHitbox>() != null)
+                return hit.point;
+        }
+
+        if (hits.Length > 0)
+            return hits[0].point;
+
+        return ray.origin + ray.direction * maxDistance;
+    }
+
+    /// <summary>
+    /// Применяет дополнительный поворот оружия поверх базовой позы Idle/Attack/Block.
+    /// </summary>
+    private void ApplyAimRotation()
+    {
+        if (_currentWeaponObject == null || _currentWeaponData == null)
+            return;
+
+        Transform weaponTransform = _currentWeaponObject.transform;
+        bool useCombatPose = ShouldUseCombatPose();
+
+        Quaternion baseRotation = Quaternion.Euler(useCombatPose
+            ? _currentWeaponData.weaponHolderAttackRotationOffsetEuler
+            : _currentWeaponData.weaponHolderRotationOffsetEuler);
+
+        weaponTransform.localRotation = baseRotation * _aimRotation;
+    }
+
+    private bool ShouldUseCombatPose()
+    {
+        if (_currentWeaponData == null)
+            return false;
+
+        bool isBothHands = _currentWeaponData.handling == WeaponHandling.BothHands;
+        return _currentPose == WeaponPose.Attack
+            || (isBothHands && (_currentPose == WeaponPose.Block || _currentPose == WeaponPose.Parry));
+    }
+
+    /// <summary>
+    /// Создаёт временные объекты для отладки прицеливания: линию и маркер.
+    /// </summary>
+    private void CreateDebugAimObjects()
+    {
+        var lineGo = new GameObject("AimDebugLine");
+        lineGo.transform.SetParent(transform, false);
+        _aimLine = lineGo.AddComponent<LineRenderer>();
+        _aimLine.useWorldSpace = true;
+        _aimLine.positionCount = 2;
+        _aimLine.startWidth = 0.015f;
+        _aimLine.endWidth = 0.015f;
+        _aimLine.material = new Material(Shader.Find("Sprites/Default"));
+        _aimLine.startColor = _aimLineColor;
+        _aimLine.endColor = _aimLineColor;
+        _aimLine.enabled = false;
+
+        var markerGo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        markerGo.name = "AimDebugMarker";
+        markerGo.transform.SetParent(transform, false);
+        markerGo.transform.localScale = Vector3.one * _aimMarkerSize;
+
+        var collider = markerGo.GetComponent<Collider>();
+        if (collider != null)
+            Destroy(collider);
+
+        var renderer = markerGo.GetComponent<MeshRenderer>();
+        renderer.material = new Material(Shader.Find("Sprites/Default"));
+        renderer.material.color = _aimMarkerColor;
+
+        _aimMarkerTransform = markerGo.transform;
+        _aimMarkerTransform.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// Обновляет временную визуализацию точки прицеливания.
+    /// </summary>
+    private void UpdateDebugAimVisuals()
+    {
+        bool show = _showAimDebug
+            && _currentPose == WeaponPose.Attack
+            && _currentWeaponObject != null
+            && _currentWeaponData != null;
+
+        if (_aimLine != null)
+            _aimLine.enabled = show;
+
+        if (_aimMarkerTransform != null)
+            _aimMarkerTransform.gameObject.SetActive(show);
+
+        if (!show)
+            return;
+
+        Transform weaponTransform = _currentWeaponObject.transform;
+        Vector3 pivotWorld = weaponTransform.TransformPoint(_currentWeaponData.aimPivotOffset);
+
+        if (_aimLine != null)
+        {
+            _aimLine.SetPosition(0, pivotWorld);
+            _aimLine.SetPosition(1, _currentAimPoint);
+        }
+
+        if (_aimMarkerTransform != null)
+            _aimMarkerTransform.position = _currentAimPoint;
     }
 
     private void OnDestroy()
@@ -258,6 +482,9 @@ public class WeaponIKController : MonoBehaviour
         _currentWeaponData = weapon;
         _currentShieldData = null;
         _currentPose = WeaponPose.Idle;
+        _currentAimPitch = 0f;
+        _targetAimPitch = 0f;
+        _aimRotation = Quaternion.identity;
 
         if (weapon == null || weapon.weaponPrefab == null)
         {

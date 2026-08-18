@@ -44,4 +44,14 @@ public class NpcAnimationController : MonoBehaviour
             _animator.SetBool("IsAlive", false);
         }
     }
+
+    public void SetStagger(bool status)
+    {
+        if (_animator != null)
+        {
+            if(status)
+                _animator.SetTrigger("Stagger");
+            _animator.SetBool("IsStun", status);
+        }
+    }
 }

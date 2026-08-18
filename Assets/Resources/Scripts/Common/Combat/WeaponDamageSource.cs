@@ -56,7 +56,8 @@ public class WeaponDamageSource : MonoBehaviour
 
         var hitbox = other.GetComponent<NpcHitbox>();
         float multiplier = hitbox != null ? hitbox.DamageMultiplier : 1f;
-
+        if(hitbox != null)
+            Debug.Log($"Удар пришелся по {hitbox.HitboxType} {target.Transform.name}!");
         var info = new DamageInfo
         {
             BaseDamage = BaseDamage,
