@@ -25,6 +25,18 @@ public class NpcHealthService : MonoBehaviour
         int damage = Mathf.RoundToInt(damageInfo.FinalDamage);
         if (damage <= 0) return;
 
+        // Учитываем блок NPC
+        var defense = GetComponent<NpcDefenseService>();
+        if (defense != null && defense.IsBlocking)
+        {
+            int blockedDamage = defense.ApplyBlock(damage);
+            if (blockedDamage < damage)
+            {
+                Debug.Log($"[NpcHealthService] {gameObject.name} заблокировал урон: {damage} -> {blockedDamage}");
+                damage = blockedDamage;
+            }
+        }
+
         CurrentHealth = Mathf.Clamp(CurrentHealth - damage, 0, MaxHealth);
 
         OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);

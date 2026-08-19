@@ -53,6 +53,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
         _input.OnJump += HandleJumpInput;
         _input.OnBlock += HandleBlockInput;
         _input.OnParry += HandleParryInput;
+        _input.OnDodge += HandleDodgeInput;
 
         TransitionToState(new PlayerIdleState(this, _movement));
     }
@@ -77,6 +78,12 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
     private void HandleInteractionInput()
     {
         _currentState?.HandleInteractionInput();
+    }
+
+    private void HandleDodgeInput()
+    {
+        var direction = _input.GetMovementInput();
+        _currentState?.HandleDodgeInput(direction);
     }
 
     private void Update()
@@ -170,6 +177,8 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
     {
         if (_currentState is PlayerDeadState) return;
         TransitionToState(new PlayerDeadState(this, _movement));
+        _movement.StopMovement();
+        playerAnimationController.EquipmentService.SetPlayerStatus(true);
     }
 
     public void RevivePlayer()
@@ -178,6 +187,8 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
         if (!(_currentState is PlayerIdleState))
             TransitionToState(new PlayerIdleState(this, _movement));
         playerAnimator.SetBool("IsAlive", true);
+        playerAnimationController.EquipmentService.SetPlayerStatus(false);
+        charRotate.OnRevivePlayer();
     }
 
     public void OnDestroy()
@@ -191,6 +202,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
             _input.OnJump -= HandleJumpInput;
             _input.OnBlock -= HandleBlockInput;
             _input.OnParry -= HandleParryInput;
+            _input.OnDodge -= HandleDodgeInput;
         }
     }
 }

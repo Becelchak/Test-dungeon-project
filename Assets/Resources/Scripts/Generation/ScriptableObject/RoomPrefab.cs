@@ -25,11 +25,11 @@ public class RoomPrefab : ScriptableObject
     [ContextMenu("Calculate Size from Prefab")]
     public void CalculateSize()
     {
-        Calculate(); // Вызываем логику поиска из первого примера
+        Calculate();
         Debug.Log($"Размер для {name} обновлен: {size}");
     }
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
     private void Calculate()
     {
         if (prefab == null) return;
@@ -76,7 +76,7 @@ public class RoomPrefab : ScriptableObject
 
         EditorUtility.SetDirty(this);
     }
-#endif
+//#endif
 }
 
 

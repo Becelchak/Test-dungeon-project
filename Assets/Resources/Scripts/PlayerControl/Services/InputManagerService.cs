@@ -7,6 +7,7 @@ public class InputManagerService : BaseService, IInputService
     private InputActionAsset _inputActions;
     public event Action<Vector2> OnMove;
     public event Action OnJump;
+    public event Action OnDodge;
     public event Action OnAttack;
     public event Action OnInteract;
     public event Action OnSubmit;
@@ -17,6 +18,7 @@ public class InputManagerService : BaseService, IInputService
 
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
+    public InputAction _dodgeAction { get; set; }
     public InputAction _attackAction { get; set; }
     public InputAction _interactAction { get; set; }
     public InputAction _submitAction { get; set; }
@@ -51,6 +53,10 @@ public class InputManagerService : BaseService, IInputService
         _jumpAction.performed += ctx => OnJump?.Invoke();
         _jumpAction.canceled += ctx => OnJump?.Invoke();
 
+        _dodgeAction = _inputActions.FindAction("Roll/Dodge");
+        _dodgeAction.performed += ctx => OnDodge?.Invoke();
+        _dodgeAction.canceled += ctx => OnDodge?.Invoke();
+
         _sprintAction = _inputActions.FindAction("Sprint");
         _sprintAction.performed += ctx => OnSprint?.Invoke(true);
         _sprintAction.canceled += ctx => OnSprint?.Invoke(false);
@@ -61,7 +67,6 @@ public class InputManagerService : BaseService, IInputService
 
         _interactAction = _inputActions.FindAction("Interact");
         _interactAction.performed += ctx => OnInteract?.Invoke();
-        //_interactAction.canceled += ctx => OnInteract?.Invoke();
 
         _submitAction = _inputActions.FindAction("Submit");
         _submitAction.performed += ctx => OnSubmit?.Invoke();

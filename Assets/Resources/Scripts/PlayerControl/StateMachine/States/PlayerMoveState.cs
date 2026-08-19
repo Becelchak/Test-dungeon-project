@@ -119,6 +119,26 @@ public class PlayerMoveState : PlayerStateBase
         }
     }
 
+    public override void HandleDodgeInput(Vector3 direction)
+    {
+        _currentInput = Vector3.Lerp(_currentInput,
+        direction,
+        _playerStats.CurrentProfile.acceleration * Time.deltaTime);
+        _stateMachine.playerAnimator.SetTrigger("Dodge");
+        _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
+        //_stateMachine.CombatService.SetGodMode(true);
+
+
+        _movementService.UpdateMovementInput(direction);
+        CallMove();
+
+        if (direction.magnitude < 0.1f)
+        {
+            var idleState = new PlayerIdleState(_stateMachine, _movementService);
+            _stateMachine.TransitionToState(idleState);
+        }
+    }
+
     public override void HandleAttackInput()
     {
         var combatService = _stateMachine.CombatService;

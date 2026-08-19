@@ -110,11 +110,15 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         if (finalDamage > 0)
         {
             ProfileService?.ModifyHealth(-finalDamage);
-            PlayerAnimController?.PlayHitAnimation();
             Debug.Log($"[PlayerCombatService] Игрок получил урон: {finalDamage}. Текущее здоровье {ProfileService.CurrentProfile.health}");
 
             if (ProfileService.CurrentProfile.health <= 0)
+            {
                 Die(source);
+                return;
+            }
+
+            PlayerAnimController?.PlayHitAnimation();
         }
     }
 
@@ -202,5 +206,10 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
             return shield;
 
         return weapon;
+    }
+
+    public void SetGodMode(bool isGodMode)
+    {
+        IsGodMode = isGodMode;
     }
 }

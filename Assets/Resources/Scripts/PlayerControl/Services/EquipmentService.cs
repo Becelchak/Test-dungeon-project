@@ -11,6 +11,7 @@ public class EquipmentService : BaseService, IEquipmentService
     [Tooltip("Индекс активного оружейного слота (0..2)")]
     [SerializeField] private int _activeWeaponSlotIndex = 0;
     private int _previousWeaponSlotIndex = 0;
+    private bool IsDead;
 
     public IReadOnlyList<EquipmentSlot> Slots => _slots;
     public int ActiveWeaponSlotIndex => _activeWeaponSlotIndex;
@@ -23,9 +24,6 @@ public class EquipmentService : BaseService, IEquipmentService
             if (activeSlot != null && activeSlot.IsOccupied)
                 return activeSlot.Item as WeaponData;
             Debug.Log("Слот пуст!");
-            // Если активный слот пуст, берём первое занятое оружейное слот
-            //var weaponSlot = _slots
-            //    .FirstOrDefault(s => s.allowedItemType == ItemType.Weapon && s.IsOccupied);
             return GetSlot(EquipmentSlotType.Weapon1 + _previousWeaponSlotIndex).Item as WeaponData;
         }
     }
@@ -90,6 +88,7 @@ public class EquipmentService : BaseService, IEquipmentService
 
     private void HandleSwitchWeaponSlot(int slotIndex)
     {
+        if(IsDead) return;
         SetActiveWeaponSlot(slotIndex);
     }
 
@@ -289,5 +288,10 @@ public class EquipmentService : BaseService, IEquipmentService
     private EquipmentSlot GetSlot(EquipmentSlotType slotType)
     {
         return _slots.FirstOrDefault(s => s.slotType == slotType);
+    }
+
+    public void SetPlayerStatus(bool deadStatus)
+    {
+        IsDead = deadStatus;
     }
 }

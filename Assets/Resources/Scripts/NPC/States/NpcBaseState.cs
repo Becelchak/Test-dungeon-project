@@ -23,4 +23,39 @@ public abstract class NpcBaseState
     public virtual void Exit() { }
     public virtual void Update() { }
     public virtual void FixedUpdate() { }
+
+    /// <summary>
+    /// Проверяет, не требуется ли перейти в тактическое состояние (блок, обход, отступление и т.д.).
+    /// Возвращает true, если переход выполнен.
+    /// </summary>
+    protected bool TryEnterTacticalState()
+    {
+        if (Machine.Tactics == null) return false;
+
+        var tacticalStateType = Machine.Tactics.EvaluateTacticalState();
+        if (tacticalStateType == null) return false;
+
+        if (tacticalStateType == typeof(NpcBlockState))
+        {
+            Machine.TransitionToState(new NpcBlockState(Machine));
+            return true;
+        }
+        if (tacticalStateType == typeof(NpcStrafeState))
+        {
+            Machine.TransitionToState(new NpcStrafeState(Machine));
+            return true;
+        }
+        if (tacticalStateType == typeof(NpcRetreatState))
+        {
+            Machine.TransitionToState(new NpcRetreatState(Machine));
+            return true;
+        }
+        if (tacticalStateType == typeof(NpcAggressiveChaseState))
+        {
+            Machine.TransitionToState(new NpcAggressiveChaseState(Machine));
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -54,4 +54,14 @@ public class NpcAnimationController : MonoBehaviour
             _animator.SetBool("IsStun", status);
         }
     }
+
+    public void SetBlocking(bool status)
+    {
+        if (_animator != null)
+        {
+            if (status)
+                _animator.SetTrigger("Block");
+            _animator.SetBool("IsBlocking", status);
+        }
+    }
 }

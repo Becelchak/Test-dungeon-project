@@ -1,4 +1,4 @@
-using LLMUnity;
+п»їusing LLMUnity;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -37,8 +37,8 @@ public class AITester : MonoBehaviour
         _aiService = ServiceLocator.Instance.GetService<IAIService>();
         _windowService = ServiceLocator.Instance.GetService<IWindowService>();
 
-        if (_aiService == null) Debug.LogError("[AITester] IAIService не найден");
-        if (_windowService == null) Debug.LogError("[AITester] IWindowService не найден");
+        if (_aiService == null) Debug.LogError("[AITester] IAIService РЅРµ РЅР°Р№РґРµРЅ");
+        if (_windowService == null) Debug.LogError("[AITester] IWindowService РЅРµ РЅР°Р№РґРµРЅ");
     }
 
     private void SubscribeToEvents()
@@ -57,20 +57,20 @@ public class AITester : MonoBehaviour
         switch (newState)
         {
             case AIConnectionState.Connecting:
-                ShowStatus("Подключение к нейросети...");
+                ShowStatus("РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє РЅРµР№СЂРѕСЃРµС‚Рё...");
                 break;
             case AIConnectionState.Reconnecting:
-                ShowStatus("Переподключение...");
+                ShowStatus("РџРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёРµ...");
                 break;
             case AIConnectionState.Error:
-                ShowStatus("Ошибка подключения. Проверьте LM Studio.", true);
+                ShowStatus("РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ. РџСЂРѕРІРµСЂСЊС‚Рµ LM Studio.", true);
                 break;
         }
     }
 
     private void HandleConnected()
     {
-        ShowStatus("Нейросеть подключена!");
+        ShowStatus("РќРµР№СЂРѕСЃРµС‚СЊ РїРѕРґРєР»СЋС‡РµРЅР°!");
 
         if (startAIDialogueOnConnect)
         {
@@ -78,8 +78,8 @@ public class AITester : MonoBehaviour
         }
     }
 
-    private void HandleDisconnected() => ShowStatus("Соединение разорвано", true);
-    private void HandleConnectionError() => ShowStatus("Ошибка соединения", true);
+    private void HandleDisconnected() => ShowStatus("РЎРѕРµРґРёРЅРµРЅРёРµ СЂР°Р·РѕСЂРІР°РЅРѕ", true);
+    private void HandleConnectionError() => ShowStatus("РћС€РёР±РєР° СЃРѕРµРґРёРЅРµРЅРёСЏ", true);
 
     private void ShowStatus(string message, bool isWarning = false)
     {
@@ -101,7 +101,7 @@ public class AITester : MonoBehaviour
         }
         else
         {
-            ShowStatus("Невозможно начать диалог: нет подключения", true);
+            ShowStatus("РќРµРІРѕР·РјРѕР¶РЅРѕ РЅР°С‡Р°С‚СЊ РґРёР°Р»РѕРі: РЅРµС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ", true);
         }
     }
 
@@ -146,18 +146,18 @@ public class AITester : MonoBehaviour
     {
         GUILayout.BeginArea(new Rect(10, 10, 300, 250));
 
-        GUILayout.Box($"Состояние AI: {stateMachine.CurrentState}");
+        GUILayout.Box($"РЎРѕСЃС‚РѕСЏРЅРёРµ AI: {stateMachine.CurrentState}");
 
         switch (stateMachine.CurrentState)
         {
             case AIConnectionState.Disconnected:
-                if (GUILayout.Button("Подключиться", GUILayout.Height(30)))
+                if (GUILayout.Button("РџРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ", GUILayout.Height(30)))
                     stateMachine.StartConnection();
                 break;
 
             case AIConnectionState.Error:
-                GUILayout.Label("Превышены попытки подключения");
-                if (GUILayout.Button("Сбросить и повторить", GUILayout.Height(30)))
+                GUILayout.Label("РџСЂРµРІС‹С€РµРЅС‹ РїРѕРїС‹С‚РєРё РїРѕРґРєР»СЋС‡РµРЅРёСЏ");
+                if (GUILayout.Button("РЎР±СЂРѕСЃРёС‚СЊ Рё РїРѕРІС‚РѕСЂРёС‚СЊ", GUILayout.Height(30)))
                 {
                     stateMachine.ResetConnection();
                     stateMachine.StartConnection();
@@ -165,24 +165,24 @@ public class AITester : MonoBehaviour
                 break;
 
             case AIConnectionState.Reconnecting:
-                GUILayout.Label("Идет переподключение...");
-                if (GUILayout.Button("Отменить", GUILayout.Height(25)))
+                GUILayout.Label("РРґРµС‚ РїРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёРµ...");
+                if (GUILayout.Button("РћС‚РјРµРЅРёС‚СЊ", GUILayout.Height(25)))
                     stateMachine.ResetConnection();
                 break;
         }
 
         GUILayout.Space(10);
 
-        if (GUILayout.Button("AI Диалог (F1)", GUILayout.Height(25)))
+        if (GUILayout.Button("AI Р”РёР°Р»РѕРі (F1)", GUILayout.Height(25)))
             StartAIDialogue();
 
-        if (GUILayout.Button("Классический диалог (F2)", GUILayout.Height(25)))
+        if (GUILayout.Button("РљР»Р°СЃСЃРёС‡РµСЃРєРёР№ РґРёР°Р»РѕРі (F2)", GUILayout.Height(25)))
             StartClassicalDialogue();
 
-        if (GUILayout.Button("Очистить историю (F3)", GUILayout.Height(25)))
+        if (GUILayout.Button("РћС‡РёСЃС‚РёС‚СЊ РёСЃС‚РѕСЂРёСЋ (F3)", GUILayout.Height(25)))
             _aiService?.ClearConversation();
 
-        if (GUILayout.Button("Сброс профиля (F4)", GUILayout.Height(25)))
+        if (GUILayout.Button("РЎР±СЂРѕСЃ РїСЂРѕС„РёР»СЏ (F4)", GUILayout.Height(25)))
             ReseteProfile();
 
         GUILayout.EndArea();
@@ -190,7 +190,7 @@ public class AITester : MonoBehaviour
 
     private void DrawStatusWindow()
     {
-        GUI.Box(new Rect(Screen.width - 310, 10, 300, 50), "Статус AI");
+        GUI.Box(new Rect(Screen.width - 310, 10, 300, 50), "РЎС‚Р°С‚СѓСЃ AI");
         GUI.Label(new Rect(Screen.width - 300, 30, 290, 30), _lastStatusMessage);
     }
 

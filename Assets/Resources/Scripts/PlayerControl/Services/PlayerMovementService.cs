@@ -56,18 +56,12 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     protected override void Awake()
     {
-        Debug.Log("PlayerMovementService проснулся");
         base.Awake();
     }
 
     public void Initialize()
     {
         charController = playerObject.GetComponent<CharacterController>();
-
-        //charController.interpolation = RigidbodyInterpolation.Interpolate;
-        //charController.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        //charController.constraints = RigidbodyConstraints.FreezeRotationX |
-        //                         RigidbodyConstraints.FreezeRotationZ;
 
         if (playerCamera == null)
         {
@@ -102,6 +96,9 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     public void StopMovement()
     {
         moveDuraction = Vector3.zero;
+        _currentSpeed = 0;
+        _horizontalMove = Vector3.zero;
+        _verticalVelocity = 0;
     }
 
     public void UpdateLookDirection(Vector3 direction)

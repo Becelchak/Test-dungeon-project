@@ -17,6 +17,8 @@ public class PlayerAnimationController : MonoBehaviour
 
     private IEquipmentStatsService _equipmentStatsService;
 
+    public IEquipmentService EquipmentService => equipment;
+
     private void Start()
     {
         playerProfile = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
@@ -156,8 +158,11 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator == null)
             return;
         RefreshDeathAnimation();
-        animator.SetTrigger("Death");
+
+        // Сбрасываем триггер получения урона, чтобы он не перехватил переход в смерть
+        animator.ResetTrigger("GetHit");
         animator.SetBool("IsAlive", false);
+        animator.SetTrigger("Death");
     }
 
     public void TriggerRandomAttack(WeaponData weapon)

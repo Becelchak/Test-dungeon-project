@@ -136,6 +136,7 @@ public class PlayerProfile
     public float deceleration = 10f;
     public float rotationSpeed = 10f;
     public float jumpForce = 8f;
+    public float dodgeCost = 5f;
     // Характеристики ролевые
     public int strength;
     public int intelligence;

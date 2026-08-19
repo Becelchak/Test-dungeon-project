@@ -1,14 +1,14 @@
-using System;
+п»їusing System;
 using System.Collections;
 using UnityEngine;
 
 public enum AIConnectionState
 {
-    Disconnected,      // Нет подключения
-    Connecting,        // В процессе подключения
-    Connected,         // Успешно подключено
-    Error,             // Ошибка подключения
-    Reconnecting       // Автоматическое переподключение
+    Disconnected,      // РќРµС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ
+    Connecting,        // Р’ РїСЂРѕС†РµСЃСЃРµ РїРѕРґРєР»СЋС‡РµРЅРёСЏ
+    Connected,         // РЈСЃРїРµС€РЅРѕ РїРѕРґРєР»СЋС‡РµРЅРѕ
+    Error,             // РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ
+    Reconnecting       // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРµ РїРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёРµ
 }
 
 public class AIConnectionStateMachine : MonoBehaviour
@@ -61,7 +61,7 @@ public class AIConnectionStateMachine : MonoBehaviour
         _aiService = ServiceLocator.Instance.GetService<IAIService>();
         if (_aiService == null)
         {
-            Debug.LogError("[StateMachine] IAIService не найден!");
+            Debug.LogError("[StateMachine] IAIService РЅРµ РЅР°Р№РґРµРЅ!");
             return;
         }
 
@@ -73,7 +73,7 @@ public class AIConnectionStateMachine : MonoBehaviour
         _aiService.OnConnectionStatusChanged += HandleAIClientStatusChange;
         _aiService.OnConnectionError += HandleAIClientError;
 
-        // Начальное состояние
+        // РќР°С‡Р°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
         CurrentState = _aiService.IsConnected ?
             AIConnectionState.Connected :
             AIConnectionState.Disconnected;
@@ -84,14 +84,14 @@ public class AIConnectionStateMachine : MonoBehaviour
         if (isConnected)
         {
             CurrentState = AIConnectionState.Connected;
-            _reconnectAttempts = 0; // Сброс счетчика при успешном подключении
+            _reconnectAttempts = 0; // РЎР±СЂРѕСЃ СЃС‡РµС‚С‡РёРєР° РїСЂРё СѓСЃРїРµС€РЅРѕРј РїРѕРґРєР»СЋС‡РµРЅРёРё
             StopReconnectCoroutine();
         }
         else
         {
             if (CurrentState == AIConnectionState.Connected)
             {
-                // Было подключение, но соединение разорвано
+                // Р‘С‹Р»Рѕ РїРѕРґРєР»СЋС‡РµРЅРёРµ, РЅРѕ СЃРѕРµРґРёРЅРµРЅРёРµ СЂР°Р·РѕСЂРІР°РЅРѕ
                 StartReconnection();
             }
             else
@@ -103,9 +103,9 @@ public class AIConnectionStateMachine : MonoBehaviour
 
     private void HandleAIClientError(string error)
     {
-        Debug.LogWarning($"[StateMachine] Ошибка подключения: {error}");
+        Debug.LogWarning($"[StateMachine] РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ: {error}");
 
-        // При любой ошибке пытаемся переподключиться, если были подключены
+        // РџСЂРё Р»СЋР±РѕР№ РѕС€РёР±РєРµ РїС‹С‚Р°РµРјСЃСЏ РїРµСЂРµРїРѕРґРєР»СЋС‡РёС‚СЊСЃСЏ, РµСЃР»Рё Р±С‹Р»Рё РїРѕРґРєР»СЋС‡РµРЅС‹
         if (CurrentState == AIConnectionState.Connected)
         {
             StartReconnection();
@@ -127,14 +127,14 @@ public class AIConnectionStateMachine : MonoBehaviour
         if (_reconnectAttempts >= maxReconnectAttempts)
         {
             CurrentState = AIConnectionState.Error;
-            Debug.LogError("[StateMachine] Превышено максимальное количество попыток переподключения");
+            Debug.LogError("[StateMachine] РџСЂРµРІС‹С€РµРЅРѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРїС‹С‚РѕРє РїРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёСЏ");
             return;
         }
 
         CurrentState = AIConnectionState.Reconnecting;
         _reconnectAttempts++;
 
-        Debug.Log($"[StateMachine] Попытка переподключения {_reconnectAttempts}/{maxReconnectAttempts}");
+        Debug.Log($"[StateMachine] РџРѕРїС‹С‚РєР° РїРµСЂРµРїРѕРґРєР»СЋС‡РµРЅРёСЏ {_reconnectAttempts}/{maxReconnectAttempts}");
         OnReconnectAttempt?.Invoke(_reconnectAttempts);
 
         _reconnectCoroutine = StartCoroutine(ReconnectCoroutine());
@@ -160,7 +160,7 @@ public class AIConnectionStateMachine : MonoBehaviour
         StopReconnectCoroutine();
         _reconnectAttempts = 0;
         CurrentState = AIConnectionState.Disconnected;
-        Debug.Log("[StateMachine] Сброс состояния подключения");
+        Debug.Log("[StateMachine] РЎР±СЂРѕСЃ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ");
     }
 
     private void OnDestroy()

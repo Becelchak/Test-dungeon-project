@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+п»їusing Cysharp.Threading.Tasks;
 using EventBusSystem;
 using Newtonsoft.Json.Linq;
 using System.Linq;
@@ -13,7 +13,7 @@ public class AIDialogueViewModel : BaseViewModel
     private PlayerProfileService _player;
     private IPlayerContextService _playerContextService;
 
-    private string _npcName = "Загрузка...";
+    private string _npcName = "Р—Р°РіСЂСѓР·РєР°...";
     private string _dialogueText = "...";
     private string _userInput;
     private bool _isWaitingForResponse;
@@ -70,7 +70,7 @@ public class AIDialogueViewModel : BaseViewModel
 
             if (dialogueService == null || _aiService == null || _player == null)
             {
-                Debug.LogError($"Не удалось получить необходимые сервисы. Dialogue = {dialogueService}, AI = {_aiService}, Player = {_player}");
+                Debug.LogError($"РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЃРµСЂРІРёСЃС‹. Dialogue = {dialogueService}, AI = {_aiService}, Player = {_player}");
                 return;
             }
 
@@ -86,35 +86,35 @@ public class AIDialogueViewModel : BaseViewModel
 
             if (_aiData == null)
             {
-                Debug.LogError($"Не удалось загрузить данные AI диалога для NPC: {npcId}");
-                NpcName = "Ошибка загрузки";
+                Debug.LogError($"РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РіСЂСѓР·РёС‚СЊ РґР°РЅРЅС‹Рµ AI РґРёР°Р»РѕРіР° РґР»СЏ NPC: {npcId}");
+                NpcName = "РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё";
                 return;
             }
 
-            // Теперь инициализируем данные
+            // РўРµРїРµСЂСЊ РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
             InitializeAIDialogue();
             _isInitialized = true;
 
-            // Уведомляем об изменении состояния инициализации
+            // РЈРІРµРґРѕРјР»СЏРµРј РѕР± РёР·РјРµРЅРµРЅРёРё СЃРѕСЃС‚РѕСЏРЅРёСЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
             OnPropertyChanged(nameof(IsInitialized));
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Ошибка инициализации AI диалога: {e.Message}");
-            NpcName = "Ошибка";
+            Debug.LogError($"РћС€РёР±РєР° РёРЅРёС†РёР°Р»РёР·Р°С†РёРё AI РґРёР°Р»РѕРіР°: {e.Message}");
+            NpcName = "РћС€РёР±РєР°";
         }
     }
 
     private void InitializeAIDialogue()
     {
         NpcName = _aiData.npcName;
-        DialogueText = "*Безмолвно ждет вашего вопроса*";
+        DialogueText = "*Р‘РµР·РјРѕР»РІРЅРѕ Р¶РґРµС‚ РІР°С€РµРіРѕ РІРѕРїСЂРѕСЃР°*";
 
         LogViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, DialogueText);
 
         if (_aiData.npcPortrait != null)
         {
-            Debug.Log($"Портрет загружен: {_aiData.npcPortrait.name}");
+            Debug.Log($"РџРѕСЂС‚СЂРµС‚ Р·Р°РіСЂСѓР¶РµРЅ: {_aiData.npcPortrait.name}");
         }
 
         _aiService.OnAIResponseReceived += OnAIResponse;
@@ -144,47 +144,47 @@ public class AIDialogueViewModel : BaseViewModel
     }
 
     /// <summary>
-    /// Составляет полный промпт для LLM в ходе диалога. Помимо самого сообщения от игрока, передает его текущие показатели и контекст.
+    /// РЎРѕСЃС‚Р°РІР»СЏРµС‚ РїРѕР»РЅС‹Р№ РїСЂРѕРјРїС‚ РґР»СЏ LLM РІ С…РѕРґРµ РґРёР°Р»РѕРіР°. РџРѕРјРёРјРѕ СЃР°РјРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ РѕС‚ РёРіСЂРѕРєР°, РїРµСЂРµРґР°РµС‚ РµРіРѕ С‚РµРєСѓС‰РёРµ РїРѕРєР°Р·Р°С‚РµР»Рё Рё РєРѕРЅС‚РµРєСЃС‚.
     /// </summary>
-    /// <param name="userMessage">Сообщение пользователя</param>
+    /// <param name="userMessage">РЎРѕРѕР±С‰РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</param>
     /// <returns></returns>
     private string BuildFullPrompt(string userMessage)
     {
-        // Получаем контекст игрока
+        // РџРѕР»СѓС‡Р°РµРј РєРѕРЅС‚РµРєСЃС‚ РёРіСЂРѕРєР°
         string playerContext = _playerContextService.GetPlayerContextForAI();
-        // Для отладки
+        // Р”Р»СЏ РѕС‚Р»Р°РґРєРё
         Debug.Log("=== PLAYER CONTEXT SENT TO AI ===");
         Debug.Log(playerContext);
         Debug.Log("=================================");
 
-        // Формируем строку с текущими эмоциями для контекста
+        // Р¤РѕСЂРјРёСЂСѓРµРј СЃС‚СЂРѕРєСѓ СЃ С‚РµРєСѓС‰РёРјРё СЌРјРѕС†РёСЏРјРё РґР»СЏ РєРѕРЅС‚РµРєСЃС‚Р°
         string emotionsStr = string.Join(", ", _aiData.currentEmotions.Select(e => e.ToString("F2")));
 
         return $@"
 
-        ДАННЫЕ ИГРОКА:
+        Р”РђРќРќР«Р• РР“Р РћРљРђ:
         {playerContext}
 
-        ТВОИ ТЕКУЩИЕ ЭМОЦИИ (joy, sadness, anger, fear, surprise, trust, arousal, dominance):
+        РўР’РћР РўР•РљРЈР©РР• Р­РњРћР¦РР (joy, sadness, anger, fear, surprise, trust, arousal, dominance):
         [{emotionsStr}]
 
-        ОГРАНИЧЕНИЯ:
+        РћР“Р РђРќРР§Р•РќРРЇ:
         {string.Join("\n", _aiData.constraints.Select(c => $"- {c.constraint}: {c.value}"))}
 
-        ТЕКУЩИЙ ДИАЛОГ:
-        Пользователь: {userMessage}
+        РўР•РљРЈР©РР™ Р”РРђР›РћР“:
+        РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ: {userMessage}
         {_aiData.npcName}:
 
-        ОТВЕЧАЙ ТОЛЬКО В ФОРМАТЕ JSON (без размышлений):
-        Эмоции (0.0 - 1.0): [joy, sadness, anger, fear, surprise, trust, arousal, dominance].
-        Пример: {{""reply"": ""Текст"", ""emotions"": [0.1, 0.5, 0.0, 0.2, 0.0, 0.8, 0.3, 0.9]}}";
+        РћРўР’Р•Р§РђР™ РўРћР›Р¬РљРћ Р’ Р¤РћР РњРђРўР• JSON (Р±РµР· СЂР°Р·РјС‹С€Р»РµРЅРёР№):
+        Р­РјРѕС†РёРё (0.0 - 1.0): [joy, sadness, anger, fear, surprise, trust, arousal, dominance].
+        РџСЂРёРјРµСЂ: {{""reply"": ""РўРµРєСЃС‚"", ""emotions"": [0.1, 0.5, 0.0, 0.2, 0.0, 0.8, 0.3, 0.9]}}";
     }
 
     private void OnAIResponse(string response)
     {
         IsWaitingForResponse = false;
 
-        // Пытаемся извлечь JSON из ответа
+        // РџС‹С‚Р°РµРјСЃСЏ РёР·РІР»РµС‡СЊ JSON РёР· РѕС‚РІРµС‚Р°
         string json = ExtractJson(response);
         if (!string.IsNullOrEmpty(json))
         {
@@ -200,14 +200,14 @@ public class AIDialogueViewModel : BaseViewModel
                     for (int i = 0; i < 8; i++)
                         newEmotions[i] = (float)emotionsToken[i];
 
-                    // Обновляем текущие эмоции NPC
+                    // РћР±РЅРѕРІР»СЏРµРј С‚РµРєСѓС‰РёРµ СЌРјРѕС†РёРё NPC
                     _aiData.currentEmotions = newEmotions;
 
-                    // Сохраняем в профиль игрока
+                    // РЎРѕС…СЂР°РЅСЏРµРј РІ РїСЂРѕС„РёР»СЊ РёРіСЂРѕРєР°
                     _player.CurrentProfile.LastEmotions = newEmotions;
                     _player.SaveProfile(_player.CurrentProfile);
 
-                    // Отправляем событие для ML-агента
+                    // РћС‚РїСЂР°РІР»СЏРµРј СЃРѕР±С‹С‚РёРµ РґР»СЏ ML-Р°РіРµРЅС‚Р°
                     EventBus.RaiseEvent<IEmotionsUpdatedSubscriber>(
                         s => s.OnEmotionsUpdated(new EmotionsUpdatedEvent(newEmotions))
                     );
@@ -218,7 +218,7 @@ public class AIDialogueViewModel : BaseViewModel
             }
             catch (System.Exception e)
             {
-                Debug.LogWarning($"Ошибка парсинга JSON: {e.Message}. Ответ: {response}");
+                Debug.LogWarning($"РћС€РёР±РєР° РїР°СЂСЃРёРЅРіР° JSON: {e.Message}. РћС‚РІРµС‚: {response}");
             }
         }
 
@@ -242,7 +242,7 @@ public class AIDialogueViewModel : BaseViewModel
     {
         if (!isConnected)
         {
-            DialogueText = "*Собеседник потерял дар речи*";
+            DialogueText = "*РЎРѕР±РµСЃРµРґРЅРёРє РїРѕС‚РµСЂСЏР» РґР°СЂ СЂРµС‡Рё*";
             LogViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, DialogueText);
         }
     }

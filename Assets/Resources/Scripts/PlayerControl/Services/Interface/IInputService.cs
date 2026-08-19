@@ -8,6 +8,7 @@ public interface IInputService
     event Action OnAttack;
     event Action OnInteract;
     event Action OnJump;
+    event Action OnDodge;
     event Action OnSubmit;
     event Action<bool> OnSprint;
     event Action<int> OnSwitchWeaponSlot;
@@ -16,6 +17,7 @@ public interface IInputService
 
     InputAction _moveAction { get; set; }
     InputAction _jumpAction { get; set; }
+    InputAction _dodgeAction { get; set; }
     InputAction _sprintAction { get; set; }
     InputAction _attackAction { get; set; }
     InputAction _interactAction { get; set; }

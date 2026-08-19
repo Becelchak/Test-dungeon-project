@@ -1,20 +1,30 @@
-﻿using UnityEngine;
+﻿using EventBusSystem;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Profiling;
 
-public class CharacterRotator : MonoBehaviour, IRotator
+public class CharacterRotator : MonoBehaviour, IRotator, IPlayerDiedEventSubscriber
 {
     [SerializeField] private Transform model;
     [SerializeField] private float rotationSpeed = 1f;
 
-    private PlayerMovementService _movement;
     private IInputService _input;
     private PlayerProfileService _profile;
+    private bool _isCharacterDeath = false;
     public Transform rotationModel => model;
+
+    private void OnEnable()
+    {
+        EventBus.Subscribe(this);
+    }
+
+    private void OnDisable()
+    {
+        EventBus.Unsubscribe(this);
+    }
 
     public void Start()
     {
-        _movement = (PlayerMovementService) ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _profile = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
         rotationSpeed = _profile.CurrentProfile.rotationSpeed;
         _input = ServiceLocator.Instance.GetService<IInputService>();
@@ -23,6 +33,7 @@ public class CharacterRotator : MonoBehaviour, IRotator
 
     private void Update()
     {
+        if (_isCharacterDeath) return;
         Vector3 targetDir = _input.GetMouseWorldDirection(Camera.main, transform);
         Debug.DrawRay(transform.position, targetDir);
         if (targetDir != Vector3.zero)
@@ -47,4 +58,14 @@ public class CharacterRotator : MonoBehaviour, IRotator
     }
 
     public void SetTarget(Transform target) => model = target;
+
+    public void OnPlayerDied(PlayerDiedEvent evt)
+    {
+        _isCharacterDeath = true;
+    }
+
+    public void OnRevivePlayer()
+    {
+        _isCharacterDeath = false;
+    }
 }

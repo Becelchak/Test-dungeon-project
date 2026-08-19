@@ -17,6 +17,8 @@ public class NpcIdleState : NpcBaseState
         if (!Machine.Controller.IsAlive) return;
         if (!Machine.Perception.HasTarget) return;
 
+        if (TryEnterTacticalState()) return;
+
         if (Machine.Perception.IsTargetInAttackRange)
         {
             if (Machine.Combat.CanAttack())

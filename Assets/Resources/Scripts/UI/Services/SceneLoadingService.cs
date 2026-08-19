@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+п»їusing Cysharp.Threading.Tasks;
 using EventBusSystem;
 using System;
 using UnityEngine;
@@ -7,7 +7,7 @@ using SceneLoad;
 
 public class SceneLoadingService : BaseService, ISceneLoadingService
 {
-    [Tooltip("Минимальное время демонстрации экрана загрузки")]
+    [Tooltip("РњРёРЅРёРјР°Р»СЊРЅРѕРµ РІСЂРµРјСЏ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё СЌРєСЂР°РЅР° Р·Р°РіСЂСѓР·РєРё")]
     [SerializeField] private double minDisplayTime;
     private AsyncOperation _currentOperation;
     public bool IsLoading => _currentOperation != null;
@@ -19,7 +19,7 @@ public class SceneLoadingService : BaseService, ISceneLoadingService
     {
         if (IsLoading) return;
 
-        // Оповещаем UI
+        // РћРїРѕРІРµС‰Р°РµРј UI
         EventBus.RaiseEvent<ISceneLoadStartedSubscriber>(s => s.OnSceneLoadStarted(sceneName));
 
         _currentOperation = SceneManager.LoadSceneAsync(sceneName);
@@ -57,14 +57,14 @@ public class SceneLoadingService : BaseService, ISceneLoadingService
         //    if (_aiService != null)
         //    {
         //        var _loadingScreen = FindObjectOfType<LoadingScreenUI>(true);
-        //        // Ждём загрузки модели
+        //        // Р–РґС‘Рј Р·Р°РіСЂСѓР·РєРё РјРѕРґРµР»Рё
         //        await ((AIClient)_aiService).LoadModelAsync(new Progress<float>(p => {
         //            _loadingScreen?.SetProgress(p);
         //        }));
         //    }
         //}
 
-        // 2. Ждем, пока прогресс дойдет до 0.9
+        // 2. Р–РґРµРј, РїРѕРєР° РїСЂРѕРіСЂРµСЃСЃ РґРѕР№РґРµС‚ РґРѕ 0.9
         while (_currentOperation.progress < 0.9f)
         {
             float progress = Mathf.Clamp01(_currentOperation.progress / 0.9f);
@@ -76,7 +76,7 @@ public class SceneLoadingService : BaseService, ISceneLoadingService
 
         _currentOperation.allowSceneActivation = true;
 
-        // Ждем одновременно и таймер, и фактическое завершение загрузки (до 1.0)
+        // Р–РґРµРј РѕРґРЅРѕРІСЂРµРјРµРЅРЅРѕ Рё С‚Р°Р№РјРµСЂ, Рё С„Р°РєС‚РёС‡РµСЃРєРѕРµ Р·Р°РІРµСЂС€РµРЅРёРµ Р·Р°РіСЂСѓР·РєРё (РґРѕ 1.0)
         await UniTask.WhenAll(delayTask, _currentOperation.WithCancellation(this.GetCancellationTokenOnDestroy()));
 
         _currentOperation = null;

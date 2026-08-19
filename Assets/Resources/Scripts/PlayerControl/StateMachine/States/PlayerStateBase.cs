@@ -48,7 +48,7 @@ public abstract class PlayerStateBase : MonoBehaviour
     //public virtual void HandleInteractInput() { }
 
     public virtual void HandleJumpInput(Vector3 direction) { }
-    public virtual void HandleDashInput() { }
+    public virtual void HandleDodgeInput(Vector3 direction) { }
     public virtual void HandleSprintInput(bool inputPressed) { }
     public virtual void HandleBlockInput(bool isBlocking) { }
     public virtual void HandleParryInput() { }

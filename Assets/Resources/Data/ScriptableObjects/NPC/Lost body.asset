@@ -18,10 +18,25 @@ MonoBehaviour:
   detectionRadius: 10
   detectionAngle: 120
   targetLostDelay: 3
-  attackRange: 2
+  attackRange: 1
   attackDamage: 15
-  attackDuration: 1.5
-  attackWindup: 0.5
+  attackDuration: 1
+  attackWindup: 0.2
   attackCooldown: 1.5
   minStaggerTime: 1.5
   maxStaggerTime: 3
+  blockChance: 0.55
+  blockDamageReduction: 0.4
+  blockCooldown: 4
+  blockDuration: 1.5
+  strafeChance: 0.45
+  strafeDuration: 1.5
+  strafeSpeedMultiplier: 1.2
+  strafeRadius: 2.5
+  retreatHealthThreshold: 0.45
+  retreatChance: 0.5
+  retreatDistance: 8
+  retreatSpeedMultiplier: 1.3
+  aggressivePlayerHealthThreshold: 0.3
+  aggressiveChance: 0.85
+  aggressiveSpeedMultiplier: 1.6

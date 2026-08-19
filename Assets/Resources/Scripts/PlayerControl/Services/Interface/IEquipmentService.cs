@@ -67,4 +67,10 @@ public interface IEquipmentService
     /// Восстановить экипировку из JSON.
     /// </summary>
     void LoadFromJson(string json);
+
+    /// <summary>
+    /// Определяет статус игрока: живой или мертвый.
+    /// </summary>
+    /// <param name="deadStatus">Переменная статуса</param>
+    void SetPlayerStatus(bool deadStatus);
 }

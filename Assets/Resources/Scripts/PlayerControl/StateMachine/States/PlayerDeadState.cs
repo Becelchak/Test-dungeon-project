@@ -13,7 +13,7 @@ public class PlayerDeadState : PlayerStateBase
         base.Enter();
         _movementService.SetMovement(0f, 0f);
         _stateMachine.playerAnimator?.SetBool("IsDead", true);
-        Debug.Log("[PlayerDeadState] Игрок мёртв. Ожидание респауна...");
+        Debug.Log("[PlayerDeadState] Игрок мёртв.");
     }
 
     public override void Update()

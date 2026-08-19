@@ -1,20 +1,27 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// Состояние преследования. Заглушка: поворачивается к цели и движется к ней
-/// (через NavMeshAgent, если есть, иначе просто вперёд).
+/// Состояние агрессивного преследования NPC. NPC движется быстрее обычного
+/// и чаще пытается атаковать, когда у игрока мало здоровья.
 /// </summary>
-public class NpcChaseState : NpcBaseState
+public class NpcAggressiveChaseState : NpcBaseState
 {
-    private float _targetLostTimer;
+    private float _originalSpeed;
+    private float _aggressiveSpeed;
 
-    public NpcChaseState(NpcStateMachine machine) : base(machine) { }
+    public NpcAggressiveChaseState(NpcStateMachine machine) : base(machine) { }
 
     public override void Enter()
     {
         base.Enter();
+
+        _originalSpeed = Machine.Agent != null ? Machine.Agent.speed : (Data?.moveSpeed ?? 3.5f);
+        _aggressiveSpeed = _originalSpeed * (Data?.aggressiveSpeedMultiplier ?? 1.4f);
+
+        if (Machine.Agent != null && Machine.Agent.isActiveAndEnabled)
+            Machine.Agent.speed = _aggressiveSpeed;
+
         Machine.AnimationController?.SetMoving(true);
-        _targetLostTimer = 0f;
     }
 
     public override void Update()
@@ -23,15 +30,9 @@ public class NpcChaseState : NpcBaseState
 
         if (!Machine.Perception.HasTarget)
         {
-            _targetLostTimer += Time.deltaTime;
-            if (_targetLostTimer >= (Data?.targetLostDelay ?? 3f))
-                Machine.TransitionToState(new NpcIdleState(Machine));
+            Machine.TransitionToState(new NpcIdleState(Machine));
             return;
         }
-
-        _targetLostTimer = 0f;
-
-        if (TryEnterTacticalState()) return;
 
         if (Machine.Perception.IsTargetInAttackRange && Machine.Combat.CanAttack())
         {
@@ -40,13 +41,20 @@ public class NpcChaseState : NpcBaseState
         }
 
         MoveTowardTarget();
+
+        // Если игрок восстановил здоровье — прекращаем агрессию
+        if (Machine.Tactics.PlayerHealthPercent > Data?.aggressivePlayerHealthThreshold)
+        {
+            Machine.TransitionToState(new NpcChaseState(Machine));
+        }
     }
 
     public override void Exit()
     {
         if (Machine.Agent != null && Machine.Agent.isActiveAndEnabled)
-            Machine.Agent.ResetPath();
+            Machine.Agent.speed = _originalSpeed;
 
+        Machine.Agent?.ResetPath();
         Machine.AnimationController?.SetMoving(false);
     }
 
@@ -65,20 +73,19 @@ public class NpcChaseState : NpcBaseState
             Machine.Controller.Transform.rotation = Quaternion.Slerp(
                 Machine.Controller.Transform.rotation,
                 lookRotation,
-                (Data?.rotationSpeed ?? 5f) * Time.deltaTime
+                (Data?.rotationSpeed ?? 5f) * Time.deltaTime * 1.5f
             );
         }
 
         if (Machine.Agent != null && Machine.Agent.isActiveAndEnabled)
         {
             Machine.Agent.SetDestination(target.position);
-            float speedRatio = Machine.Agent.velocity.magnitude / Mathf.Max(Data?.moveSpeed ?? 1f, 0.001f);
+            float speedRatio = Machine.Agent.velocity.magnitude / Mathf.Max(_aggressiveSpeed, 0.001f);
             Machine.AnimationController?.SetSpeed(Mathf.Clamp01(speedRatio));
         }
         else
         {
-            // Fallback: прямолинейное движение, если NavMeshAgent отсутствует
-            Machine.Controller.Transform.position += direction.normalized * (Data?.moveSpeed ?? 0f) * Time.deltaTime;
+            Machine.Controller.Transform.position += direction.normalized * _aggressiveSpeed * Time.deltaTime;
             Machine.AnimationController?.SetSpeed(1f);
         }
     }

@@ -61,4 +61,6 @@ public interface IPlayerCombatService
     /// Воскрешает игрока (для консоли разработчика/респауна).
     /// </summary>
     void Revive();
+
+    void SetGodMode(bool isGodMode);
 }

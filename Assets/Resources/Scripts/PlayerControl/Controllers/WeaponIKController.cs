@@ -166,7 +166,7 @@ public class WeaponIKController : MonoBehaviour
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
         float maxDistance = _currentWeaponData.Stats != null && _currentWeaponData.Stats.range > 0f
             ? _currentWeaponData.Stats.range
-            : 50f;
+            : 5f;
 
         Vector3 aimPoint = GetAimPointFromCursor(ray, maxDistance);
         _currentAimPoint = aimPoint;

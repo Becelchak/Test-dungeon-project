@@ -13,6 +13,8 @@ public class NpcStateMachine : MonoBehaviour, IParryEventSubscriber
     public NpcCombatService Combat { get; private set; }
     public NpcPerception Perception { get; private set; }
     public NpcHealthService Health { get; private set; }
+    public NpcDefenseService Defense { get; private set; }
+    public NpcTacticsService Tactics { get; private set; }
     public NavMeshAgent Agent { get; private set; }
 
     private NpcBaseState _currentState;
@@ -25,7 +27,12 @@ public class NpcStateMachine : MonoBehaviour, IParryEventSubscriber
         Combat = GetComponent<NpcCombatService>();
         Perception = GetComponent<NpcPerception>();
         Health = GetComponent<NpcHealthService>();
+        Defense = GetComponent<NpcDefenseService>();
+        Tactics = GetComponent<NpcTacticsService>();
         Agent = GetComponent<NavMeshAgent>();
+
+        Defense?.Initialize(controller.Data);
+        Tactics?.Initialize(controller.Data);
 
         TransitionToState(new NpcIdleState(this));
         EventBus.Subscribe(this);
