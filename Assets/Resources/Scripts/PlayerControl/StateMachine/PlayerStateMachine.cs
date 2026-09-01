@@ -58,6 +58,17 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
         TransitionToState(new PlayerIdleState(this, _movement));
     }
 
+    private void Update()
+    {
+        Vector2 currentInput = _input.GetMovementInput();
+        _currentState?.HandleMovement(currentInput);
+        _currentState?.Update();
+    }
+
+    private void FixedUpdate()
+    {
+        _currentState?.FixedUpdate();
+    }
 
     private void HandleJumpInput()
     {
@@ -83,20 +94,12 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
     private void HandleDodgeInput()
     {
         var direction = _input.GetMovementInput();
+        _combat.SetGodMode(true);
+        Debug.Log($"GodMove {_combat.IsGodMode}");
         _currentState?.HandleDodgeInput(direction);
+        StartCoroutine(DodgeInvincibleWindow(1));
     }
 
-    private void Update()
-    {
-        Vector2 currentInput = _input.GetMovementInput();
-        _currentState?.HandleMovement(currentInput);
-        _currentState?.Update();
-    }
-
-    private void FixedUpdate()
-    {
-        _currentState?.FixedUpdate();
-    }
     private void HandleAttackInput()
     {
         if (_combat == null)
@@ -145,6 +148,13 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
                 ? WeaponIKController.WeaponPose.Block
                 : WeaponIKController.WeaponPose.Idle,
             true);
+    }
+
+    private IEnumerator DodgeInvincibleWindow(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        _combat.SetGodMode(false);
+        Debug.Log($"GodMove in Cor {_combat.IsGodMode}");
     }
 
     public void TransitionToState(PlayerStateBase newState)

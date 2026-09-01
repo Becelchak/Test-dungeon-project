@@ -31,15 +31,14 @@ MonoBehaviour:
   handling: 0
   attackAnimationClips:
   - {fileID: 7400000, guid: 5fb43c039312cf245b96d8facb3ecf44, type: 2}
-  - {fileID: 7400000, guid: 5152e6042e3ba6549aeb5dddde5634f9, type: 2}
-  - {fileID: 7400000, guid: 2275b5df34190e443aec23beae6c1271, type: 2}
-  - {fileID: 7400000, guid: 3d6c235c9dca42443abf4a49f84a0b91, type: 2}
+  - {fileID: 7400000, guid: 215443c48ee124044878197cc73d7a7b, type: 2}
+  - {fileID: 7400000, guid: 2ae5d718c44daeb44956f2f58318dbd6, type: 2}
   weaponPrefab: {fileID: 3249083749712518619, guid: c521a73cc43793347b746969a0276431, type: 3}
   weaponHolderOffset: {x: 0, y: 0, z: 0}
   weaponHolderRotationOffsetEuler: {x: 305, y: 215, z: 209.99998}
   weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
   weaponHolderAttackRotationOffsetEuler: {x: 305, y: 215, z: 209.99998}
-  blockAnimationClip: {fileID: 7400000, guid: 7adba4905bd3d52458530591b5ca9b02, type: 2}
+  blockAnimationClip: {fileID: 8952413660455403669, guid: b96a3e38fca3f1f4ab5c7baf1321adad, type: 3}
   parryAnimationClip: {fileID: 7400000, guid: a0b8fdb51de733e40831088ebeb8b997, type: 2}
   hitAnimationClip: {fileID: 0}
   deathAnimationClip: {fileID: 0}
@@ -50,9 +49,9 @@ MonoBehaviour:
   twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
   aimRotationAxis: {x: 0, y: 0, z: 1}
   aimPivotOffset: {x: 0, y: 0, z: 0}
-  maxAimAngleUp: 60
+  maxAimAngleUp: 65
   maxAimAngleDown: 40
-  aimSpeed: 90
+  aimSpeed: 50
   aimLayers:
     serializedVersion: 2
     m_Bits: 8256
@@ -61,11 +60,11 @@ MonoBehaviour:
     weaponId: sword_01
     damage: 17.5
     range: 1.25
-    attackDuration: 0.85
+    attackDuration: 1.1
     perfectBlockWindow: 0.1
     blockDamageReduction: 0.12
     parryWindow: 0.18
     parryStaminaCost: 20
     attackStaminaCost: 10
-    weakAttackSpeedMultiplier: 1.5
+    weakAttackSpeedMultiplier: 1.6
     weakAttackDamageMultiplier: 0.55

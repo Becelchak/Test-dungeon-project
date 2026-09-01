@@ -44,6 +44,19 @@ public class PlayerIdleState : PlayerStateBase
         }
     }
 
+    public override void HandleDodgeInput(Vector3 direction)
+    {
+        _currentInput = Vector3.Lerp(_currentInput,
+direction,
+_playerStats.CurrentProfile.acceleration * Time.deltaTime);
+        _stateMachine.playerAnimator.SetTrigger("Dodge");
+        _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
+        _stateMachine.CombatService.SetGodMode(true);
+
+
+        _movementService.UpdateMovementInput(direction);
+    }
+
     public override void HandleInteractionInput()
     {
         Debug.Log("INTERACT");

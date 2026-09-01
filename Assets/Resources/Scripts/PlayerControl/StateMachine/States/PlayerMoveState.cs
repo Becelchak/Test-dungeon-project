@@ -92,11 +92,6 @@ public class PlayerMoveState : PlayerStateBase
         CallMove();
     }
 
-    public override void HandleParryInput()
-    {
-        // Парирование обрабатывается централизованно в PlayerStateMachine.
-    }
-
     public override void HandleInteractionInput()
     {
         Debug.Log("MOVE INTERACT");
@@ -126,7 +121,7 @@ public class PlayerMoveState : PlayerStateBase
         _playerStats.CurrentProfile.acceleration * Time.deltaTime);
         _stateMachine.playerAnimator.SetTrigger("Dodge");
         _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
-        //_stateMachine.CombatService.SetGodMode(true);
+        _stateMachine.CombatService.SetGodMode(true);
 
 
         _movementService.UpdateMovementInput(direction);

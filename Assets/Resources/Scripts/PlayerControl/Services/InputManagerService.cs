@@ -53,7 +53,7 @@ public class InputManagerService : BaseService, IInputService
         _jumpAction.performed += ctx => OnJump?.Invoke();
         _jumpAction.canceled += ctx => OnJump?.Invoke();
 
-        _dodgeAction = _inputActions.FindAction("Roll/Dodge");
+        _dodgeAction = _inputActions.FindAction("Roll");
         _dodgeAction.performed += ctx => OnDodge?.Invoke();
         _dodgeAction.canceled += ctx => OnDodge?.Invoke();
 

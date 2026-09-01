@@ -2,12 +2,12 @@
   "weaponId": "sword_01",
   "damage": 17.5,
   "range": 1.25,
-  "attackDuration": 0.85,
+  "attackDuration": 1.1,
   "perfectBlockWindow": 0.1,
   "blockDamageReduction": 0.12,
   "parryWindow": 0.18,
   "parryStaminaCost": 20,
   "attackStaminaCost": 10,
-  "weakAttackSpeedMultiplier": 1.5,
+  "weakAttackSpeedMultiplier": 1.6,
   "weakAttackDamageMultiplier": 0.55
 }

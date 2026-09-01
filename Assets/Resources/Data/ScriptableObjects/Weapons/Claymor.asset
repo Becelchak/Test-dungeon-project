@@ -32,7 +32,7 @@ MonoBehaviour:
   weaponHolderRotationOffsetEuler: {x: 0, y: 0, z: 0}
   weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
   weaponHolderAttackRotationOffsetEuler: {x: 0, y: 0, z: 120}
-  blockAnimationClip: {fileID: 7400000, guid: c2a0eb0c4b6a4144383649b9bbda2115, type: 2}
+  blockAnimationClip: {fileID: 8952413660455403669, guid: b96a3e38fca3f1f4ab5c7baf1321adad, type: 3}
   parryAnimationClip: {fileID: 7400000, guid: 9b1baa5128016c4499b787387b551567, type: 2}
   hitAnimationClip: {fileID: -5694488986427802680, guid: adc1feaf8563f6247989bffd0737b6ad, type: 3}
   deathAnimationClip: {fileID: 0}

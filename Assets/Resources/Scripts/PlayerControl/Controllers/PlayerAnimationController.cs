@@ -77,9 +77,11 @@ public class PlayerAnimationController : MonoBehaviour
         if (overrideController == null || equipment == null)
             return;
 
+        Debug.Log($"{overrideController["Base_Block"].name}");
         var blocker = GetActiveBlocker();
         if (blocker != null && blocker.blockAnimationClip != null)
             overrideController["Base_Block"] = blocker.blockAnimationClip;
+        Debug.Log($"{overrideController["Base_Block"].name}");
     }
 
     /// <summary>
