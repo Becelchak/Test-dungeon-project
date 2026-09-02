@@ -46,9 +46,10 @@ public class PlayerIdleState : PlayerStateBase
 
     public override void HandleDodgeInput(Vector3 direction)
     {
+        direction = new Vector3(0,0,1);
         _currentInput = Vector3.Lerp(_currentInput,
-direction,
-_playerStats.CurrentProfile.acceleration * Time.deltaTime);
+        direction,
+        _playerStats.CurrentProfile.acceleration * Time.deltaTime);
         _stateMachine.playerAnimator.SetTrigger("Dodge");
         _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
         _stateMachine.CombatService.SetGodMode(true);

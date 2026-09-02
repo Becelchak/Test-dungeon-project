@@ -1,8 +1,8 @@
-{
+﻿{
   "dialogueId": "monk_knight_intro",
   "npcId": "monk_knight",
   "npcName": "Статуя",
-  "npcPortraitPath": "Sprites/Portraits/monk_knight_portrait",
+  "npcPortraitPath": "Art/Sprites/Portraits/monk_knight_portrait",
   "startNodeId": "greeting",
   "nodes": [
     {

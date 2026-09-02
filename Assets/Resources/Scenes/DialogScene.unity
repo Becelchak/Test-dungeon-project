@@ -639,6 +639,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &118208469
 MonoBehaviour:
@@ -868,14 +869,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -1514,6 +1515,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &861521345
 MonoBehaviour:
@@ -2764,6 +2766,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &918494966
 MonoBehaviour:
@@ -14387,6 +14390,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1762041377}
     m_Modifications:
+    - target: {fileID: 3986513926607130756, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 5059599363719763803, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
       propertyPath: m_Name
       value: knight (player) anim
@@ -15099,6 +15106,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -15314,6 +15322,7 @@ GameObject:
   - component: {fileID: 1850950274}
   - component: {fileID: 1850950275}
   - component: {fileID: 1850950276}
+  - component: {fileID: 1850950277}
   m_Layer: 0
   m_Name: InteractionTrigger
   m_TagString: Untagged
@@ -15372,6 +15381,33 @@ MonoBehaviour:
   npcIDString: ai_skeleton_no_initial
   interactionPrompt: "\u041E\u0441\u043C\u043E\u0442\u0440\u0435\u0442\u044C \u0441\u043A\u0435\u043B\u0435\u0442\u0430
     \u0432 \u043A\u043B\u0435\u0442\u043A\u0435"
+--- !u!54 &1850950277
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850950273}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!43 &1854992059
 Mesh:
   m_ObjectHideFlags: 0
@@ -15858,6 +15894,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!114 &2060119790
 MonoBehaviour:

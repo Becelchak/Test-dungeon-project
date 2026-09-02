@@ -1,4 +1,4 @@
-using EventBusSystem;
+п»їusing EventBusSystem;
 using UnityEngine;
 
 public class Interactor : MonoBehaviour
@@ -23,7 +23,7 @@ public class Interactor : MonoBehaviour
         if (interactable != null && interactable.CanInteract(gameObject))
         {
             _currentInteractable = interactable;
-            //Debug.Log($"Interactor: вошёл в контакт с {other.name}, поднимаем событие");
+            Debug.Log($"Interactor: РІРѕС€С‘Р» РІ РєРѕРЅС‚Р°РєС‚ СЃ {other.name}, РїРѕРґРЅРёРјР°РµРј СЃРѕР±С‹С‚РёРµ");
             EventBus.RaiseEvent<IInteractionPromptEventSubscriber>(
             s => s.OnInteractionPrompt(new InteractionPromptEvent(interactable))
             );
@@ -36,7 +36,7 @@ public class Interactor : MonoBehaviour
         if (interactable != null && interactable.CanInteract(gameObject))
         {
             _currentInteractable = interactable;
-            //Debug.Log($"Interactor: вошёл в контакт с {other.collider.name}, поднимаем событие");
+            Debug.Log($"Interactor: РІРѕС€С‘Р» РІ РєРѕРЅС‚Р°РєС‚ СЃ {other.collider.name}, РїРѕРґРЅРёРјР°РµРј СЃРѕР±С‹С‚РёРµ");
             EventBus.RaiseEvent<IInteractionPromptEventSubscriber>(
             s => s.OnInteractionPrompt(new InteractionPromptEvent(interactable))
             );

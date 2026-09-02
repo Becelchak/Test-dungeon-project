@@ -118,7 +118,7 @@ public class PlayerProfile
 {
     public string playerId = "player";
     public string playerName = "Рыцарь печального образа";
-    public string avatarPath = "Sprites/Portraits/player_portrait";
+    public string avatarPath = "Art/Sprites/Portraits/player_portrait";
 
     // Характеристики механические
     public int level;

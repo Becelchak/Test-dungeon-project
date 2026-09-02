@@ -1,7 +1,7 @@
-{
+﻿{
   "npcId": "ai_skeleton",
   "npcName": "Разумный скелет",
-  "npcPortraitPath": "Sprites/Portraits/skeleton_portrait",
+  "npcPortraitPath": "Art/Sprites/Portraits/skeleton_portrait",
   "defaultEmotions": [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ],
   "constraints": [
     {

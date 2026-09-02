@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,16 +26,16 @@ public class AdaptiveTextContainer : MonoBehaviour
         textContainerRectTransform = GetComponent<RectTransform>();
     }
 
-    //TO DO: Разделить задачи по рассчету оптимальных размеров (ширина/высота/все сразу)
+    //TO DO: Р Р°Р·РґРµР»РёС‚СЊ Р·Р°РґР°С‡Рё РїРѕ СЂР°СЃСЃС‡РµС‚Сѓ РѕРїС‚РёРјР°Р»СЊРЅС‹С… СЂР°Р·РјРµСЂРѕРІ (С€РёСЂРёРЅР°/РІС‹СЃРѕС‚Р°/РІСЃРµ СЃСЂР°Р·Сѓ)
     public void Initialize(string text, bool isPlayer, Sprite portrait = null)
     {
-        // Устанавливаем текст
+        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј С‚РµРєСЃС‚
         if (messageText != null)
         {
             messageText.text = text;
         }
 
-        // Устанавливаем портрет
+        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕСЂС‚СЂРµС‚
         if (portraitImage != null)
         {
             if (portrait != null)
@@ -50,14 +50,13 @@ public class AdaptiveTextContainer : MonoBehaviour
         }
 
 
-        // Пересчитываем размеры
+        // РџРµСЂРµСЃС‡РёС‚С‹РІР°РµРј СЂР°Р·РјРµСЂС‹
         CalculateOptimalSizeForHeight();
-        //CalculateOptimalSize();
 
         _isInitialized = true;
     }
 
-    //TO DO: Разделить задачи по рассчету оптимальных размеров (ширина/высота/все сразу)
+    //TO DO: Р Р°Р·РґРµР»РёС‚СЊ Р·Р°РґР°С‡Рё РїРѕ СЂР°СЃСЃС‡РµС‚Сѓ РѕРїС‚РёРјР°Р»СЊРЅС‹С… СЂР°Р·РјРµСЂРѕРІ (С€РёСЂРёРЅР°/РІС‹СЃРѕС‚Р°/РІСЃРµ СЃСЂР°Р·Сѓ)
     public void Initialize(string text)
     {
         if (messageText != null)
@@ -144,35 +143,35 @@ public class AdaptiveTextContainer : MonoBehaviour
     {
         if (messageText == null) return;
 
-        // Принудительно обновляем текстовую сетку
+        // РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РѕР±РЅРѕРІР»СЏРµРј С‚РµРєСЃС‚РѕРІСѓСЋ СЃРµС‚РєСѓ
         messageText.ForceMeshUpdate(forceTextReparsing: true);
 
-        // Получаем предпочтительные размеры текста
+        // РџРѕР»СѓС‡Р°РµРј РїСЂРµРґРїРѕС‡С‚РёС‚РµР»СЊРЅС‹Рµ СЂР°Р·РјРµСЂС‹ С‚РµРєСЃС‚Р°
         Vector2 preferredSize = messageText.GetPreferredValues();
 
-        // 3. Рассчитываем ширину с учетом ограничений
+        // 3. Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј С€РёСЂРёРЅСѓ СЃ СѓС‡РµС‚РѕРј РѕРіСЂР°РЅРёС‡РµРЅРёР№
         float targetWidth = Mathf.Clamp(
-            preferredSize.x, // Текст + горизонтальные отступы
+            preferredSize.x, // РўРµРєСЃС‚ + РіРѕСЂРёР·РѕРЅС‚Р°Р»СЊРЅС‹Рµ РѕС‚СЃС‚СѓРїС‹
             minWidth,
             maxWidth
         );
 
-        // 4. Если текст шире доступного пространства, пересчитываем высоту
+        // 4. Р•СЃР»Рё С‚РµРєСЃС‚ С€РёСЂРµ РґРѕСЃС‚СѓРїРЅРѕРіРѕ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІР°, РїРµСЂРµСЃС‡РёС‚С‹РІР°РµРј РІС‹СЃРѕС‚Сѓ
         float textWidth = targetWidth - padding.x * 2;
         float textHeight;
 
         if (preferredSize.x > textWidth)
         {
-            // Текст не помещается по ширине - получаем высоту с учетом переноса
+            // РўРµРєСЃС‚ РЅРµ РїРѕРјРµС‰Р°РµС‚СЃСЏ РїРѕ С€РёСЂРёРЅРµ - РїРѕР»СѓС‡Р°РµРј РІС‹СЃРѕС‚Сѓ СЃ СѓС‡РµС‚РѕРј РїРµСЂРµРЅРѕСЃР°
             textHeight = messageText.GetPreferredValues(textWidth, messageText.renderedHeight).y;
         }
         else
         {
-            // Текст помещается - используем исходную высоту
+            // РўРµРєСЃС‚ РїРѕРјРµС‰Р°РµС‚СЃСЏ - РёСЃРїРѕР»СЊР·СѓРµРј РёСЃС…РѕРґРЅСѓСЋ РІС‹СЃРѕС‚Сѓ
             textHeight = preferredSize.y;
         }
 
-        // 5. Рассчитываем общую высоту
+        // 5. Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј РѕР±С‰СѓСЋ РІС‹СЃРѕС‚Сѓ
         float targetHeight = Mathf.Max(
             minHeight,
             textHeight + padding.y * 2
@@ -195,22 +194,22 @@ public class AdaptiveTextContainer : MonoBehaviour
 
             if (!lastChar.isVisible)
             {
-                Debug.LogWarning("Текст не помещается, возможно нужно увеличить высоту или уменьшить шрифт");
+                Debug.LogWarning("РўРµРєСЃС‚ РЅРµ РїРѕРјРµС‰Р°РµС‚СЃСЏ, РІРѕР·РјРѕР¶РЅРѕ РЅСѓР¶РЅРѕ СѓРІРµР»РёС‡РёС‚СЊ РІС‹СЃРѕС‚Сѓ РёР»Рё СѓРјРµРЅСЊС€РёС‚СЊ С€СЂРёС„С‚");
 
                 if(backgroundRect == null) return;
 
-                // Автоматически увеличиваем высоту, если текст не помещается
+                // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё СѓРІРµР»РёС‡РёРІР°РµРј РІС‹СЃРѕС‚Сѓ, РµСЃР»Рё С‚РµРєСЃС‚ РЅРµ РїРѕРјРµС‰Р°РµС‚СЃСЏ
                 float currentHeight = backgroundRect.sizeDelta.y;
                 backgroundRect.sizeDelta = new Vector2(
                     backgroundRect.sizeDelta.x,
-                    currentHeight * 1.2f // Увеличиваем на 20%
+                    currentHeight * 1.4f // РЈРІРµР»РёС‡РёРІР°РµРј РЅР° 40%
                 );
                 //backgroundRect.transform.position = new Vector3(backgroundRect.position.x,
                 //    currentHeight * 1.2f);
             }
         }
     }
-    // Метод для обновления текста после инициализации
+    // РњРµС‚РѕРґ РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ С‚РµРєСЃС‚Р° РїРѕСЃР»Рµ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё
     public void UpdateText(string newText)
     {
         if (messageText != null)
@@ -225,7 +224,7 @@ public class AdaptiveTextContainer : MonoBehaviour
         return backgroundRect != null ? backgroundRect.sizeDelta : Vector2.zero;
     }
 
-    // Автоматический пересчет при изменении текста через инспектор
+    // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРёР№ РїРµСЂРµСЃС‡РµС‚ РїСЂРё РёР·РјРµРЅРµРЅРёРё С‚РµРєСЃС‚Р° С‡РµСЂРµР· РёРЅСЃРїРµРєС‚РѕСЂ
     private void OnValidate()
     {
         if (_isInitialized && messageText != null)
