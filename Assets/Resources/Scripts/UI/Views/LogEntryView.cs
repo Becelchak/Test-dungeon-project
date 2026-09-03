@@ -1,4 +1,4 @@
-using System.ComponentModel;
+п»їusing System.ComponentModel;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +11,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>
     [SerializeField] private TextMeshProUGUI speakerNameText;
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private Image backgroundImage;
-
-    [Header("Visual Settings")]
-    [SerializeField] private Color playerBackgroundColor = new Color(0.2f, 0.3f, 0.5f, 0.3f);
-    [SerializeField] private Color npcBackgroundColor = new Color(0.3f, 0.3f, 0.3f, 0.3f);
 
     protected override void SetupBindings()
     {
@@ -36,9 +32,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>
         speakerNameText.text = ViewModel.SpeakerName;
         messageText.text = ViewModel.MessageText;
 
-        // Разный цвет фона для игрока и NPC
-        backgroundImage.color = ViewModel.IsPlayer ? playerBackgroundColor : npcBackgroundColor;
-
         if (ViewModel.SpeakerPortrait != null)
         {
             portraitImage.sprite = ViewModel.SpeakerPortrait;
@@ -57,7 +50,6 @@ public class LogEntryView : BaseView<LogEntryViewModel>
                 ViewModel.SpeakerPortrait
             );
 
-            // Дополнительно обновляем имя отправителя, если нужно
             if (speakerNameText != null)
             {
                 speakerNameText.text = ViewModel.SpeakerName;

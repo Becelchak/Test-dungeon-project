@@ -51,7 +51,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         if (ProfileService?.CurrentProfile == null)
             return false;
 
-        if (ProfileService.CurrentProfile.stamina < cost)
+        if (ProfileService.CurrentProfile.stamina < cost && !IsGodMode)
         {
             Debug.Log("[PlayerCombatService] Недостаточно стамины для парирования.");
             return false;

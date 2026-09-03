@@ -106,7 +106,8 @@ public class PlayerIdleState : PlayerStateBase
         var profile = _playerStats.CurrentProfile;
         if (profile == null) return;
 
-        int regen = Mathf.RoundToInt(Time.deltaTime * profile.staminaRegenRate);
+        var regen = Mathf.FloorToInt(Time.deltaTime * profile.staminaRegenRate);
+        Debug.Log($"Regen = {regen}");
         if (regen > 0 && profile.stamina < profile.maxStamina)
             _playerStats.ModifyStamina(regen);
         Debug.Log($"Теущая стамина: {_playerStats.CurrentProfile.stamina}");

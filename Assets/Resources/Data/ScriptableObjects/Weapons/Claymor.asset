@@ -32,9 +32,9 @@ MonoBehaviour:
   weaponHolderRotationOffsetEuler: {x: 0, y: 0, z: 0}
   weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
   weaponHolderAttackRotationOffsetEuler: {x: 0, y: 0, z: 120}
-  blockAnimationClip: {fileID: 8952413660455403669, guid: b96a3e38fca3f1f4ab5c7baf1321adad, type: 3}
+  blockAnimationClip: {fileID: 7400000, guid: e2eb3a8372b01fc4a8ae92fe3fc7b56b, type: 2}
   parryAnimationClip: {fileID: 7400000, guid: 9b1baa5128016c4499b787387b551567, type: 2}
-  hitAnimationClip: {fileID: -5694488986427802680, guid: adc1feaf8563f6247989bffd0737b6ad, type: 3}
+  hitAnimationClip: {fileID: 7400000, guid: da42aa88bb1b8264299f22df70639487, type: 2}
   deathAnimationClip: {fileID: 0}
   rightHandPositionOffset: {x: -0.000741, y: -0.000116, z: -0.000014}
   rightHandRotationOffsetEuler: {x: 0, y: 0, z: -80}
@@ -44,7 +44,7 @@ MonoBehaviour:
   aimRotationAxis: {x: 0, y: 1, z: 0}
   aimPivotOffset: {x: 0, y: 0, z: 0}
   maxAimAngleUp: 60
-  maxAimAngleDown: 45
+  maxAimAngleDown: 90
   aimSpeed: 180
   aimLayers:
     serializedVersion: 2

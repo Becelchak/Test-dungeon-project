@@ -10,6 +10,7 @@ public class AdaptiveTextContainer : MonoBehaviour
     [SerializeField] private RectTransform messageRectTransform;
     [SerializeField] private Image portraitImage;
     [SerializeField] private RectTransform backgroundRect;
+    [SerializeField] private RectTransform backroundBorder;
     //[SerializeField] private Image backgroundImage;
 
     [Header("Size Settings")]
@@ -17,6 +18,7 @@ public class AdaptiveTextContainer : MonoBehaviour
     [SerializeField] private float maxWidth = 450f;
     [SerializeField] private float minHeight = 40f;
     [SerializeField] private Vector2 padding = new Vector2(15f, 10f);
+    private float borderHeightOffset = 0f;
 
     private RectTransform textContainerRectTransform;
     private bool _isInitialized = false;
@@ -24,6 +26,7 @@ public class AdaptiveTextContainer : MonoBehaviour
     private void Awake()
     {
         textContainerRectTransform = GetComponent<RectTransform>();
+        borderHeightOffset = backgroundRect.sizeDelta.y - backroundBorder.sizeDelta.y;
     }
 
     //TO DO: Разделить задачи по рассчету оптимальных размеров (ширина/высота/все сразу)
@@ -202,10 +205,11 @@ public class AdaptiveTextContainer : MonoBehaviour
                 float currentHeight = backgroundRect.sizeDelta.y;
                 backgroundRect.sizeDelta = new Vector2(
                     backgroundRect.sizeDelta.x,
-                    currentHeight * 1.4f // Увеличиваем на 40%
+                    currentHeight * 1.25f // Увеличиваем на 25%
                 );
-                //backgroundRect.transform.position = new Vector3(backgroundRect.position.x,
-                //    currentHeight * 1.2f);
+                backroundBorder.sizeDelta = new Vector2(
+                    backgroundRect.sizeDelta.x,
+                    backgroundRect.sizeDelta.y + borderHeightOffset);
             }
         }
     }

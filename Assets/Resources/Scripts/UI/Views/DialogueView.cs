@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System.ComponentModel;
 using TMPro;
 using UnityEngine.UI;
@@ -15,9 +15,8 @@ public class DialogueView : BaseView<BaseViewModel>
 
     protected override void SetupBindings()
     {
-        //closeButton.onClick.AddListener(OnCloseClicked);
 
-        // Определяет тип ViewModel и активирует соответствующий view
+        // РћРїСЂРµРґРµР»СЏРµС‚ С‚РёРї ViewModel Рё Р°РєС‚РёРІРёСЂСѓРµС‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ view
         if (ViewModel is ClassicalDialogueViewModel classicalVM)
         {
             classicalView.gameObject.SetActive(true);
