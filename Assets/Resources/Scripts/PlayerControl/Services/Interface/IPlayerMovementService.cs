@@ -9,6 +9,9 @@ public interface IPlayerMovementService
     float _currentSpeed  {  get; set; }
     float _verticalVelocity { get; }
     bool IsRunning { get; set; }
+    public Vector3 MoveDirection { get; set; }
+    public Vector3 LookDirection { get; set; }
+    public Transform Hips {  get; set; }
     void Initialize();
     void Jump();
     bool CheckGround();

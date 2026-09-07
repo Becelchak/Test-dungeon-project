@@ -25,7 +25,12 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     private Vector3 _currentInput;
     private Vector2 _rawInput;
     private Vector3 _moveDirection;
-    public Vector3 LookDirection { get; private set; }
+    private Vector3 _lookDirection;
+    public Vector3 LookDirection
+    {
+        get { return _lookDirection; }
+        set { _lookDirection = value; }
+    }
 
     private Vector3 _currentVelocity;
     public float _verticalVelocity
@@ -36,7 +41,11 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     private bool _isMoving;
     private bool _isRunning;
 
-    public Transform Hips => hips;
+    public Transform Hips 
+    {
+        get { return hips; }
+        set { hips = value; }
+    }
 
     private float _internalSpeed;
     public float _currentSpeed
@@ -44,7 +53,11 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         get { return _internalSpeed; }
         set { _internalSpeed = value < 0 ? 0 : value; }
     }
-    public Vector3 MoveDirection => _moveDirection;
+    public Vector3 MoveDirection
+    {
+        get { return _moveDirection; }
+        set { _moveDirection = value; }
+    }
 
     private IEquipmentStatsService _equipmentStatsService;
 
@@ -104,7 +117,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
     public void UpdateLookDirection(Vector3 direction)
     {
         if (direction.magnitude > 0.01f)
-            LookDirection = direction.normalized;
+            _lookDirection = direction.normalized;
     }
 
     public Vector2 GetLocalMovementInput(Transform reference)

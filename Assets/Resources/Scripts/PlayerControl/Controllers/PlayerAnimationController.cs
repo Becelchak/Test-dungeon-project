@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
@@ -42,6 +43,19 @@ public class PlayerAnimationController : MonoBehaviour
             equipment.OnWeaponChanged -= OnWeaponChanged;
             equipment.OnShieldChanged -= OnShieldChanged;
         }
+    }
+
+    private void FixedUpdate()
+    {
+        isRunning = movement._currentSpeed > walkSpeed;
+        Vector2 localInput = movement.GetLocalMovementInput(characterRotator.rotationModel);
+        float maxSpeed = isRunning ? runSpeed : walkSpeed;
+        float forward = Mathf.Clamp(localInput.y / maxSpeed, -1f, 1f);
+        float right = Mathf.Clamp(localInput.x / maxSpeed, -1f, 1f);
+
+        animator.SetFloat("ForwardVelocity", forward);
+        animator.SetFloat("RightVelocity", right);
+        animator.SetFloat("Speed", Mathf.Clamp01(movement._currentSpeed / maxSpeed));
     }
 
     private void OnWeaponChanged(WeaponData weapon)
@@ -201,6 +215,17 @@ public class PlayerAnimationController : MonoBehaviour
         return 1f;
     }
 
+    public float GetCurrentDodgeClipLenght()
+    {
+        AnimatorOverrideController overrideController = animator.runtimeAnimatorController as AnimatorOverrideController;
+        if (overrideController != null)
+        {
+            AnimationClip clip = overrideController["Dodge"];
+            if (clip != null) return clip.length;
+        }
+        return 1f;
+    }
+
     /// <summary>
     /// Включает или выключает анимацию блока.
     /// </summary>
@@ -221,18 +246,12 @@ public class PlayerAnimationController : MonoBehaviour
         if (animator != null)
             animator.SetTrigger("Pickup");
     }
-
-    private void FixedUpdate()
+    public IEnumerator DodgeInvincibleWindow(IPlayerCombatService combat)
     {
-        isRunning = movement._currentSpeed > walkSpeed;
-        Vector2 localInput = movement.GetLocalMovementInput(characterRotator.rotationModel);
-        float maxSpeed = isRunning ? runSpeed : walkSpeed;
-        float forward = Mathf.Clamp(localInput.y / maxSpeed, -1f, 1f);
-        float right = Mathf.Clamp(localInput.x / maxSpeed, -1f, 1f);
-
-        animator.SetFloat("ForwardVelocity", forward);
-        animator.SetFloat("RightVelocity", right);
-        animator.SetFloat("Speed", Mathf.Clamp01(movement._currentSpeed / maxSpeed));
-        //Debug.Log($"_currentSpeed: {movement._currentSpeed}, maxSpeed: {maxSpeed}");
+        var delay = GetCurrentDodgeClipLenght();
+        yield return new WaitForSeconds(delay);
+        combat.SetGodMode(false);
+        animator.SetBool("Dodge", false);
+        Debug.Log($"GodMove in Cor {combat.IsGodMode}");
     }
 }

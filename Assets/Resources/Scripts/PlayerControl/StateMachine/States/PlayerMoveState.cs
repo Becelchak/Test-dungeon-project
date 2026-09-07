@@ -24,18 +24,10 @@ public class PlayerMoveState : PlayerStateBase
         _movementService.IsRunning = false;
     }
 
-    public override void Update()
-    {
-        
-    }
-
     public override void FixedUpdate()
     {
         base.FixedUpdate();
         CallMove();
-
-
-        var moveService = (PlayerMovementService)_movementService;
     }
 
     public void CallMove()
@@ -64,7 +56,7 @@ public class PlayerMoveState : PlayerStateBase
         _movementService.UpdateMovementInput(direction);
         CallMove();
 
-        if (direction.magnitude < 0.1f)
+        if (direction.magnitude < 0.1f && !_stateMachine.playerAnimator.GetBool("Dodge"))
         {
             var idleState = new PlayerIdleState(_stateMachine, _movementService);
             _stateMachine.TransitionToState(idleState);
@@ -100,6 +92,14 @@ public class PlayerMoveState : PlayerStateBase
 
     public override void HandleMovement(Vector3 direction)
     {
+        if (_stateMachine.playerAnimator.GetBool("Dodge"))
+        {
+            Debug.Log($"Input {_currentInput}");
+            _movementService.UpdateMovementInput(_currentInput);
+            CallMove();
+            return;
+        }
+
         _currentInput = direction;
         _movementService.UpdateMovementInput(direction);
 
@@ -119,7 +119,7 @@ public class PlayerMoveState : PlayerStateBase
         _currentInput = Vector3.Lerp(_currentInput,
         direction,
         _playerStats.CurrentProfile.acceleration * Time.deltaTime);
-        _stateMachine.playerAnimator.SetTrigger("Dodge");
+        _stateMachine.playerAnimator.SetBool("Dodge", true);
         _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
         _stateMachine.CombatService.SetGodMode(true);
 
@@ -127,7 +127,7 @@ public class PlayerMoveState : PlayerStateBase
         _movementService.UpdateMovementInput(direction);
         CallMove();
 
-        if (direction.magnitude < 0.1f)
+        if (direction.magnitude < 0.1f && !_stateMachine.playerAnimator.GetBool("Dodge"))
         {
             var idleState = new PlayerIdleState(_stateMachine, _movementService);
             _stateMachine.TransitionToState(idleState);

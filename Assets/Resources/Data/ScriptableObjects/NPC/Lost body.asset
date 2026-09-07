@@ -18,14 +18,14 @@ MonoBehaviour:
   detectionRadius: 10
   detectionAngle: 120
   targetLostDelay: 3
-  attackRange: 1
+  attackRange: 1.85
   attackDamage: 15
   attackDuration: 1
   attackWindup: 0.2
   attackCooldown: 1.5
   minStaggerTime: 1.5
   maxStaggerTime: 3
-  blockChance: 0.55
+  blockChance: 0.65
   blockDamageReduction: 0.4
   blockCooldown: 4
   blockDuration: 1.5

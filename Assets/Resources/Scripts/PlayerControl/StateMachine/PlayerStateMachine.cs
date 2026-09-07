@@ -95,9 +95,8 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
     {
         var direction = _input.GetMovementInput();
         _combat.SetGodMode(true);
-        Debug.Log($"GodMove {_combat.IsGodMode}");
         _currentState?.HandleDodgeInput(direction);
-        StartCoroutine(DodgeInvincibleWindow(1));
+        StartCoroutine(playerAnimationController.DodgeInvincibleWindow(_combat));
     }
 
     private void HandleAttackInput()
@@ -148,13 +147,6 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
                 ? WeaponIKController.WeaponPose.Block
                 : WeaponIKController.WeaponPose.Idle,
             true);
-    }
-
-    private IEnumerator DodgeInvincibleWindow(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        _combat.SetGodMode(false);
-        Debug.Log($"GodMove in Cor {_combat.IsGodMode}");
     }
 
     public void TransitionToState(PlayerStateBase newState)

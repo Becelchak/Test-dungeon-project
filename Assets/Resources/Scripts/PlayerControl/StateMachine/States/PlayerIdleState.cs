@@ -36,6 +36,10 @@ public class PlayerIdleState : PlayerStateBase
             var moveState = new PlayerMoveState(_stateMachine, _movementService, direction);
             _stateMachine.TransitionToState(moveState);
         }
+        //else if (_stateMachine.playerAnimator.GetBool("Dodge"))
+        //{
+        //    _movementService.SetMovement(_movementService._currentSpeed, _playerStats.CurrentProfile.acceleration);
+        //}
         else
         {
             float deceleration = _equipmentStatsService?.CurrentStats?.Deceleration ?? _playerStats.CurrentProfile.deceleration;
@@ -44,18 +48,37 @@ public class PlayerIdleState : PlayerStateBase
         }
     }
 
+    public override void HandleMovement(Vector3 direction)
+    {
+        if (_stateMachine.playerAnimator.GetBool("Dodge"))
+        {
+            var stats = _equipmentStatsService?.CurrentStats;
+
+            float targetSpeed = _movementService.IsRunning ? stats.RunSpeed : stats.MoveSpeed;
+            float acceleration = stats.Acceleration;
+
+            _movementService.SetMovement(targetSpeed, acceleration);
+        }
+        else
+            _movementService.SetMovement(0, _playerStats.CurrentProfile.deceleration);
+    }
+
     public override void HandleDodgeInput(Vector3 direction)
     {
-        direction = new Vector3(0,0,1);
+
+        Debug.Log($"{-_stateMachine.charRotate.rotationModel.transform.up}");
+
+        direction = new Vector3(0, -1, 0);
         _currentInput = Vector3.Lerp(_currentInput,
-        direction,
+        -_stateMachine.charRotate.rotationModel.transform.up,
         _playerStats.CurrentProfile.acceleration * Time.deltaTime);
-        _stateMachine.playerAnimator.SetTrigger("Dodge");
-        _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
+
+        _stateMachine.playerAnimator.SetBool("Dodge", true);
+        _playerStats.ModifyStamina((int)-_playerStats.CurrentProfile.dodgeCost);
         _stateMachine.CombatService.SetGodMode(true);
 
 
-        _movementService.UpdateMovementInput(direction);
+        _movementService.UpdateMovementInput(-_stateMachine.charRotate.rotationModel.transform.up);
     }
 
     public override void HandleInteractionInput()

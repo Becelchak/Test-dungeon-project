@@ -446,6 +446,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 4
     m_ConditionEvent: Speed
     m_EventTreshold: 0.05
+  - m_ConditionMode: 2
+    m_ConditionEvent: Dodge
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8444010414319304537}
   m_Solo: 0
@@ -616,6 +619,31 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+--- !u!1101 &-1574498460336634076
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: JumpStart
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 6013974123046206537}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0.25
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &-1380090030806181338
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -809,7 +837,7 @@ AnimatorController:
     m_DefaultBool: 1
     m_Controller: {fileID: 9100000}
   - m_Name: Dodge
-    m_Type: 9
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -850,13 +878,13 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -8444010414319304537}
-    m_Position: {x: 420, y: 180, z: 0}
+    m_Position: {x: 310, y: 280, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7787646343275683448}
     m_Position: {x: 410, y: 50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6013974123046206537}
-    m_Position: {x: 870, y: 250, z: 0}
+    m_Position: {x: 790, y: 390, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1754464507200293592}
     m_Position: {x: 940, y: 140, z: 0}
@@ -880,40 +908,15 @@ AnimatorStateMachine:
   - {fileID: -2885929629223570012}
   - {fileID: -4357821293859843530}
   - {fileID: 2155418374879974590}
+  - {fileID: -1574498460336634076}
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -230, y: 620, z: 0}
-  m_EntryPosition: {x: 430, y: 270, z: 0}
+  m_EntryPosition: {x: -40, y: 290, z: 0}
   m_ExitPosition: {x: 750, y: 570, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: -8444010414319304537}
---- !u!1102 &943322194510573310
-AnimatorState:
-  serializedVersion: 6
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: HumanM@Talk01
-  m_Speed: 1
-  m_CycleOffset: 0
-  m_Transitions: []
-  m_StateMachineBehaviours: []
-  m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
-  m_WriteDefaultValues: 1
-  m_Mirror: 0
-  m_SpeedParameterActive: 0
-  m_MirrorParameterActive: 0
-  m_CycleOffsetParameterActive: 0
-  m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 93f0f38ee316eb7499af67adfa3d1d1b, type: 2}
-  m_Tag: 
-  m_SpeedParameter: 
-  m_MirrorParameter: 
-  m_CycleOffsetParameter: 
-  m_TimeParameter: 
 --- !u!1101 &1033274369361343745
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1158,7 +1161,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: Dodge
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -7787646343275683448}
   m_Solo: 0
@@ -1259,7 +1265,7 @@ BlendTree:
   m_Name: Standart dodge
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 85014bcc6bda5ce448e7005150b7dc70, type: 2}
+    m_Motion: {fileID: 7400000, guid: 2ab78ef2e41a36d44a77974d8c7f44f3, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: -1}
     m_TimeScale: 1
@@ -1267,7 +1273,7 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 763ed25259e37ec4f82b725b3be38060, type: 2}
+    m_Motion: {fileID: 7400000, guid: 0da987a62eadda54796f7c9b2fd0957d, type: 2}
     m_Threshold: 0.25
     m_Position: {x: -1, y: 0}
     m_TimeScale: 1
@@ -1275,7 +1281,7 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: ee03ae86796ae834fbb4a54b101c2359, type: 2}
+    m_Motion: {fileID: 7400000, guid: c0bc057ab594bdd46bbee7e54a0b307c, type: 2}
     m_Threshold: 0.5
     m_Position: {x: 1, y: 0}
     m_TimeScale: 1
@@ -1283,7 +1289,7 @@ BlendTree:
     m_DirectBlendParameter: Blend
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: a58d6b600c8f58e40870cf6854e7cbfe, type: 2}
+    m_Motion: {fileID: 7400000, guid: 9c1dd32af218e5c41a0a44be37cbc652, type: 2}
     m_Threshold: 0.75
     m_Position: {x: 0, y: 1}
     m_TimeScale: 1
@@ -1438,9 +1444,6 @@ AnimatorStateMachine:
   m_PrefabAsset: {fileID: 0}
   m_Name: Upper Body Layer
   m_ChildStates:
-  - serializedVersion: 1
-    m_State: {fileID: 943322194510573310}
-    m_Position: {x: 500, y: 370, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8552407318647480231}
     m_Position: {x: 30, y: 300, z: 0}
