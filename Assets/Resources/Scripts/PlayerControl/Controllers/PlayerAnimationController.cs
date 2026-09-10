@@ -55,7 +55,7 @@ public class PlayerAnimationController : MonoBehaviour
 
         animator.SetFloat("ForwardVelocity", forward);
         animator.SetFloat("RightVelocity", right);
-        animator.SetFloat("Speed", Mathf.Clamp01(movement._currentSpeed / maxSpeed));
+        animator.SetFloat("Speed", Mathf.Clamp01(movement._currentSpeed / runSpeed));
     }
 
     private void OnWeaponChanged(WeaponData weapon)

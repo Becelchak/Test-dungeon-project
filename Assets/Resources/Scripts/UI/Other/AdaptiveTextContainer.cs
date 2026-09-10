@@ -26,7 +26,8 @@ public class AdaptiveTextContainer : MonoBehaviour
     private void Awake()
     {
         textContainerRectTransform = GetComponent<RectTransform>();
-        borderHeightOffset = backgroundRect.sizeDelta.y - backroundBorder.sizeDelta.y;
+        if(backroundBorder != null)
+            borderHeightOffset = backgroundRect.sizeDelta.y - backroundBorder.sizeDelta.y;
     }
 
     //TO DO: Разделить задачи по рассчету оптимальных размеров (ширина/высота/все сразу)
@@ -207,9 +208,12 @@ public class AdaptiveTextContainer : MonoBehaviour
                     backgroundRect.sizeDelta.x,
                     currentHeight * 1.25f // Увеличиваем на 25%
                 );
-                backroundBorder.sizeDelta = new Vector2(
+                if (backroundBorder != null)
+                {
+                    backroundBorder.sizeDelta = new Vector2(
                     backgroundRect.sizeDelta.x,
                     backgroundRect.sizeDelta.y + borderHeightOffset);
+                }
             }
         }
     }

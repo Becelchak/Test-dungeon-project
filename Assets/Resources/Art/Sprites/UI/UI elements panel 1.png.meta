@@ -198,7 +198,7 @@ TextureImporter:
         height: 605
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 10, y: 17, z: 19, w: 9}
       customData: 
       outline: []
       physicsShape: []
@@ -594,7 +594,7 @@ TextureImporter:
         height: 265
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 421, y: 133, z: 419, w: 132}
       customData: 
       outline: []
       physicsShape: []
@@ -602,28 +602,6 @@ TextureImporter:
       bones: []
       spriteID: 07860df7d950ac949ac9f1f94c5499a6
       internalID: -792941532
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI elements panel 1_29
-      rect:
-        serializedVersion: 2
-        x: 2449
-        y: 445
-        width: 10
-        height: 10
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8e7a781718733bb4fa2f8e1c833e0c31
-      internalID: -90620438
       vertices: []
       indices: 
       edges: []
