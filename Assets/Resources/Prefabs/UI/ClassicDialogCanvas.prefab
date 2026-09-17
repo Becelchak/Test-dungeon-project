@@ -174,7 +174,7 @@ MonoBehaviour:
   m_Vertical: 1
   m_MovementType: 2
   m_Elasticity: 0.4
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 8
   m_Viewport: {fileID: 5562509125336926275}
@@ -1349,6 +1349,18 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0.0001
       objectReference: {fileID: 0}
+    - target: {fileID: 2054427937371218545, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
+      propertyPath: padding.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184534419508315343, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
+      propertyPath: m_Spacing
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2184534419508315343, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
+      propertyPath: m_ChildAlignment
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2617927129478308025, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
       propertyPath: m_Name
       value: LogBackground
@@ -1384,6 +1396,10 @@ PrefabInstance:
     - target: {fileID: 5368192457605882182, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
       propertyPath: m_Value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710849942404945762, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
+      propertyPath: scrollDuraction
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6409494539766586110, guid: a2f520bd4c705fb4aa4120270c49cf8b, type: 3}
       propertyPath: m_IsActive

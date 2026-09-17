@@ -1,7 +1,9 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine.UI;
 using UnityEngine;
+using System.Collections;
+using TMPro;
 
 public class DialogueLogView : BaseView<DialogueLogViewModel>
 {
@@ -9,6 +11,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
     [SerializeField] private Transform logEntriesContainer;
     [SerializeField] private GameObject logEntryPrefab;
     [SerializeField] private ScrollRect scrollRect;
+    [SerializeField] private float scrollDuraction = 1.5f;
     //[SerializeField] private Button clearLogButton;
 
     private List<GameObject> _instantiatedEntries = new List<GameObject>();
@@ -42,7 +45,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
 
     private void UpdateLogView()
     {
-        // Очищаем старые элементы
+        // РћС‡РёС‰Р°РµРј СЃС‚Р°СЂС‹Рµ СЌР»РµРјРµРЅС‚С‹
         foreach (var entry in _instantiatedEntries)
         {
             if (entry != null)
@@ -50,7 +53,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
         }
         _instantiatedEntries.Clear();
 
-        // ВАЖНО: Создаем элементы в обратном порядке, чтобы новые были ВНИЗУ
+        // РЎРѕР·РґР°РµРј СЌР»РµРјРµРЅС‚С‹ РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ, С‡С‚РѕР±С‹ РЅРѕРІС‹Рµ Р±С‹Р»Рё Р’РќРР—РЈ
         for (int i = ViewModel.LogEntries.Count - 1; i >= 0; i--)
         {
             var entryViewModel = ViewModel.LogEntries[i];
@@ -67,7 +70,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
             _instantiatedEntries.Add(entryObj);
         }
 
-        // Прокручиваем к самому новому сообщению (вниз)
+        // РџСЂРѕРєСЂСѓС‡РёРІР°РµРј Рє СЃР°РјРѕРјСѓ РЅРѕРІРѕРјСѓ СЃРѕРѕР±С‰РµРЅРёСЋ (РІРЅРёР·)
         ScrollToBottom();
     }
 
@@ -75,9 +78,32 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
     {
         if (scrollRect != null)
         {
-            Canvas.ForceUpdateCanvases();
-            scrollRect.verticalNormalizedPosition = 0f;
+            //StopCoroutine(SmoothScrollRectRutine());
+            StartCoroutine(SmoothScrollRectRutine());
         }
+    }
+
+    /// <summary>
+    /// РљРѕСЂСѓС‚РёРЅР° РґР»СЏ РїР»Р°РІРЅРѕРіРѕ РїСЂРѕР»РёСЃС‚С‹РІР°РЅРёСЏ СЃРїРёСЃРєР° РѕС‚ С‚РµРєСѓС‰РµРіРѕ РѕР±СЊРµРєС‚Р° Рє РїРѕСЃР»РµРґРЅРµРјСѓ
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SmoothScrollRectRutine()
+    {
+        yield return new WaitForEndOfFrame();
+        Canvas.ForceUpdateCanvases();
+        float elapsed = 0f;
+        float startPos = scrollRect.verticalNormalizedPosition;
+        float targetPos = 0f;
+        while(elapsed < scrollDuraction)
+        {
+            elapsed += Time.deltaTime;
+            var timeTemp = elapsed / scrollDuraction;
+            timeTemp = Mathf.SmoothStep(0f,1f,timeTemp);
+
+            scrollRect.verticalNormalizedPosition = Mathf.Lerp(startPos, targetPos, timeTemp);
+            yield return null;
+        }
+        scrollRect.verticalNormalizedPosition = targetPos;
     }
 
     public override void Unbind()
@@ -88,7 +114,7 @@ public class DialogueLogView : BaseView<DialogueLogViewModel>
             ViewModel.LogEntries.CollectionChanged -= OnLogEntriesChanged;
         }
 
-        // Очищаем созданные объекты
+        // РћС‡РёС‰Р°РµРј СЃРѕР·РґР°РЅРЅС‹Рµ РѕР±СЉРµРєС‚С‹
         foreach (var entry in _instantiatedEntries)
         {
             if (entry != null)

@@ -54,4 +54,5 @@ public abstract class PlayerStateBase : MonoBehaviour
     public virtual void HandleParryInput() { }
     public virtual void HandleMovement(Vector3 direction) { }
     public virtual void HandleInteractionInput() { }
+    public virtual void TryRegenerateStamina() { }
 }

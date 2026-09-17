@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System;
 using UnityEngine;
 
@@ -20,13 +20,6 @@ public class WindowService : BaseService, IWindowService
         if (_windowsParent == null)
         {
             _windowsParent = GameObject.Find("Canvas UI")?.transform;
-            //var canvas = FindObjectOfType<Canvas>();
-            //if (canvas != null)
-            //{
-            //    var dialogueWindows = new GameObject("DialogueWindows");
-            //    dialogueWindows.transform.SetParent(canvas.transform);
-            //    _windowsParent = dialogueWindows.transform;
-            //}
         }
     }
 
@@ -38,7 +31,7 @@ public class WindowService : BaseService, IWindowService
             return;
         }
 
-        // Создаем общий лог для всех диалогов
+        // РЎРѕР·РґР°РµРј РѕР±С‰РёР№ Р»РѕРі РґР»СЏ РІСЃРµС… РґРёР°Р»РѕРіРѕРІ
         var logViewModel = new DialogueLogViewModel();
         var aiViewModel = new AIDialogueViewModel(npcId, logViewModel);
 
@@ -119,6 +112,6 @@ public class WindowService : BaseService, IWindowService
 
     public void ShowWindow<T>() where T : IViewModel
     {
-        throw new NotImplementedException("ShowWindow не прописано");
+        throw new NotImplementedException("ShowWindow РЅРµ РїСЂРѕРїРёСЃР°РЅРѕ");
     }
 }

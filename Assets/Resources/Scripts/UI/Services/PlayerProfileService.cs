@@ -8,6 +8,9 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     private const string PROFILE_KEY = "player_profile";
     private PlayerProfile _currentProfile;
 
+    public event Action<InventoryItem> OnItemAdded;
+    public event Action<InventoryItem> OnItemRemoved;
+
     public PlayerProfile CurrentProfile
     {
         get => _currentProfile ??= LoadProfile();
@@ -101,10 +104,30 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         );
     }
 
-    public void ModifyStamina(int delta)
+    public void ModifyStamina(float delta)
     {
         var profile = CurrentProfile;
-        profile.stamina = Mathf.Clamp(profile.stamina + delta, 0, profile.maxStamina);
+        profile.stamina = Mathf.FloorToInt(Mathf.Clamp(profile.stamina + delta, 0, profile.maxStamina));
+        SaveProfile(profile);
+
+        EventBus.RaiseEvent<IStaminaChangedEventSubscriber>(
+            s => s.OnStaminaChanged(new StaminaChangedEvent(profile.stamina, profile.maxStamina))
+        );
+    }
+    public void ModifyMana(int delta)
+    {
+        var profile = CurrentProfile;
+        profile.mana = Mathf.Clamp(profile.mana + delta, 0, profile.maxMana);
+        SaveProfile(profile);
+
+        EventBus.RaiseEvent<IManaChangedEventSubscriber>(
+            s => s.OnManaChanged(new ManaChangedEvent(profile.mana, profile.maxMana))
+        );
+    }
+    public void SetMaxStamina(float value)
+    {
+        var profile = CurrentProfile;
+        profile.maxStamina = Mathf.FloorToInt(value);
         SaveProfile(profile);
     }
 
@@ -136,6 +159,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         {
             Debug.LogWarning($"[PlayerProfileService] Попытка добавить предмет без itemId ({item.itemName}). Предмет будет добавлен как отдельная запись, но это может привести к дублированию.");
             CurrentProfile.inventory.Add(item);
+            OnItemAdded.Invoke(item);
             SaveProfile(CurrentProfile);
             return;
         }
@@ -148,8 +172,34 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         else
         {
             CurrentProfile.inventory.Add(item);
+            OnItemAdded.Invoke(item);
         }
         SaveProfile(CurrentProfile);
+        EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
+        s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Added, item)));
+    }
+
+    public void RemoveInventoryItem(InventoryItem item)
+    {
+        if (string.IsNullOrWhiteSpace(item.itemId))
+        {
+            Debug.LogWarning($"[PlayerProfileService] Предмета ({item.itemName}) нет в коллекции!");
+            return;
+        }
+        var existingItem = CurrentProfile.inventory.Find(i => i.itemId == item.itemId);
+        if (existingItem != null && existingItem.quantity > 1)
+        {
+            existingItem.quantity -= item.quantity;
+        }
+        else
+        {
+            var index = CurrentProfile.inventory.FindIndex(i => i.itemId == item.itemId);
+            CurrentProfile.inventory.RemoveAt(index);
+        }
+        OnItemRemoved.Invoke(item);
+        SaveProfile(CurrentProfile);
+        EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
+        s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Removed, item)));
     }
 
     public void UpdateQuestProgress(string questId, QuestProgress progress)

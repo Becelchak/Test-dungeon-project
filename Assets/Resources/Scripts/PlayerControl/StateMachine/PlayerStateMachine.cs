@@ -103,6 +103,9 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
     {
         if (_combat == null)
             _combat = ServiceLocator.Instance.GetService<IPlayerCombatService>();
+        float waitTime = playerAnimationController.GetCurrentParryClipLength();
+        if(_parryResetCoroutine != null)
+            StopCoroutine(_parryResetCoroutine);
         _currentState?.HandleAttackInput();
     }
 
@@ -142,6 +145,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
         yield return new WaitForSeconds(delay);
         _parryResetCoroutine = null;
 
+        Debug.Log("SetPose");
         weaponIKController.SetPose(
             _combat != null && _combat.IsBlocking
                 ? WeaponIKController.WeaponPose.Block
@@ -155,9 +159,6 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
         _currentState = newState;
         _currentState.Enter();
     }
-
-    public void OnMoveInput(Vector2 direction) => _currentState?.HandleMoveInput(direction);
-    public void OnAttackInput() => _currentState?.HandleAttackInput();
 
     public void OnDialogueStarted(string npcId, DialogueType dialogueType)
     {

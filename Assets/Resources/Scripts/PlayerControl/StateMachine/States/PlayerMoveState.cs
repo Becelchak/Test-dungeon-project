@@ -106,6 +106,7 @@ public class PlayerMoveState : PlayerStateBase
         if (direction.magnitude > 0.1f)
         {
             CallMove();
+            TryRegenerateStamina();
         }
         else
         {
@@ -120,7 +121,7 @@ public class PlayerMoveState : PlayerStateBase
         direction,
         _playerStats.CurrentProfile.acceleration * Time.deltaTime);
         _stateMachine.playerAnimator.SetBool("Dodge", true);
-        _playerStats.ModifyStamina((int)_playerStats.CurrentProfile.dodgeCost);
+        _playerStats.ModifyStamina((int)-_playerStats.CurrentProfile.dodgeCost);
         _stateMachine.CombatService.SetGodMode(true);
 
 
@@ -143,6 +144,20 @@ public class PlayerMoveState : PlayerStateBase
         {
             var attackState = new PlayerAttackState(_stateMachine, _movementService, isWeakAttack);
             _stateMachine.TransitionToState(attackState);
+        }
+    }
+
+    public override void TryRegenerateStamina()
+    {
+        var profile = _playerStats.CurrentProfile;
+        if (profile == null || profile.stamina >= profile.maxStamina)
+            return;
+
+        profile.staminaRegenAccumulation += Time.deltaTime * (profile.staminaRegenRate * 0.55f);
+        if (profile.staminaRegenAccumulation >= 1)
+        {
+            _playerStats.ModifyStamina(profile.staminaRegenAccumulation);
+            profile.staminaRegenAccumulation = 0;
         }
     }
 }

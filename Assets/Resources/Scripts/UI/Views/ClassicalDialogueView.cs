@@ -1,4 +1,4 @@
-using TMPro;
+п»їusing TMPro;
 using UnityEngine.UI;
 using UnityEngine;
 
@@ -15,16 +15,16 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
 
     protected override void SetupBindings()
     {
-        // Привязка имени NPC
+        // РџСЂРёРІСЏР·РєР° РёРјРµРЅРё NPC
         npcNameText.text = ViewModel.NpcName;
 
-        // Подписка на изменения свойств
+        // РџРѕРґРїРёСЃРєР° РЅР° РёР·РјРµРЅРµРЅРёСЏ СЃРІРѕР№СЃС‚РІ
         ViewModel.PropertyChanged += OnPropertyChanged;
 
-        // Подписка на изменения коллекции ответов
+        // РџРѕРґРїРёСЃРєР° РЅР° РёР·РјРµРЅРµРЅРёСЏ РєРѕР»Р»РµРєС†РёРё РѕС‚РІРµС‚РѕРІ
         ViewModel.Responses.CollectionChanged += OnResponsesChanged;
 
-        // Инициализация начальных значений
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅР°С‡Р°Р»СЊРЅС‹С… Р·РЅР°С‡РµРЅРёР№
         dialogueText.text = ViewModel.DialogueText;
         UpdateResponseButtons();
 
@@ -48,20 +48,20 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
                 break;
 
             case nameof(ViewModel.NpcName):
-                npcNameText.text = ViewModel.NpcName ?? "Неизвестный NPC";
+                npcNameText.text = ViewModel.NpcName ?? "РќРµРёР·РІРµСЃС‚РЅС‹Р№ NPC";
                 break;
         }
     }
 
     private void UpdateResponseButtons()
     {
-        // Очистка старых кнопок
+        // РћС‡РёСЃС‚РєР° СЃС‚Р°СЂС‹С… РєРЅРѕРїРѕРє
         foreach (Transform child in responsesContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Создание новых кнопок для каждого ответа
+        // РЎРѕР·РґР°РЅРёРµ РЅРѕРІС‹С… РєРЅРѕРїРѕРє РґР»СЏ РєР°Р¶РґРѕРіРѕ РѕС‚РІРµС‚Р°
         if (ViewModel.Responses != null)
         {
             foreach (var response in ViewModel.Responses)
@@ -79,7 +79,7 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
                     responseView.Bind(response);
                 }
 
-                // Привязка команды с параметром ResponseId
+                // РџСЂРёРІСЏР·РєР° РєРѕРјР°РЅРґС‹ СЃ РїР°СЂР°РјРµС‚СЂРѕРј ResponseId
                 button.onClick.AddListener(() =>
                 {
                     if (response.SelectCommand != null && response.SelectCommand.CanExecute(response.ResponseId))

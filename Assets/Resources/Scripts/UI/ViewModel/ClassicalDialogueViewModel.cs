@@ -1,6 +1,8 @@
+﻿using Cysharp.Threading.Tasks;
 using EventBusSystem;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 public class ClassicalDialogueViewModel : BaseViewModel
@@ -105,7 +107,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
         return true;
     }
 
-    private void OnResponseSelected(string responseId)
+    private async void OnResponseSelected(string responseId)
     {
         var response = _currentNode.responses.FirstOrDefault(r => r.responseId == responseId);
         if (response != null)
@@ -117,6 +119,7 @@ public class ClassicalDialogueViewModel : BaseViewModel
             }
 
             EventBus.RaiseEvent<IDialogueEventSubscriber>( s => s.OnResponseSelected(responseId));
+            await UniTask.WaitForSeconds(0.5f);
             SetCurrentNode(response.nextNodeId);
         }
     }

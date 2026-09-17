@@ -48,7 +48,7 @@ public class WeaponDamageSource : MonoBehaviour
         var target = other.GetComponentInParent<IDamageable>();
         if (target == null) return;
 
-        // Не бьём самих себя и свою команду
+        // Не бьём самих себя
         if (target.Transform.root == transform.root) return;
 
         // Один взмах — одно попадание в цель

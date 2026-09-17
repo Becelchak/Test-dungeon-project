@@ -1,7 +1,8 @@
+﻿using EventBusSystem;
 using System.ComponentModel;
 using UnityEngine;
 
-public abstract class BaseView<T> : MonoBehaviour, IView where T : IViewModel
+public abstract class BaseView<T> : MonoBehaviour, IGlobalSubscriber, IView where T : IViewModel
 {
     protected T ViewModel { get; private set; }
 

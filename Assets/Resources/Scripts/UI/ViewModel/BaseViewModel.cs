@@ -1,8 +1,9 @@
+﻿using EventBusSystem;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-public abstract class BaseViewModel : IViewModel, INotifyPropertyChanged
+public abstract class BaseViewModel : IViewModel, INotifyPropertyChanged, IGlobalSubscriber
 {
     public event PropertyChangedEventHandler PropertyChanged;
 

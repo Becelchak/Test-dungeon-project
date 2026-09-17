@@ -36,10 +36,6 @@ public class PlayerIdleState : PlayerStateBase
             var moveState = new PlayerMoveState(_stateMachine, _movementService, direction);
             _stateMachine.TransitionToState(moveState);
         }
-        //else if (_stateMachine.playerAnimator.GetBool("Dodge"))
-        //{
-        //    _movementService.SetMovement(_movementService._currentSpeed, _playerStats.CurrentProfile.acceleration);
-        //}
         else
         {
             float deceleration = _equipmentStatsService?.CurrentStats?.Deceleration ?? _playerStats.CurrentProfile.deceleration;
@@ -124,16 +120,19 @@ public class PlayerIdleState : PlayerStateBase
         }
     }
 
-    private void TryRegenerateStamina()
+    public override void TryRegenerateStamina()
     {
         var profile = _playerStats.CurrentProfile;
-        if (profile == null) return;
+        if (profile == null || profile.stamina >= profile.maxStamina) 
+            return;
 
-        var regen = Mathf.FloorToInt(Time.deltaTime * profile.staminaRegenRate);
-        Debug.Log($"Regen = {regen}");
-        if (regen > 0 && profile.stamina < profile.maxStamina)
-            _playerStats.ModifyStamina(regen);
-        Debug.Log($"Теущая стамина: {_playerStats.CurrentProfile.stamina}");
+        profile.staminaRegenAccumulation += Time.deltaTime * profile.staminaRegenRate;
+        if(profile.staminaRegenAccumulation >= 1)
+        {
+            _playerStats.ModifyStamina(profile.staminaRegenAccumulation);
+            profile.staminaRegenAccumulation = 0;
+        } 
+        //Debug.Log($"Теущая стамина: {_playerStats.CurrentProfile.stamina}");
     }
 
     private bool CanAttackFromIdle()

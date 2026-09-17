@@ -214,6 +214,7 @@ public class DeveloperConsole : MonoBehaviour
             return;
         }
 
+        _profileService.SetMaxStamina(value);
         int delta = Mathf.Clamp(value, 0, profile.maxStamina) - profile.stamina;
         _profileService.ModifyStamina(delta);
         Log($"Стамина установлена: {profile.stamina}/{profile.maxStamina}");
