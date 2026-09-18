@@ -1,4 +1,4 @@
-using UnityEngine.SceneManagement;
+ï»¿using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 
@@ -8,12 +8,12 @@ public class PortalInteractable : MonoBehaviour, IInteractable
     [SerializeField] private float loadDelay = 0.5f;
     private bool canInteract = true;
     private SceneLoadingService sceneLoader;
-    private WindowService windowsService;
+    private IWindowService windowsService;
 
     public void Start()
     {
         sceneLoader = (SceneLoadingService) ServiceLocator.Instance.GetService<ISceneLoadingService>();
-        windowsService = (WindowService)ServiceLocator.Instance.GetService<IWindowService>();
+        windowsService = ServiceLocator.Instance.GetService<IWindowService>();
         
     }
 
@@ -21,7 +21,7 @@ public class PortalInteractable : MonoBehaviour, IInteractable
     {
         ServiceLocator.Instance.GetService<IInputService>()?.DisableGameplayInput();
         canInteract = false;
-        windowsService.ShowLoadingScreen();
+        windowsService.ShowWindow<DialogueLogViewModel>(UILayer.SystemMenu);
         await sceneLoader.LoadSceneAsync(sceneToLoad, false);
     }
 
@@ -32,5 +32,5 @@ public class PortalInteractable : MonoBehaviour, IInteractable
     //}
 
     public bool CanInteract(GameObject interactor) => canInteract;
-    public string GetInteractionPrompt() => "[E] Âîéòè â ïîðòàë";
+    public string GetInteractionPrompt() => "[E] Ð’Ð¾Ð¹Ñ‚Ð¸ Ð² Ð¿Ð¾Ñ€Ñ‚Ð°Ð»";
 }

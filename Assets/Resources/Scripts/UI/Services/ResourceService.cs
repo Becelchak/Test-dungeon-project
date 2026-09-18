@@ -1,8 +1,13 @@
-using System;
+п»їusing System;
+using System.Collections.Generic;
+using System.IO.Abstractions;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class ResourceService : BaseService, IResourceService
 {
+    [SerializeField] private ItemDatabase itemDatabaseAsset;
     protected override Type GetServiceType() => typeof(IResourceService);
 
     public T LoadJson<T>(string path) where T : class
@@ -33,6 +38,16 @@ public class ResourceService : BaseService, IResourceService
     public void SaveJson<T>(string path, T data) where T : class
     {
         Debug.LogWarning("SaveJson not implemented - using Resources is read-only. Progress in working");
-        // Для сохранения нужно использовать Application.persistentDataPath
+    }
+
+    public Dictionary<string, ItemData> GetItemDataBase()
+    {
+        if (itemDatabaseAsset == null)
+        {
+            Debug.LogError("[ResourceService] РќРµ РЅР°Р·РЅР°С‡РµРЅР° ItemDatabase РІ РёРЅСЃРїРµРєС‚РѕСЂРµ СЃРµСЂРІРёСЃР°!");
+            return new Dictionary<string, ItemData>();
+        }
+
+        return itemDatabaseAsset.Database;
     }
 }

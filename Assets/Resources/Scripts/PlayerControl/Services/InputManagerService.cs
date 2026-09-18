@@ -15,6 +15,8 @@ public class InputManagerService : BaseService, IInputService
     public event Action<int> OnSwitchWeaponSlot;
     public event Action<bool> OnBlock;
     public event Action OnParry;
+    public event Action OnOpenInventory;
+    public event Action OnCancel;
 
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
@@ -26,6 +28,8 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _switchWeaponSlotAction { get; set; }
     public InputAction _blockAction { get; set; }
     public InputAction _parryAction { get; set; }
+    public InputAction _openInventory {  get; set; }
+    public InputAction _closeAction { get; set; }
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -94,6 +98,12 @@ public class InputManagerService : BaseService, IInputService
         {
             _parryAction.performed += ctx => OnParry?.Invoke();
         }
+
+        _openInventory = _inputActions.FindAction("OpenInventory");
+        _openInventory.performed += ctx => OnOpenInventory?.Invoke();
+
+        _closeAction = _inputActions.FindAction("Cancel");
+        _closeAction.performed += ctx => OnCancel?.Invoke();
     }
 
     public Vector2 GetMovementInput()

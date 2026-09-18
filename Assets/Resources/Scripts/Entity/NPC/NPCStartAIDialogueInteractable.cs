@@ -5,12 +5,12 @@ public class NPCStartAIDialogueInteractable : MonoBehaviour, IInteractable
     [SerializeField] private string npcIDString;
     [SerializeField] private string interactionPrompt;
     private bool canInteract = true;
-    private WindowService windowService;
+    private IWindowService windowService;
     private AIClient aiService;
 
     void Start()
     {
-        windowService = (WindowService) ServiceLocator.Instance.GetService<IWindowService>();
+        windowService =  ServiceLocator.Instance.GetService<IWindowService>();
         aiService = (AIClient) ServiceLocator.Instance.GetService<IAIService>();
     }
 
@@ -25,7 +25,10 @@ public class NPCStartAIDialogueInteractable : MonoBehaviour, IInteractable
 
     public void Interact(GameObject interactor)
     {
-        windowService.ShowAIDialogue(npcIDString);
+        windowService.ShowWindow<AIDialogueViewModel>(UILayer.Dialogue, (viewModel) =>
+        {
+            viewModel.Setup(npcIDString);
+        });
     }
 
 }

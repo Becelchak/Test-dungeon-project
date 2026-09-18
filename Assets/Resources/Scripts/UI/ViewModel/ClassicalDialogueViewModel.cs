@@ -7,15 +7,16 @@ using System.Windows.Input;
 
 public class ClassicalDialogueViewModel : BaseViewModel
 {
-    private readonly IDialogueService _dialogueService;
-    private readonly PlayerProfileService _player;
+    private IDialogueService _dialogueService;
+    private PlayerProfileService _player;
     private DialogueData _dialogueData;
     private DialogueNode _currentNode;
 
     private string _npcName;
     private string _dialogueText;
+    private string _dialogueId;
     private ObservableCollection<DialogueResponseViewModel> _responses = new();
-    public DialogueLogViewModel LogViewModel { get; }
+    public DialogueLogViewModel LogViewModel { get; private set; }
 
     public string NpcName
     {
@@ -35,18 +36,32 @@ public class ClassicalDialogueViewModel : BaseViewModel
         private set => SetProperty(ref _responses, value);
     }
 
-    public ICommand ResponseSelectedCommand { get; }
+    public ICommand ResponseSelectedCommand { get; private set; }
 
-    public ClassicalDialogueViewModel(string dialogueId, DialogueLogViewModel logViewModel)
+    public ClassicalDialogueViewModel()
     {
-        LogViewModel = logViewModel;
+
+    }
+
+    public void Setup(string npcId)
+    {
+        _dialogueId = npcId;
+        LogViewModel = new DialogueLogViewModel(); // Создаем зависимый логгер
+        ResponseSelectedCommand = new RelayCommand<string>(OnResponseSelected);
+    }
+
+    public override void Initialize()
+    {
         _dialogueService = ServiceLocator.Instance.GetService<IDialogueService>();
         _player = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        ResponseSelectedCommand = new RelayCommand<string>(OnResponseSelected);
 
-        //EventBus.Subscribe(this as IDialogueEventSubscriber);
+        if (string.IsNullOrEmpty(_dialogueId))
+        {
+            UnityEngine.Debug.LogError("[ClassicalDialogue] Инициализация вызвана без предварительного вызова Setup!");
+            return;
+        }
 
-        LoadDialogue(dialogueId);
+        LoadDialogue(_dialogueId);
     }
 
     private void LoadDialogue(string dialogueId)
@@ -128,13 +143,10 @@ public class ClassicalDialogueViewModel : BaseViewModel
     {
         EventBus.RaiseEvent<IDialogueEventSubscriber>(s => s.OnDialogueEnded());
         Cleanup();
+        ServiceLocator.Instance.GetService<IWindowService>()?.CloseWindow<ClassicalDialogueViewModel>();
     }
-
-    public override void Initialize() { }
     public override void Cleanup() 
     {
-        //EventBus.Unsubscribe(this as IDialogueEventSubscriber);
-        var windowService = ServiceLocator.Instance.GetService<IWindowService>();
-        windowService?.CloseWindow<ClassicalDialogueViewModel>();
+
     }
 }

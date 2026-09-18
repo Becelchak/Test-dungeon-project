@@ -11,12 +11,26 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
     public IReadOnlyList<InventoryItemSlotViewModel> Items => _items;
     private readonly List<InventoryItemSlotViewModel> _items = new();
 
+    private ItemData _hoveredItemData;
+
+    public ItemData HoveredItemData
+    {
+        get => _hoveredItemData;
+        private set
+        {
+            if (_hoveredItemData == value) return;
+            _hoveredItemData = value;
+            OnPropertyChanged(nameof(HoveredItemData));
+        }
+    }
+
+
     public int Capacity { get; private set; } = 30;
 
     public override void Initialize()
     {
         _profile = ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        BuildItemDatabase();
+        _itemDatabase = ServiceLocator.Instance.GetService<IResourceService>().GetItemDataBase();
         Reload();
         EventBus.Subscribe(this);
     }
@@ -24,13 +38,6 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
     public override void Cleanup()
     {
         EventBus.Unsubscribe(this);
-    }
-
-    private void BuildItemDatabase()
-    {
-        _itemDatabase = Resources.LoadAll<ItemData>("")
-            .Where(i => !string.IsNullOrEmpty(i.itemId))
-            .ToDictionary(i => i.itemId, i => i);
     }
 
     public void Reload()
@@ -59,5 +66,17 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
         if (vm?.Data == null) return;
         // Логика использования — за пределами этого ViewModel.
         // Например, через EventBus.RaiseEvent<IItemUseRequest>(...)
+    }
+
+    /// <summary>Установить активный предмет для показа описания.</summary>
+    public void SetHoveredItem(ItemData data)
+    {
+        HoveredItemData = data;
+    }
+
+    /// <summary>Очистить инфо-панель, когда курсор убран.</summary>
+    public void ClearHoveredItem()
+    {
+        HoveredItemData = null;
     }
 }

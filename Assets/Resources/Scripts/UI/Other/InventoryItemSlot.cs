@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class InventoryItemSlot : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler,
-    IPointerClickHandler
+    IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("UI")]
     [SerializeField] private Image iconImage;
@@ -40,7 +40,7 @@ public class InventoryItemSlot : MonoBehaviour,
     {
         if (_vm == null) return;
 
-        if (iconImage != null)
+        if (iconImage != null && _vm.Icon != null)
         {
             iconImage.sprite = _vm.Icon;
             iconImage.enabled = _vm.Icon != null;
@@ -100,6 +100,19 @@ public class InventoryItemSlot : MonoBehaviour,
     public void OnPointerClick(PointerEventData e)
     {
         // Действие при клике на иконку
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_vm?.Data != null && _inventoryVm != null)
+        {
+            _inventoryVm.SetHoveredItem(_vm.Data);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _inventoryVm?.ClearHoveredItem();
     }
 }
 

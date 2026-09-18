@@ -13,6 +13,7 @@ public class AIDialogueViewModel : BaseViewModel
     private PlayerProfileService _player;
     private IPlayerContextService _playerContextService;
 
+    private string _npcId;
     private string _npcName = "Загрузка...";
     private string _dialogueText = "...";
     private string _userInput;
@@ -45,16 +46,30 @@ public class AIDialogueViewModel : BaseViewModel
 
     public bool IsInitialized => _isInitialized;
 
-    public ICommand SendMessageCommand { get; }
-    public ICommand CloseDialogueCommand { get; }
-    public DialogueLogViewModel LogViewModel { get; }
-    public AIDialogueViewModel(string npcId, DialogueLogViewModel logViewModel)
+    public ICommand SendMessageCommand { get; private set; }
+    public ICommand CloseDialogueCommand { get; private set; }
+    public DialogueLogViewModel LogViewModel { get; private set; }
+    public AIDialogueViewModel()
     {
-        LogViewModel = logViewModel;
+
+    }
+    public void Setup(string npcId)
+    {
+        _npcId = npcId;
+        LogViewModel = new DialogueLogViewModel();
         SendMessageCommand = new RelayCommand(SendMessage, CanSendMessage);
         CloseDialogueCommand = new RelayCommand(CloseDialogue);
+    }
 
-        InitializeAsync(npcId).Forget();
+    public override void Initialize()
+    {
+        if (string.IsNullOrEmpty(_npcId))
+        {
+            Debug.LogError("[AIDialogue] Инициализация вызвана без предварительного вызова Setup!");
+            return;
+        }
+
+        InitializeAsync(_npcId).Forget();
     }
 
     private async UniTask InitializeAsync(string npcId)
@@ -91,11 +106,9 @@ public class AIDialogueViewModel : BaseViewModel
                 return;
             }
 
-            // Теперь инициализируем данные
             InitializeAIDialogue();
             _isInitialized = true;
 
-            // Уведомляем об изменении состояния инициализации
             OnPropertyChanged(nameof(IsInitialized));
         }
         catch (System.Exception e)
@@ -175,7 +188,6 @@ public class AIDialogueViewModel : BaseViewModel
         Пользователь: {userMessage}
         {_aiData.npcName}:
 
-        ОТВЕЧАЙ ТОЛЬКО В ФОРМАТЕ JSON (без размышлений):
         Эмоции (0.0 - 1.0): [joy, sadness, anger, fear, surprise, trust, arousal, dominance].
         Пример: {{""reply"": ""Текст"", ""emotions"": [0.1, 0.5, 0.0, 0.2, 0.0, 0.8, 0.3, 0.9]}}";
     }
@@ -184,7 +196,6 @@ public class AIDialogueViewModel : BaseViewModel
     {
         IsWaitingForResponse = false;
 
-        // Пытаемся извлечь JSON из ответа
         string json = ExtractJson(response);
         if (!string.IsNullOrEmpty(json))
         {
@@ -200,14 +211,14 @@ public class AIDialogueViewModel : BaseViewModel
                     for (int i = 0; i < 8; i++)
                         newEmotions[i] = (float)emotionsToken[i];
 
-                    // Обновляем текущие эмоции NPC
+                    // Обновление текущих эмоции NPC
                     _aiData.currentEmotions = newEmotions;
 
-                    // Сохраняем в профиль игрока
+                    // Сохранение в профиль игрока
                     _player.CurrentProfile.LastEmotions = newEmotions;
                     _player.SaveProfile(_player.CurrentProfile);
 
-                    // Отправляем событие для ML-агента
+                    // Отправка события для ML-агента
                     EventBus.RaiseEvent<IEmotionsUpdatedSubscriber>(
                         s => s.OnEmotionsUpdated(new EmotionsUpdatedEvent(newEmotions))
                     );
@@ -251,20 +262,18 @@ public class AIDialogueViewModel : BaseViewModel
     {
         EventBus.RaiseEvent<IDialogueEventSubscriber>(s => s.OnDialogueEnded());
         Cleanup();
+        ServiceLocator.Instance.GetService<IWindowService>()?.CloseWindow<AIDialogueViewModel>();
     }
-
-    public override void Initialize() { }
 
     public override void Cleanup()
     {
-        _aiService.OnAIResponseReceived -= OnAIResponse;
-        _aiService.OnConnectionStatusChanged -= OnConnectionStatusChanged;
+        if (_aiService != null)
+        {
+            _aiService.OnAIResponseReceived -= OnAIResponse;
+            _aiService.OnConnectionStatusChanged -= OnConnectionStatusChanged;
+            _aiService.BreakeMessage();
+        }
 
-        _aiService.BreakeMessage();
-        LogViewModel.ClearLog();
-
-        var windowService = ServiceLocator.Instance.GetService<IWindowService>();
-        windowService?.CloseWindow<AIDialogueViewModel>();
-        //EventBus.Unsubscribe(this as IDialogueEventSubscriber);
+        LogViewModel?.ClearLog();
     }
 }

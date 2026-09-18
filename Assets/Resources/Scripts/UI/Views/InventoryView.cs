@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 public class InventoryView : BaseView<InventoryViewModel>
 {
@@ -18,6 +19,7 @@ public class InventoryView : BaseView<InventoryViewModel>
     protected override void SetupBindings()
     {
         ViewModel.PropertyChanged += OnPropertyChanged;
+        ViewModel.Initialize();
         Rebuild();
     }
 
@@ -29,6 +31,11 @@ public class InventoryView : BaseView<InventoryViewModel>
     protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ViewModel.Items)) Rebuild();
+
+        if (e.PropertyName == nameof(ViewModel.HoveredItemData))
+        {
+            UpdateInfoPanel(ViewModel.HoveredItemData);
+        }
     }
 
     private void Rebuild()
@@ -44,5 +51,20 @@ public class InventoryView : BaseView<InventoryViewModel>
             ui.Bind(vm, ViewModel);
             _itemUIs.Add(ui);
         }
+    }
+
+    public void UpdateInfoPanel(ItemData item)
+    {
+        if (infoPanel == null) return;
+
+        if (item == null)
+        {
+            infoPanel.SetActive(false);
+            return;
+        }
+
+        infoPanel.SetActive(true);
+        infoTitle.text = item.displayName;
+        infoDescription.text = item.description;
     }
 }

@@ -97,7 +97,10 @@ public class AITester : MonoBehaviour
     {
         if (_windowService != null)
         {
-            _windowService.ShowAIDialogue(testNpcId);
+            _windowService.ShowWindow<AIDialogueViewModel>(UILayer.Dialogue, (viewModel) =>
+            {
+                viewModel.Setup(testNpcId);
+            });
         }
         else
         {
@@ -109,7 +112,10 @@ public class AITester : MonoBehaviour
     {
         if (_windowService != null)
         {
-            _windowService.ShowClassicalDialogue(testDialogueId);
+            _windowService.ShowWindow<ClassicalDialogueViewModel>(UILayer.Dialogue, (viewModel) =>
+            {
+                viewModel.Setup(testDialogueId);
+            });
         }
     }
 

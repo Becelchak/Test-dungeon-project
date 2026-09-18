@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class InventoryItemSlotViewModel : MonoBehaviour
+public class InventoryItemSlotViewModel
 {
     public InventoryItem RuntimeItem { get; }
     public ItemData Data { get; }

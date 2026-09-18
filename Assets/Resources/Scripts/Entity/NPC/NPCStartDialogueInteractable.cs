@@ -1,15 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NPCStartDialogueInteractable : MonoBehaviour, IInteractable
 {
     [SerializeField] private string npcIDString;
     [SerializeField] private string interactionPrompt;
     private bool canInteract = true;
-    private WindowService windowService;
+    private IWindowService windowService;
 
     void Start()
     {
-        windowService = (WindowService) ServiceLocator.Instance.GetService<IWindowService>();
+        windowService = ServiceLocator.Instance.GetService<IWindowService>();
     }
 
     public bool CanInteract(GameObject interactor) => canInteract;
@@ -18,7 +18,10 @@ public class NPCStartDialogueInteractable : MonoBehaviour, IInteractable
 
     public void Interact(GameObject interactor)
     {
-        windowService.ShowClassicalDialogue(npcIDString);
+        windowService.ShowWindow<ClassicalDialogueViewModel>(UILayer.Dialogue, (viewModel) =>  
+        {
+            viewModel.Setup(npcIDString);
+        });
     }
 
 }
