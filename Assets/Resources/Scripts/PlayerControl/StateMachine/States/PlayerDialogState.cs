@@ -1,4 +1,4 @@
-
+п»ї
 using UnityEngine;
 
 public class PlayerDialogState : PlayerStateBase
@@ -10,14 +10,14 @@ public class PlayerDialogState : PlayerStateBase
     public override void Enter()
     {
         base.Enter();
-        _inputService.DisableGameplayInput();
-        Debug.Log("Вошли в состояние диалога - ввод отключен");
+        _inputService.DisableAllInput();
+        Debug.Log("Р’РѕС€Р»Рё РІ СЃРѕСЃС‚РѕСЏРЅРёРµ РґРёР°Р»РѕРіР° - РІРІРѕРґ РѕС‚РєР»СЋС‡РµРЅ");
     }
 
     public override void Exit()
     {
         base.Exit();
-        _inputService.EnableGameplayInput();
-        Debug.Log("Вышли из состояния диалога — ввод включён");
+        _inputService.EnableAllInput();
+        Debug.Log("Р’С‹С€Р»Рё РёР· СЃРѕСЃС‚РѕСЏРЅРёСЏ РґРёР°Р»РѕРіР° вЂ” РІРІРѕРґ РІРєР»СЋС‡С‘РЅ");
     }
 }

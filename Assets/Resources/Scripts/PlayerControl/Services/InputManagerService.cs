@@ -30,6 +30,10 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _parryAction { get; set; }
     public InputAction _openInventory {  get; set; }
     public InputAction _closeAction { get; set; }
+    public InputAction _unequipItem { get; set; }
+    public bool IsUnequipPressed { get; set; }
+
+    private bool _gameplayInputBlocked = false;
 
     protected override Type GetServiceType() => typeof(IInputService);
 
@@ -39,7 +43,7 @@ public class InputManagerService : BaseService, IInputService
         base.Awake();
         _inputActions = InputSystem.actions;
         SetupCallbacks();
-        EnableGameplayInput();
+        EnableAllInput();
     }
 
     protected void Start()
@@ -54,33 +58,52 @@ public class InputManagerService : BaseService, IInputService
         _moveAction.canceled += ctx => OnMove?.Invoke(Vector2.zero);
 
         _jumpAction = _inputActions.FindAction("Jump");
-        _jumpAction.performed += ctx => OnJump?.Invoke();
+        _jumpAction.performed += ctx =>
+        {
+            if (_gameplayInputBlocked) return;
+            else OnJump?.Invoke();
+        };
         _jumpAction.canceled += ctx => OnJump?.Invoke();
 
         _dodgeAction = _inputActions.FindAction("Roll");
-        _dodgeAction.performed += ctx => OnDodge?.Invoke();
+        _dodgeAction.performed += ctx =>
+        {
+            if (_gameplayInputBlocked) return;
+            else OnDodge?.Invoke();
+        };
         _dodgeAction.canceled += ctx => OnDodge?.Invoke();
 
         _sprintAction = _inputActions.FindAction("Sprint");
-        _sprintAction.performed += ctx => OnSprint?.Invoke(true);
+        _sprintAction.performed += ctx =>
+        {
+            if (_gameplayInputBlocked) return;
+            else OnSprint?.Invoke(true);
+        };
         _sprintAction.canceled += ctx => OnSprint?.Invoke(false);
 
         _attackAction = _inputActions.FindAction("Attack");
-        _attackAction.performed += ctx => OnAttack?.Invoke();
-        _attackAction.canceled += ctx => OnAttack?.Invoke();
+        _attackAction.started += ctx =>
+        {
+            if (_gameplayInputBlocked) return;
+            else OnAttack?.Invoke();
+        };
+        //_attackAction.canceled += ctx => OnAttack?.Invoke();
 
         _interactAction = _inputActions.FindAction("Interact");
-        _interactAction.performed += ctx => OnInteract?.Invoke();
+        _interactAction.performed += ctx => 
+        { 
+            if (_gameplayInputBlocked) return; 
+            else OnInteract?.Invoke(); 
+        };
 
         _submitAction = _inputActions.FindAction("Submit");
         _submitAction.performed += ctx => OnSubmit?.Invoke();
 
         _switchWeaponSlotAction = _inputActions.FindAction("SwitchSlots");
-        if (_switchWeaponSlotAction != null)
+        if (_switchWeaponSlotAction != null && !_gameplayInputBlocked)
         {
             _switchWeaponSlotAction.performed += ctx =>
             {
-                // displayName для клавиш 1, 2, 3 вернет "1", "2", "3"
                 if (int.TryParse(ctx.control.displayName, out int slotNumber) && slotNumber >= 1 && slotNumber <= 3)
                     OnSwitchWeaponSlot?.Invoke(slotNumber - 1);
             };
@@ -104,6 +127,9 @@ public class InputManagerService : BaseService, IInputService
 
         _closeAction = _inputActions.FindAction("Cancel");
         _closeAction.performed += ctx => OnCancel?.Invoke();
+
+        _unequipItem = _inputActions.FindAction("RightClick");
+        IsUnequipPressed = _unequipItem != null && _unequipItem.IsPressed();
     }
 
     public Vector2 GetMovementInput()
@@ -126,10 +152,22 @@ public class InputManagerService : BaseService, IInputService
         return playerTransfrom.forward;
     }
 
-    public void EnableGameplayInput() => _inputActions.Enable();
-    public void DisableGameplayInput()
+    public void SetGameplayInputActive(bool active)
+    {
+        _gameplayInputBlocked = !active;
+        if (_gameplayInputBlocked)
+        {
+            OnBlock?.Invoke(false);
+            OnSprint?.Invoke(false);
+        }
+        Debug.Log($"[InputManagerService] Игровой ввод активен: {active}");
+    }
+
+    public void EnableAllInput() => _inputActions.Enable();
+    public void DisableAllInput()
     {
         _inputActions.Disable();
         Debug.Log("Off input");
     }
+
 }

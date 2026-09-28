@@ -70,10 +70,6 @@ public class EquipmentViewModel : BaseViewModel
         return slotVm?.TryUnequip();
     }
 
-    // -----------------------------------------------------------------
-    // Внутреннее
-    // -----------------------------------------------------------------
-
     private void BuildSlots()
     {
         foreach (var slot in _slots)

@@ -19,17 +19,11 @@ public class PortalInteractable : MonoBehaviour, IInteractable
 
     public async void Interact(GameObject interactor)
     {
-        ServiceLocator.Instance.GetService<IInputService>()?.DisableGameplayInput();
+        ServiceLocator.Instance.GetService<IInputService>()?.DisableAllInput();
         canInteract = false;
         windowsService.ShowWindow<DialogueLogViewModel>(UILayer.SystemMenu);
         await sceneLoader.LoadSceneAsync(sceneToLoad, false);
     }
-
-    //private IEnumerator LoadSceneAfterDelay()
-    //{
-    //    yield return new WaitForSeconds(loadDelay);
-    //    SceneManager.LoadScene(sceneToLoad);
-    //}
 
     public bool CanInteract(GameObject interactor) => canInteract;
     public string GetInteractionPrompt() => "[E] Войти в портал";

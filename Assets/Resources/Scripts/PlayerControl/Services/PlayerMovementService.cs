@@ -82,7 +82,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         }
 
         var input = ServiceLocator.Instance.GetService<IInputService>();
-        input?.EnableGameplayInput();
+        input?.EnableAllInput();
     }
 
     public void Start()

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 
 /// <summary>
 /// Сервис, отвечающий за бой игрока: получение урона, блок, идеальный блок/парирование.
@@ -31,9 +31,8 @@ public interface IPlayerCombatService
     /// <summary>
     /// Наносит урон игроку с учётом активного блока/парирования.
     /// </summary>
-    /// <param name="damage">Базовый урон.</param>
-    /// <param name="source">Источник урона (может быть null).</param>
-    void ApplyDamage(int damage, GameObject source = null);
+    /// <param name="damageInfo">Информация об атаке (включая WasBlocked для направленного блока).</param>
+    void ApplyDamage(DamageInfo damageInfo);
 
     /// <summary>
     /// Отвечает за включение/выключение триггера у текущего оружия игрока

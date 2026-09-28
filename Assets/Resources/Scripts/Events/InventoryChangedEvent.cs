@@ -1,6 +1,7 @@
 ﻿using EventBusSystem;
+using UnityEngine;
 
-public struct InventoryChangedEvent
+public struct InventoryChangedEvent : IInventoryChangedEventSubscriber
 {
     public enum ChangeType { Added, Removed, Updated }
     public ChangeType Type { get; }
@@ -10,6 +11,11 @@ public struct InventoryChangedEvent
     {
         Type = type;
         Item = item;
+    }
+
+    public void OnInventoryChanged(InventoryChangedEvent evt)
+    {
+        Debug.LogWarning("Инвентарь поменялся");
     }
 }
 

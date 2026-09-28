@@ -45,6 +45,17 @@ public class WeaponDamageSource : MonoBehaviour
     {
         if (!IsActive) return;
 
+        // Проверка попадания в щит
+        var shieldMarker = other.GetComponent<ShieldMarker>();
+        if (shieldMarker != null)
+        {
+            // Проверка блокирует ли владелец щита или просто носит его
+            if (IsShieldOwnerBlocking(shieldMarker.Owner))
+            {
+                Debug.Log($"[WeaponDamageSource] Атака заблокирована щитом {other.gameObject.name}");
+            }
+        }
+
         var target = other.GetComponentInParent<IDamageable>();
         if (target == null) return;
 
@@ -58,6 +69,7 @@ public class WeaponDamageSource : MonoBehaviour
         float multiplier = hitbox != null ? hitbox.DamageMultiplier : 1f;
         if(hitbox != null)
             Debug.Log($"Удар пришелся по {hitbox.HitboxType} {target.Transform.name}!");
+
         var info = new DamageInfo
         {
             BaseDamage = BaseDamage,
@@ -65,10 +77,30 @@ public class WeaponDamageSource : MonoBehaviour
             DamageType = DamageType,
             Attacker = transform.root,
             HitboxType = hitbox != null ? hitbox.HitboxType : HitboxType.Other,
-            HitPoint = other.ClosestPoint(transform.position)
+            HitPoint = other.ClosestPoint(transform.position),
+            WasBlocked = shieldMarker != null && IsShieldOwnerBlocking(shieldMarker.Owner),
+            ShieldHit = shieldMarker != null ? other.gameObject : null
         };
 
         target.ApplyDamage(info);
         _hitTargets.Add(target);
+    }
+
+    /// <summary>
+    /// Проверяет, блокирует ли владелец щита в данный момент.
+    /// </summary>
+    private bool IsShieldOwnerBlocking(Transform shieldOwner)
+    {
+        if (shieldOwner == null) return false;
+
+        // Ищем боевой сервис игрока
+        var combatService = shieldOwner.GetComponent<IPlayerCombatService>();
+        if (combatService == null)
+        {
+            // Пробуем найти через ServiceLocator
+            combatService = ServiceLocator.Instance?.GetService<IPlayerCombatService>();
+        }
+
+        return combatService != null && combatService.IsBlocking;
     }
 }

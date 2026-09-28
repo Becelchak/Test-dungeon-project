@@ -84,7 +84,7 @@ public class WeaponData : ItemData
     /// <summary>
     /// Загружает (или перезагружает) данные из прикрепленного JSON файла.
     /// </summary>
-    [ContextMenu("Load Stats From JSON")] // Позволяет вызвать метод через ПКМ по компоненту в инспекторе
+    [ContextMenu("Load Stats From JSON")]
     public void LoadDataFromJson()
     {
         if (jsonFile == null)
@@ -95,7 +95,6 @@ public class WeaponData : ItemData
 
         try
         {
-            // Десериализуем данные из текста JSON в класс характеристик
             stats = JsonUtility.FromJson<WeaponStats>(jsonFile.text);
             Debug.Log($"[WeaponData] Данные для {name} успешно загружены из JSON.");
         }

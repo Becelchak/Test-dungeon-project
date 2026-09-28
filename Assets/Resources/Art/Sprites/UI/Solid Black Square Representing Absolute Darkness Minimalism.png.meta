@@ -1,0 +1,789 @@
+fileFormatVersion: 2
+guid: c76e52eeabd7f59458c89084bf3d4b62
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 625
+        width: 427
+        height: 393
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49655a21172866647b7e7177010fbc22
+      internalID: -506151010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_1
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 768
+        width: 396
+        height: 245
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 25, y: 28, z: 26, w: 59}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87913a4bb0a17a74fa4770dbc19a3b2d
+      internalID: -122996252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_2
+      rect:
+        serializedVersion: 2
+        x: 862
+        y: 423
+        width: 74
+        height: 590
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cbf4456bf62efb543b8a6eba1092d3b0
+      internalID: -1327478235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_3
+      rect:
+        serializedVersion: 2
+        x: 946
+        y: 423
+        width: 69
+        height: 590
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0e79d6f7da29c544b6d5a2a92de2371
+      internalID: -2021090132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_4
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 667
+        width: 412
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4688d7b0729d6f438f4b7ae1dbe35bc
+      internalID: -1552844124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_5
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 155
+        width: 409
+        height: 466
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 28, y: 41, z: 23, w: 57}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6def578b8477b2e40be64324ed9000f5
+      internalID: 773944968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_6
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 561
+        width: 356
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 44930297ec6bc1c4fa7056821597341b
+      internalID: 482767080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_7
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 413
+        width: 129
+        height: 142
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10c1fe86b54471c4cae96a019579bd8e
+      internalID: 143688083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_8
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 413
+        width: 128
+        height: 143
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a68d079f348dc8e4f8c1c0b29de7d4bb
+      internalID: -2043443997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_9
+      rect:
+        serializedVersion: 2
+        x: 709
+        y: 413
+        width: 129
+        height: 141
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 369490d69a51cb74cbcfa9dfcba708f5
+      internalID: -836975010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_10
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 273
+        width: 131
+        height: 136
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab0e2da34b11880468443cc53c853484
+      internalID: -765374933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_11
+      rect:
+        serializedVersion: 2
+        x: 567
+        y: 272
+        width: 130
+        height: 137
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aa5b3c2d6301ba14cba370b135c0d0c5
+      internalID: 705908107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_12
+      rect:
+        serializedVersion: 2
+        x: 708
+        y: 272
+        width: 130
+        height: 138
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe65658fb4c3abd4dbf34a31b9d1e03d
+      internalID: 40008938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_13
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 341
+        width: 63
+        height: 66
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bb1818549664db4ea88498d038c4dad
+      internalID: -1793361465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_14
+      rect:
+        serializedVersion: 2
+        x: 932
+        y: 158
+        width: 34
+        height: 237
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e882cb02119489b4da379235cf5d03f0
+      internalID: -1079960542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_15
+      rect:
+        serializedVersion: 2
+        x: 966
+        y: 158
+        width: 50
+        height: 237
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7589894e1039ea240859cea8d9562e7a
+      internalID: -568270745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_16
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 280
+        width: 63
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3831137366e33e4da9351c7fdfebd72
+      internalID: 1707475433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_17
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 132
+        width: 125
+        height: 137
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7b69a919485ac841bebea6d70a21d5b
+      internalID: 736496618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_18
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 132
+        width: 123
+        height: 138
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80a241eabaf28ec4f8254add33082ab1
+      internalID: -1414578949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_19
+      rect:
+        serializedVersion: 2
+        x: 709
+        y: 132
+        width: 128
+        height: 137
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 255272378639e90429b01eaf08bf9da6
+      internalID: -2020241496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_20
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 219
+        width: 63
+        height: 60
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9591e38c1de7a354ba53f81b44c2e48b
+      internalID: -271093657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_21
+      rect:
+        serializedVersion: 2
+        x: 858
+        y: 149
+        width: 69
+        height: 69
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78444ef699134b7459f0c7b64f108c4a
+      internalID: 720866423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_22
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 35
+        width: 81
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 660236fced777bf4d84886d788dd6c30
+      internalID: -801098863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_23
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 35
+        width: 80
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9613082c386365d4e8001ad8a7cab785
+      internalID: -168904470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_24
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 35
+        width: 81
+        height: 95
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d97800992ca03f040a9be1bdb32470d2
+      internalID: -1698787992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_25
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 35
+        width: 82
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 736742961176a8a46bd46aef8522c459
+      internalID: -1577315444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_26
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 35
+        width: 83
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a344aa417605b84469fb145d87c333cc
+      internalID: 163092515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Solid Black Square Representing Absolute Darkness Minimalism_27
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 26
+        width: 530
+        height: 103
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 74, y: 26, z: 47, w: 27}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25a3a40f9eb2e674189f7a4888fc9daa
+      internalID: 1775175206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a77eb49cc87a5b74d82955d866a09217
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Solid Black Square Representing Absolute Darkness Minimalism_0: -506151010
+      Solid Black Square Representing Absolute Darkness Minimalism_1: -122996252
+      Solid Black Square Representing Absolute Darkness Minimalism_10: -765374933
+      Solid Black Square Representing Absolute Darkness Minimalism_11: 705908107
+      Solid Black Square Representing Absolute Darkness Minimalism_12: 40008938
+      Solid Black Square Representing Absolute Darkness Minimalism_13: -1793361465
+      Solid Black Square Representing Absolute Darkness Minimalism_14: -1079960542
+      Solid Black Square Representing Absolute Darkness Minimalism_15: -568270745
+      Solid Black Square Representing Absolute Darkness Minimalism_16: 1707475433
+      Solid Black Square Representing Absolute Darkness Minimalism_17: 736496618
+      Solid Black Square Representing Absolute Darkness Minimalism_18: -1414578949
+      Solid Black Square Representing Absolute Darkness Minimalism_19: -2020241496
+      Solid Black Square Representing Absolute Darkness Minimalism_2: -1327478235
+      Solid Black Square Representing Absolute Darkness Minimalism_20: -271093657
+      Solid Black Square Representing Absolute Darkness Minimalism_21: 720866423
+      Solid Black Square Representing Absolute Darkness Minimalism_22: -801098863
+      Solid Black Square Representing Absolute Darkness Minimalism_23: -168904470
+      Solid Black Square Representing Absolute Darkness Minimalism_24: -1698787992
+      Solid Black Square Representing Absolute Darkness Minimalism_25: -1577315444
+      Solid Black Square Representing Absolute Darkness Minimalism_26: 163092515
+      Solid Black Square Representing Absolute Darkness Minimalism_27: 1775175206
+      Solid Black Square Representing Absolute Darkness Minimalism_3: -2021090132
+      Solid Black Square Representing Absolute Darkness Minimalism_4: -1552844124
+      Solid Black Square Representing Absolute Darkness Minimalism_5: 773944968
+      Solid Black Square Representing Absolute Darkness Minimalism_6: 482767080
+      Solid Black Square Representing Absolute Darkness Minimalism_7: 143688083
+      Solid Black Square Representing Absolute Darkness Minimalism_8: -2043443997
+      Solid Black Square Representing Absolute Darkness Minimalism_9: -836975010
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

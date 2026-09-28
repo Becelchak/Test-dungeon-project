@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfectBlockEventSubscriber
+public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfectBlockEventSubscriber, IEquipmentRequestSubscriber
 {
     private const string PROFILE_KEY = "player_profile";
     private PlayerProfile _currentProfile;
+    private IEquipmentService _equipmentService;
 
     public event Action<InventoryItem> OnItemAdded;
     public event Action<InventoryItem> OnItemRemoved;
@@ -69,6 +70,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         var profile = new PlayerProfile();
 
         profile.stats = new PlayerStats { firstPlayDate = DateTime.Now };
+        _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
 
         // Рандомное выставление параметров игрока
         CreateRandomParameters(profile);
@@ -159,7 +161,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         {
             Debug.LogWarning($"[PlayerProfileService] Попытка добавить предмет без itemId ({item.itemName}). Предмет будет добавлен как отдельная запись, но это может привести к дублированию.");
             CurrentProfile.inventory.Add(item);
-            OnItemAdded.Invoke(item);
+            OnItemAdded?.Invoke(item);
             SaveProfile(CurrentProfile);
             return;
         }
@@ -172,7 +174,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         else
         {
             CurrentProfile.inventory.Add(item);
-            OnItemAdded.Invoke(item);
+            OnItemAdded?.Invoke(item);
         }
         SaveProfile(CurrentProfile);
         EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
@@ -196,10 +198,22 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             var index = CurrentProfile.inventory.FindIndex(i => i.itemId == item.itemId);
             CurrentProfile.inventory.RemoveAt(index);
         }
-        OnItemRemoved.Invoke(item);
+        OnItemRemoved?.Invoke(item);
         SaveProfile(CurrentProfile);
         EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
         s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Removed, item)));
+    }
+
+    public void ClearPlayerInventory()
+    {
+        foreach (var item in CurrentProfile.inventory) 
+        {
+            OnItemRemoved?.Invoke(item);
+            EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
+            s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Removed, item)));
+        }
+        CurrentProfile.inventory.Clear();
+        SaveProfile(CurrentProfile);
     }
 
     public void UpdateQuestProgress(string questId, QuestProgress progress)
@@ -221,6 +235,27 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             ModifyStamina((int)evt.Weapon.Stats.attackStaminaCost);
         }
 
+    }
+
+    public void OnRequestEquipFromInventory(ItemData item, EquipmentSlotType targetSlot)
+    {
+        var itemInventory = new InventoryItem
+        {
+            itemId = item.itemId,
+            itemName = item.name,
+            quantity = 1,
+            description = item.description,
+        };
+        RemoveInventoryItem(itemInventory);
+        _equipmentService.Equip(item, targetSlot);
+
+        Debug.Log($"[ProfileService] Запрос на экипировку предмета {item.itemId} в слот {targetSlot}");
+    }
+
+    public void OnRequestUnequipToInventory(InventoryItem item, EquipmentSlotType slotType)
+    {
+        _equipmentService.Unequip(slotType);
+        AddInventoryItem(item);
     }
 
     protected override Type GetServiceType() => typeof(IPlayerProfileService);

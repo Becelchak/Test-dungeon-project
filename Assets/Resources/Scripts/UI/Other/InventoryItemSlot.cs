@@ -14,7 +14,7 @@ public class InventoryItemSlot : MonoBehaviour,
     [SerializeField] private Image background;
     [SerializeField] private GameObject selectionHighlight;
 
-    private InventoryItemSlotViewModel _vm;
+    [SerializeField] private InventoryItemSlotViewModel _vm;
     private InventoryViewModel _inventoryVm;
     private CanvasGroup _canvasGroup;
     private RectTransform _ghost;
@@ -113,23 +113,5 @@ public class InventoryItemSlot : MonoBehaviour,
     public void OnPointerExit(PointerEventData eventData)
     {
         _inventoryVm?.ClearHoveredItem();
-    }
-}
-
-/// <summary>Глобальная «булавка» — что сейчас тащат.</summary>
-public static class ItemDragPayload
-{
-    public static ItemDragPayloadData Current { get; set; }
-}
-
-public class ItemDragPayloadData
-{
-    public InventoryItemSlotViewModel ItemVm;
-    public InventoryViewModel Source;
-
-    public ItemDragPayloadData(InventoryItemSlotViewModel itemVm, InventoryViewModel source)
-    {
-        ItemVm = itemVm; 
-        Source = source;
     }
 }

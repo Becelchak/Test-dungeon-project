@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 
-public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
+public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>, IUIWindow
 {
     [Header("Classical Dialogue UI")]
     [SerializeField] private TextMeshProUGUI npcNameText;
@@ -12,6 +12,8 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>
 
     [Header("Dialog Log View")]
     [SerializeField] private DialogueLogView dialogueLogView;
+
+    public UILayer Layer => UILayer.Dialogue;
 
     protected override void SetupBindings()
     {

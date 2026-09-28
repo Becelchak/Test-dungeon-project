@@ -26,24 +26,19 @@ public class UIManagerService : BaseService, IUIManagerService
         _input.OnCancel += CloseTop;
     }
 
-    //public void OpenLayer(UILayer layer)
-    //{
-    //    if (IsAnyUIOpen) return;
-    //    _windowService.OpenLayer(layer);
-    //    _stack.Push(layer);
-    //}
-
     public void ToggleInventory()
     {
-        // Если инвентарь уже открыт — закрыть его
         if (_windowService.IsWindowOpen<InventoryViewModel>())
         {
             CloseSpecificWindow<InventoryViewModel>();
+            CloseSpecificWindow<EquipmentViewModel>();
+            //_input.SetGameplayInputActive(true);
         }
         else
         {
             // Открыть через WindowService, регистрируя операцию в стек UIManager
             _windowService.ShowWindow<InventoryViewModel>(UILayer.InventoryGroup);
+            _windowService.ShowWindow<EquipmentViewModel>(UILayer.InventoryGroup);
 
             _uiStack.Push(new OpenUiElement
             {
@@ -52,41 +47,24 @@ public class UIManagerService : BaseService, IUIManagerService
                 CloseAction = () => _windowService.CloseWindow<InventoryViewModel>()
             });
 
+            _uiStack.Push(new OpenUiElement
+            {
+                Layer = UILayer.InventoryGroup,
+                ViewModelType = typeof(EquipmentViewModel),
+                CloseAction = () => _windowService.CloseWindow<EquipmentViewModel>()
+            });
+
             SetGameplayControlsEnabled(false);
         }
     }
-    //public void OpenDialogue(string npcId)
-    //{
-    //    _windowService.ShowWindow<AIDialogueViewModel>(UILayer.Dialogue, (vm) =>
-    //    {
-    //        // Сюда мы можем передать ID до того, как View забиндится. Надо ли?
-    //    });
-
-    //    _uiStack.Push(new OpenUiElement
-    //    {
-    //        Layer = UILayer.Dialogue,
-    //        ViewModelType = typeof(AIDialogueViewModel),
-    //        CloseAction = () => _windowService.CloseWindow<AIDialogueViewModel>()
-    //    });
-
-    //    SetGameplayControlsEnabled(false);
-    //}
 
     public void CloseTop()
     {
         if (_uiStack.Count == 0) return;
 
-        // Достаем верхнее окно из стека и уничтожаем его через его же зарегистрированный экшен
         var topUi = _uiStack.Pop();
-        //if (topUi.Layer == UILayer.Dialogue)
-        //{
-        //    if(topUi.ViewModelType == typeof(AIDialogueViewModel))
-        //        topUi.ViewModelType
-        //}
         topUi.CloseAction?.Invoke();
         
-
-        // Если окон больше нет — возвращаем управление персонажу
         if (_uiStack.Count == 0)
         {
             SetGameplayControlsEnabled(true);
@@ -124,10 +102,7 @@ public class UIManagerService : BaseService, IUIManagerService
 
     private void SetGameplayControlsEnabled(bool enabled)
     {
-        // Логика блокировки контроллера игрока (мыши, перемещения), чтобы во время 
-        // открытого инвентаря персонаж не бегал и не бил мечом.
-        // Требует разделение ввода на UI и геймплей
-        // _input.SetGameplayInputActive(enabled);
+        _input.SetGameplayInputActive(enabled);
     }
 
     public void OpenWindow(UILayer layer)

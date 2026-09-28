@@ -34,10 +34,10 @@ RectTransform:
   - {fileID: 4728705838433345098}
   m_Father: {fileID: 4980199004543541684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
-  m_AnchorMin: {x: 0.8266864, y: 0.20268354}
-  m_AnchorMax: {x: 0.9248561, y: 0.36800003}
-  m_AnchoredPosition: {x: 0.5, y: 1}
-  m_SizeDelta: {x: -69.01309, y: 69.0132}
+  m_AnchorMin: {x: 0.84300005, y: 0.10056486}
+  m_AnchorMax: {x: 0.9733727, y: 0.34100002}
+  m_AnchoredPosition: {x: -0.12939453, y: 0.1159668}
+  m_SizeDelta: {x: -91.74359, y: 83.1532}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2671262914632238050
 CanvasRenderer:
@@ -364,10 +364,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4980199004543541684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.8582288, y: 0.52400005}
-  m_AnchorMax: {x: 0.92100006, y: 0.83000004}
-  m_AnchoredPosition: {x: -0.5, y: 0}
-  m_SizeDelta: {x: -4, y: 1}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -49.304077, y: -54.533295}
+  m_SizeDelta: {x: 98.6082, y: 109.0666}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5613973801872838366
 CanvasRenderer:
@@ -390,14 +390,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.745283, g: 0.7417675, b: 0.7417675, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -880596384, guid: f5825fdc8a40b5e4f9460877710bbfd8, type: 3}
+  m_Sprite: {fileID: -694805596, guid: 24b3a6cc9595c384687caa3f8af777a7, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -428,7 +428,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 0.75, b: 0.75, a: 1}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1263,7 +1263,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &302406327105994052
 RectTransform:
   m_ObjectHideFlags: 0

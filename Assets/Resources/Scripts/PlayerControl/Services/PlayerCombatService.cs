@@ -65,8 +65,9 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         return true;
     }
 
-    public void ApplyDamage(int damage, GameObject source = null)
+    public void ApplyDamage(DamageInfo damageInfo)
     {
+        int damage = Mathf.RoundToInt(damageInfo.FinalDamage);
         if (damage <= 0 || IsDead) return;
         if (IsGodMode)
         {
@@ -75,6 +76,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         }
 
         int finalDamage = damage;
+        GameObject source = damageInfo.Attacker != null ? damageInfo.Attacker.gameObject : null;
 
         // Сначала проверяем парирование — оно приоритетнее и имеет меньшее окно
         if (IsParrying && Time.time - ParryStartTime <= ParryWindow)
@@ -92,7 +94,12 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
             float window = blocker?.Stats?.perfectBlockWindow ?? 0.5f;
             float reduction = blocker?.Stats?.blockDamageReduction ?? 0.5f;
 
-            if (Time.time - BlockStartTime <= window)
+            // Проверка, была ли атака заблокирована щитом (направленный блок)
+            if (!damageInfo.WasBlocked)
+            {
+                Debug.Log($"[PlayerCombatService] Атака не попала в щит! Блок не сработал.");
+            }
+            else if (Time.time - BlockStartTime <= window)
             {
                 finalDamage = 0;
                 Debug.Log($"[PlayerCombatService] Идеальный блок ({blocker?.displayName ?? "без оружия"})! Урон полностью нивелирован.");
@@ -149,7 +156,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
             return true;
         }
 
-        // Не хватает стамины: слабая атака, снимаем остатки, если они есть
+        // Не хватает стамины: слабая атака
         if (stamina > 0)
             ProfileService?.ModifyStamina(-stamina);
 

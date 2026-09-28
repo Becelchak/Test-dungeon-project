@@ -46,12 +46,12 @@ public class DeveloperConsole : MonoBehaviour
 
         if (_isVisible)
         {
-            _inputService?.DisableGameplayInput();
+            _inputService?.DisableAllInput();
             Log("Консоль разработчика открыта. Введи 'help' для списка команд.");
         }
         else
         {
-            _inputService?.EnableGameplayInput();
+            _inputService?.EnableAllInput();
         }
     }
 
@@ -121,7 +121,8 @@ public class DeveloperConsole : MonoBehaviour
                         "  kill — убить игрока\n" +
                         "  revive — воскресить игрока и восстановить статы\n" +
                         "  godmode — переключить неуязвимость\n" +
-                        "  clear — очистить консоль");
+                        "  clear — очистить консоль\n"+
+                        "  clearinventory - очистить инвентарь");
                     break;
 
                 case "heal":
@@ -164,6 +165,10 @@ public class DeveloperConsole : MonoBehaviour
                     _logLines.Clear();
                     break;
 
+                case "clearinventory":
+                    ClearPlayerInventory();
+                    break;
+
                 default:
                     Log($"Неизвестная команда: {cmd}. Введи 'help' для списка.");
                     break;
@@ -173,6 +178,18 @@ public class DeveloperConsole : MonoBehaviour
         {
             Log($"Ошибка выполнения команды: {e.Message}");
         }
+    }
+
+    private void ClearPlayerInventory()
+    {
+        var profile = _profileService?.CurrentProfile;
+        if (profile == null)
+        {
+            Log("Ошибка: профиль игрока не найден.");
+            return;
+        }
+        _profileService.ClearPlayerInventory();
+        Debug.LogWarning("Инвентарь очищен!");
     }
 
     private void ReviveAndHeal()
@@ -235,7 +252,13 @@ public class DeveloperConsole : MonoBehaviour
             _combatService.IsGodMode = false;
 
         _profileService.ModifyHealth(-profile.health);
-        _combatService?.ApplyDamage(1);
+        _combatService?.ApplyDamage(new DamageInfo() 
+        { 
+            BaseDamage = 1,
+            DamageMultiplier = 1,
+            DamageType = DamageType.True,
+
+        });
 
         if (_combatService != null)
             _combatService.IsGodMode = previousGodMode;

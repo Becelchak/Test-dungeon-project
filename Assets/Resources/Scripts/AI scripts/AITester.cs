@@ -136,10 +136,10 @@ public class AITester : MonoBehaviour
 
     private void HandleTestInput()
     {
-        if (Input.GetKeyDown(KeyCode.F1)) StartAIDialogue();
-        if (Input.GetKeyDown(KeyCode.F2)) StartClassicalDialogue();
-        if (Input.GetKeyDown(KeyCode.F3)) _aiService?.ClearConversation();
-        if(Input.GetKey(KeyCode.F4)) ReseteProfile();
+        //if (Input.GetKeyDown(KeyCode.F1)) StartAIDialogue();
+        //if (Input.GetKeyDown(KeyCode.F2)) StartClassicalDialogue();
+        //if (Input.GetKeyDown(KeyCode.F3)) _aiService?.ClearConversation();
+        //if(Input.GetKey(KeyCode.F4)) ReseteProfile();
     }
 
     private void OnGUI()
@@ -179,16 +179,16 @@ public class AITester : MonoBehaviour
 
         GUILayout.Space(10);
 
-        if (GUILayout.Button("AI Диалог (F1)", GUILayout.Height(25)))
+        if (GUILayout.Button("AI Диалог", GUILayout.Height(25)))
             StartAIDialogue();
 
-        if (GUILayout.Button("Классический диалог (F2)", GUILayout.Height(25)))
+        if (GUILayout.Button("Классический диалог", GUILayout.Height(25)))
             StartClassicalDialogue();
 
-        if (GUILayout.Button("Очистить историю (F3)", GUILayout.Height(25)))
+        if (GUILayout.Button("Очистить историю", GUILayout.Height(25)))
             _aiService?.ClearConversation();
 
-        if (GUILayout.Button("Сброс профиля (F4)", GUILayout.Height(25)))
+        if (GUILayout.Button("Сброс профиля", GUILayout.Height(25)))
             ReseteProfile();
 
         GUILayout.EndArea();

@@ -28,10 +28,15 @@ public interface IInputService
     InputAction _blockAction { get; set; }
     InputAction _parryAction { get; set; }
     InputAction _openInventory {  get; set; }
-    InputAction _closeAction { get; set; } 
+    InputAction _closeAction { get; set; }
+
+    InputAction _unequipItem {  get; set; }
+
+    bool IsUnequipPressed { get; set; }
 
     Vector2 GetMovementInput();
-    void EnableGameplayInput();
-    void DisableGameplayInput();
+    void EnableAllInput();
+    void DisableAllInput();
+    void SetGameplayInputActive(bool status);
     Vector3 GetMouseWorldDirection(Camera cam, Transform playerTransform, float planeY = 0f);
 }

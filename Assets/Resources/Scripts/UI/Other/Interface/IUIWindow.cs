@@ -1,0 +1,1 @@
+﻿public interface IUIWindow { UILayer Layer { get; } }

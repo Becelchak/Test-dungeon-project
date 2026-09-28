@@ -12,10 +12,6 @@ public class Interactor : MonoBehaviour
         var sphereCollider = GetComponent<SphereCollider>();
         sphereCollider.radius = interactionRadius;
     }
-    public void Start()
-    {
-
-    }
 
     private void OnTriggerEnter(Collider other)
     {

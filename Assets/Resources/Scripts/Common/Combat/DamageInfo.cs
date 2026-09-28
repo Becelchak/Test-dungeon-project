@@ -14,6 +14,12 @@ public struct DamageInfo
     public Vector3 HitPoint;
     public bool IsCritical;
 
+    /// <summary>Была ли атака заблокирована щитом игрока.</summary>
+    public bool WasBlocked;
+
+    /// <summary>Ссылка на щит, который блокировал атаку (для визуальных эффектов).</summary>
+    public GameObject ShieldHit;
+
     /// <summary>Итоговый урон до дополнительных модификаторов брони/баффов.</summary>
     public float FinalDamage => BaseDamage * DamageMultiplier * (IsCritical ? 2f : 1f);
 }

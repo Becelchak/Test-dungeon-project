@@ -13,7 +13,8 @@ public class WindowService : BaseService, IWindowService
     [Header("Window Prefabs")]
     [SerializeField] private GameObject aiDialoguePrefab;
     [SerializeField] private GameObject classicalDialoguePrefab;
-    [SerializeField] private GameObject inventoryGroupPrefab;
+    [SerializeField] private GameObject inventoryPrefab;
+    [SerializeField] private GameObject equipmentPrefab;
     [SerializeField] private GameObject loadingScreenPrefab;
 
 
@@ -66,27 +67,48 @@ public class WindowService : BaseService, IWindowService
             parentTransform = _windowsParent;
         }
 
-        // Получение нужных префабов на основе запрашиваемой ViewModel
         GameObject prefab = GetPrefabByViewModelType(vmType);
         if (prefab == null) return null;
 
-        // Спавн и бинд
         var windowObj = Instantiate(prefab, parentTransform);
-        var view = windowObj.GetComponentInChildren<IView>(); // Предполагается общий интерфейс у BaseView
-
-        // Создание инстанса ViewModel через фабрику
-        // Если конструктор сложный, можно вынести снаружи в коллбэке onBeforeBind
         TViewModel viewModel = CreateViewModelInstance<TViewModel>();
-
         // Дается возможность внешней системе настроить ViewModel до биндинга (например, передать npcId)
         onBeforeBind?.Invoke(viewModel);
-
         viewModel.Initialize();
 
-        if (view != null)
+        var allViews = windowObj.GetComponentsInChildren<IView>();
+        bool viewBound = false;
+        foreach (var view in allViews)
         {
-            view.Bind(viewModel);
+            // Проверка View под конкретную TViewModel.
+            var viewType = view.GetType();
+            var baseType = viewType.BaseType;
+
+            while (baseType != null && baseType != typeof(object))
+            {
+                if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(BaseView<>))
+                {
+                    var targetViewModelType = baseType.GetGenericArguments()[0];
+
+                    // Если тип ViewModel, совпадает с View - значит можно работать дальше
+                    if (targetViewModelType == vmType)
+                    {
+                        view.Bind(viewModel);
+                        viewBound = true;
+                        break;
+                    }
+                }
+                baseType = baseType.BaseType;
+            }
+
+            if (viewBound) break;
         }
+
+        if (!viewBound)
+        {
+            Debug.LogError($"[WindowService] На префабе не найдено подходящей View для обработки ViewModel: {vmType.Name}!");
+        }
+
 
         _openWindows[vmType] = windowObj;
         return windowObj;
@@ -94,10 +116,12 @@ public class WindowService : BaseService, IWindowService
 
     private GameObject GetPrefabByViewModelType(Type type)
     {
-        if (type == typeof(InventoryViewModel)) return inventoryGroupPrefab;
+        if (type == typeof(InventoryViewModel)) return inventoryPrefab;
+        if (type == typeof(EquipmentViewModel)) return equipmentPrefab;
         if (type == typeof(AIDialogueViewModel)) return aiDialoguePrefab;
         if (type == typeof(ClassicalDialogueViewModel)) return classicalDialoguePrefab;
-        if (type == typeof(LoadingScreenUI)) return loadingScreenPrefab; // условный пример
+        //TO DO: Переписать на ViewModel
+        if (type == typeof(LoadingScreenUI)) return loadingScreenPrefab;
 
         Debug.LogError($"[WindowService] Не найден префаб для типа ViewModel: {type.Name}");
         return null;

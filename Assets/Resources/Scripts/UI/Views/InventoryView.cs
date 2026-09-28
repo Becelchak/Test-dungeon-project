@@ -16,11 +16,13 @@ public class InventoryView : BaseView<InventoryViewModel>
 
     private readonly List<InventoryItemSlot> _itemUIs = new();
 
+    public UILayer Layer => UILayer.InventoryGroup;
+
     protected override void SetupBindings()
     {
         ViewModel.PropertyChanged += OnPropertyChanged;
         ViewModel.Initialize();
-        Rebuild();
+        //Rebuild();
     }
 
     private void OnDestroy()
@@ -30,6 +32,8 @@ public class InventoryView : BaseView<InventoryViewModel>
 
     protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
+        if (this == null || !gameObject.activeInHierarchy) return;
+
         if (e.PropertyName == nameof(ViewModel.Items)) Rebuild();
 
         if (e.PropertyName == nameof(ViewModel.HoveredItemData))
@@ -40,6 +44,12 @@ public class InventoryView : BaseView<InventoryViewModel>
 
     private void Rebuild()
     {
+        if (_itemUIs == null)
+        {
+            Debug.LogWarning("Список UI пуст!");
+            return;
+        }
+
         foreach (var ui in _itemUIs) if (ui != null) Destroy(ui.gameObject);
         _itemUIs.Clear();
 

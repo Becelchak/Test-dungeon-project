@@ -5,7 +5,7 @@ using System.ComponentModel;
 using UnityEditor;
 using System.Collections;
 
-public class AIDialogueView : BaseView<AIDialogueViewModel>
+public class AIDialogueView : BaseView<AIDialogueViewModel>, IUIWindow
 {
     [Header("AI Dialogue UI")]
     [SerializeField] private TMP_InputField userInputField;
@@ -17,6 +17,8 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>
 
     [Header("Dialogue Log")]
     [SerializeField] private DialogueLogView dialogueLogView;
+
+    public UILayer Layer => UILayer.Dialogue;
 
     protected override void SetupBindings()
     {

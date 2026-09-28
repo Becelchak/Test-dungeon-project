@@ -1,0 +1,1019 @@
+fileFormatVersion: 2
+guid: 24b3a6cc9595c384687caa3f8af777a7
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WindowsStoreApps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_0
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 579
+        width: 373
+        height: 410
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f1e551ae74f3a746bca8238ecec258d
+      internalID: -2103554219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_1
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 564
+        width: 421
+        height: 436
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c360707c5560bdc4f860f5c1d0df8a91
+      internalID: -1845241329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_2
+      rect:
+        serializedVersion: 2
+        x: 860
+        y: 809
+        width: 153
+        height: 174
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35c8670755839944ea7bcd8cac12f084
+      internalID: -275699698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_3
+      rect:
+        serializedVersion: 2
+        x: 859
+        y: 581
+        width: 153
+        height: 215
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f5be47b26f57244385caceb32fa945c
+      internalID: -1249780564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_4
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 453
+        width: 90
+        height: 94
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efcb28ebd687dd144b55adc627747170
+      internalID: -425112819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_5
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 453
+        width: 92
+        height: 94
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07e1956116f8e8845baa0b309c2473f6
+      internalID: -1164217279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_6
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 453
+        width: 94
+        height: 94
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 778217043fbdb5940b20e15922547c8b
+      internalID: 1936860842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_7
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 453
+        width: 91
+        height: 94
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 350e2e3db362a9046a47ca551f62a297
+      internalID: -1138937469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_8
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 451
+        width: 407
+        height: 104
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebc076382339a3941b252230b570b652
+      internalID: 1953097066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_9
+      rect:
+        serializedVersion: 2
+        x: 911
+        y: 475
+        width: 78
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7c9bbe8f61080e489e2fe85a2a68430
+      internalID: 1436409223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_10
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 340
+        width: 89
+        height: 91
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: edd699b6baa1fac46a0bb5165fb59ae8
+      internalID: 1371346198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_11
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 340
+        width: 89
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5272c4365a7af334597ede37756c5606
+      internalID: -248732358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_12
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 340
+        width: 89
+        height: 91
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e403d5ee1d5e2f4fa4d10af0f26ae0d
+      internalID: -117901661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_13
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 340
+        width: 90
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4dbca6338f9e71b4cafa3fcb17ee4353
+      internalID: -180479407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_14
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 377
+        width: 351
+        height: 59
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ae12bc9719b88047b5671be63171336
+      internalID: 1491191417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_15
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 374
+        width: 84
+        height: 86
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac0d4f0d36817b04ea3c587378c023b1
+      internalID: -1124872544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_16
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 327
+        width: 352
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b2662b0b07f7da43ba84b2cb9af7774
+      internalID: -1045905972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_17
+      rect:
+        serializedVersion: 2
+        x: 905
+        y: 265
+        width: 93
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acf2312149b1fe04f9c05df551e361ca
+      internalID: 421181656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_18
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 183
+        width: 427
+        height: 114
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58b203630bc8726418eee47ee67921e5
+      internalID: -954982814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_19
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 261
+        width: 352
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 800bd9d27b3d7b949a624220db7630e8
+      internalID: 510552207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_20
+      rect:
+        serializedVersion: 2
+        x: 533
+        y: 140
+        width: 66
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a67150970d2f7346816ed52a26455a3
+      internalID: -694805596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_21
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 140
+        width: 66
+        height: 73
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eda80815d5800954dba4eda5ed8acbdb
+      internalID: -1247284188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_22
+      rect:
+        serializedVersion: 2
+        x: 708
+        y: 148
+        width: 61
+        height: 63
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7fc31ff4f0982647a465080cc3e8bde
+      internalID: 2111660761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_23
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 148
+        width: 61
+        height: 63
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 567df581d2f1c334886c9322546b9515
+      internalID: -672799039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_24
+      rect:
+        serializedVersion: 2
+        x: 883
+        y: 161
+        width: 22
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 143c4b56db9ff0f42867d7cfd1a57c0a
+      internalID: 1859141783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_25
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 162
+        width: 22
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a712e9a38bcff244ba8cbaab917682ed
+      internalID: -35293940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_26
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 47
+        width: 112
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5068177ba5a0a81408b73e67b4b49ce8
+      internalID: 1646590616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_27
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 47
+        width: 108
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5affa0ff54864054784878f87bb29016
+      internalID: 495919232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_28
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 47
+        width: 105
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24a9b487c98088d45a2088b96f6072ad
+      internalID: 362852569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_29
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 47
+        width: 98
+        height: 106
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afc334019337aa5438d832eb965763e2
+      internalID: -888529419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_30
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 85
+        width: 204
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8c6fc4eaa1ba45047b42d5cc98b84e22
+      internalID: 1317820688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_31
+      rect:
+        serializedVersion: 2
+        x: 773
+        y: 86
+        width: 20
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3fd9f4e4aee45e64586148a184ec2458
+      internalID: 1135429668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_32
+      rect:
+        serializedVersion: 2
+        x: 817
+        y: 86
+        width: 20
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e1d3439bd4a2e349941238e088d2638
+      internalID: 772963246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_33
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 40
+        width: 52
+        height: 77
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a4574ddf841bd04392bb84714e52f33
+      internalID: 139036106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_34
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 40
+        width: 52
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5778f7ce042879d4dbc5c4839ad2e4d0
+      internalID: -1243114007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_35
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 40
+        width: 204
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c17564aea6750d34889ada3c61586fad
+      internalID: -57105640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_36
+      rect:
+        serializedVersion: 2
+        x: 773
+        y: 44
+        width: 20
+        height: 24
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d63c935ffa3a3c541a6a1129b6f1b6b5
+      internalID: 1163556968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_37
+      rect:
+        serializedVersion: 2
+        x: 817
+        y: 44
+        width: 20
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a50ece5aef2a69c4680f28c9b052b8cf
+      internalID: -1864721735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 7d5d9951938ceb74d8fc1cab433f07d8
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_0: -2103554219
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_1: -1845241329
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_10: 1371346198
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_11: -248732358
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_12: -117901661
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_13: -180479407
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_14: 1491191417
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_15: -1124872544
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_16: -1045905972
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_17: 421181656
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_18: -954982814
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_19: 510552207
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_2: -275699698
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_20: -694805596
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_21: -1247284188
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_22: 2111660761
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_23: -672799039
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_24: 1859141783
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_25: -35293940
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_26: 1646590616
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_27: 495919232
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_28: 362852569
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_29: -888529419
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_3: -1249780564
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_30: 1317820688
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_31: 1135429668
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_32: 772963246
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_33: 139036106
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_34: -1243114007
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_35: -57105640
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_36: 1163556968
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_37: -1864721735
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_4: -425112819
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_5: -1164217279
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_6: 1936860842
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_7: -1138937469
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_8: 1953097066
+      Dark Fantasy Themed UI Asset Kit With Gothic Aesthetic_9: 1436409223
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
