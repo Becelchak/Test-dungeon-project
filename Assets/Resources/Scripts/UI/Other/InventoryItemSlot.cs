@@ -19,8 +19,7 @@ public class InventoryItemSlot : MonoBehaviour,
     private CanvasGroup _canvasGroup;
     private RectTransform _ghost;
     private Canvas _rootCanvas;
-
-    public InventoryItemSlotViewModel ViewModel => _vm;
+    private IWindowService _windowService;
 
     private void Awake()
     {
@@ -28,11 +27,17 @@ public class InventoryItemSlot : MonoBehaviour,
         if (_canvasGroup == null) _canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
+    private void OnDestroy()
+    {
+        if (_ghost != null) Destroy(_ghost.gameObject);
+    }
+
     public void Bind(InventoryItemSlotViewModel vm, InventoryViewModel inventoryVm)
     {
         _vm = vm;
         _inventoryVm = inventoryVm;
         _rootCanvas = GetComponentInParent<Canvas>()?.rootCanvas;
+        _windowService = ServiceLocator.Instance.GetService<IWindowService>();
         Refresh();
     }
 
@@ -99,7 +104,36 @@ public class InventoryItemSlot : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData e)
     {
-        // Действие при клике на иконку
+        if (_vm == null || _vm.Data == null) return;
+
+        if (e.button == PointerEventData.InputButton.Left)
+        {
+            ShowContextMenu();
+        }
+    }
+
+    private void ShowContextMenu()
+    {
+        if (_windowService == null) return;
+
+        var contextMenuObj = _windowService.ShowWindow<ContextMenuViewModel>(UILayer.ContextMenu);
+        if (contextMenuObj != null)
+        {
+            var contextMenuView = contextMenuObj.GetComponentInChildren<ContextMenuView>();
+            if (contextMenuView != null)
+            {
+                var viewModel = contextMenuView.viewModel as ContextMenuViewModel;
+                viewModel?.Show(_vm, _inventoryVm);
+
+                // Позиционируем меню у курсора
+                RectTransform menuRect = contextMenuObj.GetComponent<RectTransform>();
+                if (menuRect != null)
+                {
+                    Vector2 mousePos = Input.mousePosition;
+                    menuRect.position = mousePos;
+                }
+            }
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

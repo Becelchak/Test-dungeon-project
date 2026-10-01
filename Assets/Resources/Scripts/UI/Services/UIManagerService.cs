@@ -32,6 +32,7 @@ public class UIManagerService : BaseService, IUIManagerService
         {
             CloseSpecificWindow<InventoryViewModel>();
             CloseSpecificWindow<EquipmentViewModel>();
+            CloseSpecificWindow<ContextMenuViewModel>();
             //_input.SetGameplayInputActive(true);
         }
         else
@@ -121,5 +122,6 @@ public enum UILayer
     Settings = 21,
     Skills = 30,
     Dialogue = 50,
+    ContextMenu = 60,
     SystemMenu = 100,
 }

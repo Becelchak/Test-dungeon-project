@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class EquipmentViewModel : BaseViewModel
 {
@@ -88,6 +89,7 @@ public class EquipmentViewModel : BaseViewModel
 
     private void HandleEquipmentChanged(EquipmentSlotType slotType, ItemData item)
     {
+        Debug.Log($"[EquipmentViewModel] HandleEquipmentChanged: слот {slotType}, предмет {item?.displayName ?? "null"}");
         var slot = GetSlot(slotType);
         slot?.NotifyChanged();
         OnActiveWeaponChanged?.Invoke();

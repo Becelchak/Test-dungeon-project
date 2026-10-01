@@ -12,6 +12,17 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     public event Action<InventoryItem> OnItemAdded;
     public event Action<InventoryItem> OnItemRemoved;
 
+    private void Awake()
+    {
+        base.Awake();
+        // Инициализируем сервис экипировки сразу при запуске
+        _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
+        if (_equipmentService == null)
+        {
+            Debug.LogWarning("[PlayerProfileService] IEquipmentService не найден при Awake. Будет инициализирован позже.");
+        }
+    }
+
     public PlayerProfile CurrentProfile
     {
         get => _currentProfile ??= LoadProfile();
@@ -21,6 +32,12 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     private PlayerProfile LoadProfile()
     {
         PlayerProfile profile = null;
+
+        // Инициализируем сервис экипировки до загрузки профиля
+        if (_equipmentService == null)
+        {
+            _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
+        }
 
         if (PlayerPrefs.HasKey(PROFILE_KEY))
         {
@@ -70,7 +87,12 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         var profile = new PlayerProfile();
 
         profile.stats = new PlayerStats { firstPlayDate = DateTime.Now };
-        _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
+
+        // Инициализируем сервис экипировки
+        if (_equipmentService == null)
+        {
+            _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
+        }
 
         // Рандомное выставление параметров игрока
         CreateRandomParameters(profile);
@@ -239,23 +261,72 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
 
     public void OnRequestEquipFromInventory(ItemData item, EquipmentSlotType targetSlot)
     {
+        Debug.Log($"[ProfileService] Начало экипировки: {item.displayName} в слот {targetSlot}");
+
+        // Убеждаемся, что сервис экипировки инициализирован
+        if (_equipmentService == null)
+        {
+            _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
+            if (_equipmentService == null)
+            {
+                Debug.LogError("[ProfileService] IEquipmentService не найден в ServiceLocator!");
+                return;
+            }
+        }
+
         var itemInventory = new InventoryItem
         {
             itemId = item.itemId,
             itemName = item.name,
             quantity = 1,
             description = item.description,
+            type = item.itemType
         };
-        RemoveInventoryItem(itemInventory);
-        _equipmentService.Equip(item, targetSlot);
 
-        Debug.Log($"[ProfileService] Запрос на экипировку предмета {item.itemId} в слот {targetSlot}");
+        RemoveInventoryItem(itemInventory);
+        bool equipResult = _equipmentService.Equip(item, targetSlot);
+
+        Debug.Log($"[ProfileService] Экипировка завершена. Результат: {equipResult}. Предмет {item.itemId} в слот {targetSlot}");
     }
 
     public void OnRequestUnequipToInventory(InventoryItem item, EquipmentSlotType slotType)
     {
-        _equipmentService.Unequip(slotType);
-        AddInventoryItem(item);
+        Debug.Log($"[ProfileService] Начало снятия: {item.itemName} из слота {slotType}");
+
+        // Убеждаемся, что сервис экипировки инициализирован
+        if (_equipmentService == null)
+        {
+            _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
+            if (_equipmentService == null)
+            {
+                Debug.LogError("[ProfileService] IEquipmentService не найден в ServiceLocator!");
+                return;
+            }
+        }
+
+        bool unequipResult = _equipmentService.Unequip(slotType);
+
+        if (unequipResult)
+        {
+            AddInventoryItem(item);
+            Debug.Log($"[ProfileService] Снятие завершено. Предмет {item.itemName} возвращён в инвентарь");
+        }
+        else
+        {
+            Debug.LogWarning($"[ProfileService] Не удалось снять предмет из слота {slotType}");
+        }
+    }
+
+    private void Start()
+    {
+        // Подписываемся на EventBus для обработки запросов экипировки
+        EventBus.Subscribe(this);
+        Debug.Log("[PlayerProfileService] Подписан на EventBus как IEquipmentRequestSubscriber");
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.Unsubscribe(this);
     }
 
     protected override Type GetServiceType() => typeof(IPlayerProfileService);

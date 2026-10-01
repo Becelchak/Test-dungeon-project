@@ -67,6 +67,19 @@ public class InventoryView : BaseView<InventoryViewModel>
     {
         if (infoPanel == null) return;
 
+        //Vector2 mousePos = Input.mousePosition;
+        //RectTransform rt = infoPanel.GetComponent<RectTransform>();
+
+        //if (infoPanel.activeSelf)
+        //{
+        //    Vector2 targetPosition = mousePos + new Vector2(20f, -20f);
+
+        //    if ((Vector2)rt.position != targetPosition)
+        //    {
+        //        rt.position = targetPosition;
+        //    }
+        //}
+
         if (item == null)
         {
             infoPanel.SetActive(false);

@@ -13,6 +13,8 @@ public class EquipmentService : BaseService, IEquipmentService
     private int _previousWeaponSlotIndex = 0;
     private bool IsDead;
 
+    private WeaponData _unarmedWeapon;
+
     public IReadOnlyList<EquipmentSlot> Slots => _slots;
     public int ActiveWeaponSlotIndex => _activeWeaponSlotIndex;
 
@@ -23,8 +25,9 @@ public class EquipmentService : BaseService, IEquipmentService
             var activeSlot = GetSlot(EquipmentSlotType.Weapon1 + _activeWeaponSlotIndex);
             if (activeSlot != null && activeSlot.IsOccupied)
                 return activeSlot.Item as WeaponData;
-            Debug.Log("Слот пуст!");
-            return GetSlot(EquipmentSlotType.Weapon1 + _previousWeaponSlotIndex).Item as WeaponData;
+
+            // Если слот пуст, возвращаем кулаки
+            return _unarmedWeapon;
         }
     }
 
@@ -55,10 +58,13 @@ public class EquipmentService : BaseService, IEquipmentService
         base.Awake();
         InitializeSlots();
 
-        // По умолчанию экипируем руки
-        var defaultWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Unarmed");
-        if (defaultWeapon != null)
-            Equip(defaultWeapon, EquipmentSlotType.Weapon1);
+        // Загрузка кулаков, как виртуального и постоянного оружия
+        _unarmedWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Unarmed");
+        if (_unarmedWeapon == null)
+        {
+            Debug.LogWarning("[EquipmentService] Кулаки (Unarmed) не найдены!");
+        }
+
         // Заглушка для теста смены оружия
         var anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Claymor");
         if (anotherWeapon != null)
@@ -115,6 +121,13 @@ public class EquipmentService : BaseService, IEquipmentService
     {
         if (item == null)
             return false;
+
+        // Запрещаем экипировать кулаки - они всегда доступны виртуально
+        if (item.itemId == "Unarmed" || item.name == "Unarmed")
+        {
+            Debug.LogWarning("[EquipmentService] Кулаки нельзя экипировать - они всегда доступны.");
+            return false;
+        }
 
         var slot = _slots.FirstOrDefault(s => s.slotType == slotType);
         if (slot == null)

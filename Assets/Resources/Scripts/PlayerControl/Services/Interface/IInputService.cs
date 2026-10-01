@@ -16,6 +16,7 @@ public interface IInputService
     event Action OnParry;
     event Action OnOpenInventory;
     event Action OnCancel;
+    event Action OnLeftClick;
 
     InputAction _moveAction { get; set; }
     InputAction _jumpAction { get; set; }
@@ -31,6 +32,7 @@ public interface IInputService
     InputAction _closeAction { get; set; }
 
     InputAction _unequipItem {  get; set; }
+    InputAction _leftClickAction { get; set; }
 
     bool IsUnequipPressed { get; set; }
 

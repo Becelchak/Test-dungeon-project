@@ -17,6 +17,7 @@ public class InputManagerService : BaseService, IInputService
     public event Action OnParry;
     public event Action OnOpenInventory;
     public event Action OnCancel;
+    public event Action OnLeftClick;
 
     public InputAction _moveAction { get; set; }
     public InputAction _jumpAction { get; set; }
@@ -31,6 +32,7 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _openInventory {  get; set; }
     public InputAction _closeAction { get; set; }
     public InputAction _unequipItem { get; set; }
+    public InputAction _leftClickAction { get; set; }
     public bool IsUnequipPressed { get; set; }
 
     private bool _gameplayInputBlocked = false;
@@ -129,7 +131,17 @@ public class InputManagerService : BaseService, IInputService
         _closeAction.performed += ctx => OnCancel?.Invoke();
 
         _unequipItem = _inputActions.FindAction("RightClick");
-        IsUnequipPressed = _unequipItem != null && _unequipItem.IsPressed();
+        if (_unequipItem != null)
+        {
+            _unequipItem.performed += ctx => IsUnequipPressed = true;
+            _unequipItem.canceled += ctx => IsUnequipPressed = false;
+        }
+
+        _leftClickAction = _inputActions.FindAction("Click");
+        if (_leftClickAction != null)
+        {
+            _leftClickAction.performed += ctx => OnLeftClick?.Invoke();
+        }
     }
 
     public Vector2 GetMovementInput()

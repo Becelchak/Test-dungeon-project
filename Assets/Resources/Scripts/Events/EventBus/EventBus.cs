@@ -51,9 +51,12 @@ namespace EventBusSystem
             {
                 if (!s_Subscribers.TryGetValue(typeof(TSubscriber), out subscribers))
                 {
+                    Debug.LogWarning($"[EventBus] Нет подписчиков для типа {typeof(TSubscriber).Name}");
                     return;
                 }
             }
+
+            Debug.Log($"[EventBus] Вызов события для {typeof(TSubscriber).Name}, подписчиков: {subscribers.List.Count}");
 
             subscribers.Executing = true;
             foreach (IGlobalSubscriber subscriber in subscribers.List.ToList())

@@ -120,7 +120,7 @@ public class ServiceLocator : MonoBehaviour
             return (T)service;
         }
 
-        Debug.LogError($"Service {serviceType.Name} not found! Make sure it's registered in ServiceLocator.");
+        //Debug.LogError($"Service {serviceType.Name} not found! Make sure it's registered in ServiceLocator.");
         return null;
     }
 

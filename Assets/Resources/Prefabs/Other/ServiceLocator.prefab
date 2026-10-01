@@ -76,6 +76,7 @@ MonoBehaviour:
   inventoryPrefab: {fileID: 4838151412921752775, guid: 007a9ce9eed2a9d4189a5f878c207dfd, type: 3}
   equipmentPrefab: {fileID: 6588561125672318610, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
   loadingScreenPrefab: {fileID: 5692849397523290970, guid: 43f8f9b681a2bd2468ad17b492e4c003, type: 3}
+  contextMenuPrefab: {fileID: 3544921645370448186, guid: 0718350d8d87ebd46b536191e8d356c1, type: 3}
 --- !u!114 &5508155705868067558
 MonoBehaviour:
   m_ObjectHideFlags: 0

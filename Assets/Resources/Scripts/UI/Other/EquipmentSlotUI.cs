@@ -14,6 +14,8 @@ public class EquipmentSlotUI : MonoBehaviour,
     [Header("UI Renderers")]
     [SerializeField] private Image iconImage;
     [SerializeField] private Image placeholderImage;
+    private Sprite defaultPlaceholderSprite;
+    private Color defaultPlaceholderColor;
     [SerializeField] private GameObject activeHighlight;
     [SerializeField] private GameObject lockedOverlay;
 
@@ -25,6 +27,8 @@ public class EquipmentSlotUI : MonoBehaviour,
     private void Awake()
     {
         _canvasGroup = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
+        defaultPlaceholderSprite = placeholderImage.sprite;
+        defaultPlaceholderColor = placeholderImage.color;
     }
 
     public void Bind(EquipmentSlotViewModel slotVm, EquipmentViewModel equipmentVm)
@@ -47,17 +51,21 @@ public class EquipmentSlotUI : MonoBehaviour,
 
         if (_slotVm.Item != null)
         {
-            if (iconImage != null)
+            if (placeholderImage != null)
             {
-                iconImage.sprite = _slotVm.Icon;
-                iconImage.enabled = true;
+                placeholderImage.sprite = _slotVm.Icon;
+                placeholderImage.color = new Color(1f,1f,1f,1f);
             }
-            if (placeholderImage != null) placeholderImage.enabled = false;
         }
         else
         {
-            if (iconImage != null) iconImage.enabled = false;
-            if (placeholderImage != null) placeholderImage.enabled = true;
+            // Для слотов показываем дефолтную иконку, если слот пустой
+            if (placeholderImage != null)
+            {
+                placeholderImage.sprite = defaultPlaceholderSprite;
+                placeholderImage.color = defaultPlaceholderColor;
+                placeholderImage.enabled = true;
+            }
         }
 
         if (lockedOverlay != null) lockedOverlay.SetActive(!_slotVm.IsUnlocked);
@@ -78,6 +86,8 @@ public class EquipmentSlotUI : MonoBehaviour,
 
         if (payloadData == null || ItemDragPayload.Source != DragSourceType.Inventory || payloadData.ItemVm == null) return;
 
+        Debug.Log($"[EquipmentSlotUI] OnDrop: попытка экипировать {payloadData.ItemVm.Data.displayName} в слот {slotType}");
+
         EventBus.RaiseEvent<IEquipmentRequestSubscriber>(s =>
             s.OnRequestEquipFromInventory(payloadData.ItemVm.Data, this.slotType));
     }
@@ -92,7 +102,6 @@ public class EquipmentSlotUI : MonoBehaviour,
 
         if (_inputService != null && _inputService.IsUnequipPressed)
         {
-            // Если в момент клика по ячейке новая Input System видит нажатие кнопки Cancel (ПКМ/Escape)
             if (_slotVm.Item != null)
             {
                 var itemInventory = new InventoryItem
@@ -110,7 +119,7 @@ public class EquipmentSlotUI : MonoBehaviour,
             return;
         }
 
-        // 2. Обычное нажатие (ЛКМ) для выбора активного оружия
+        // Обычное нажатие (ЛКМ) для выбора активного оружия
         if (_slotVm.SlotType == EquipmentSlotType.Weapon1 ||
             _slotVm.SlotType == EquipmentSlotType.Weapon2 ||
             _slotVm.SlotType == EquipmentSlotType.Weapon3)
