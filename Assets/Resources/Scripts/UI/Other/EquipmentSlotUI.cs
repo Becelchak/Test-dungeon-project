@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using EventBusSystem;
 
 public class EquipmentSlotUI : MonoBehaviour,
-    IDropHandler, IPointerClickHandler
+    IDropHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Slot Identity")]
     [SerializeField] private EquipmentSlotType slotType;
@@ -59,7 +59,7 @@ public class EquipmentSlotUI : MonoBehaviour,
         }
         else
         {
-            // Для слотов показываем дефолтную иконку, если слот пустой
+            // Для слотов показывать дефолтную иконку, если слот пустой
             if (placeholderImage != null)
             {
                 placeholderImage.sprite = defaultPlaceholderSprite;
@@ -119,7 +119,7 @@ public class EquipmentSlotUI : MonoBehaviour,
             return;
         }
 
-        // Обычное нажатие (ЛКМ) для выбора активного оружия
+        // Обычное нажатие мыши (LeftClick) - принудительный выбор текущего слота оружия
         if (_slotVm.SlotType == EquipmentSlotType.Weapon1 ||
             _slotVm.SlotType == EquipmentSlotType.Weapon2 ||
             _slotVm.SlotType == EquipmentSlotType.Weapon3)
@@ -127,5 +127,18 @@ public class EquipmentSlotUI : MonoBehaviour,
             int index = _slotVm.SlotType - EquipmentSlotType.Weapon1;
             _equipmentVm.SetActiveWeaponSlot(index);
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_slotVm?.Item != null && _equipmentVm != null)
+        {
+            _equipmentVm.SetHoveredItem(_slotVm.Item);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _equipmentVm?.ClearHoveredItem();
     }
 }

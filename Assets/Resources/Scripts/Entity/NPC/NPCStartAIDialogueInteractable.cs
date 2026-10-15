@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class NPCStartAIDialogueInteractable : MonoBehaviour, IInteractable
 {
@@ -8,9 +9,11 @@ public class NPCStartAIDialogueInteractable : MonoBehaviour, IInteractable
     private IWindowService windowService;
     private AIClient aiService;
 
+    public Transform Transform => transform;
+
     void Start()
     {
-        windowService =  ServiceLocator.Instance.GetService<IWindowService>();
+        windowService = ServiceLocator.Instance.GetService<IWindowService>();
         aiService = (AIClient) ServiceLocator.Instance.GetService<IAIService>();
     }
 
@@ -23,12 +26,22 @@ public class NPCStartAIDialogueInteractable : MonoBehaviour, IInteractable
 
     public string GetInteractionPrompt() => interactionPrompt;
 
-    public void Interact(GameObject interactor)
+    public void Interact(GameObject interactor, string optionId = "default")
     {
         windowService.ShowWindow<AIDialogueViewModel>(UILayer.Dialogue, (viewModel) =>
         {
             viewModel.Setup(npcIDString);
         });
+    }
+
+    public string GetDisplayName() => "AI NPC";
+
+    public List<InteractionOption> GetOptions()
+    {
+        return new List<InteractionOption>
+        {
+            new InteractionOption { Id = "talk", Label = "Поговорить", Hotkey = KeyCode.E }
+        };
     }
 
 }

@@ -98,7 +98,6 @@ public class AIDialogueConstraint
     public string value;
 }
 
-// Зачем?
 [System.Serializable]
 public class AICharacterData
 {
@@ -120,8 +119,19 @@ public class PlayerProfile
     public string playerName = "Рыцарь печального образа";
     public string avatarPath = "Art/Sprites/Portraits/player_portrait";
 
+    [Tooltip("Специализированные счётчики механик (Слава, Рвение и т.п.)")]
+    public List<MechanicState> specialMechanics = new();
+    //public List<string> activeTriggersId = new();
+
     // Характеристики механические
-    public int level;
+    public string archetypeId;
+    public List<string> activeTraitIds = new();
+    public List<string> unlockedSkillIds = new();
+
+    public int currentXP;
+    public int currentLevel = 1;
+    public int unspentSkillPoints;
+
     public int health;
     public int maxHealth;
     public int mana;
@@ -223,4 +233,12 @@ public class MessageData
     public string text;
     public DateTime timestamp;
     public bool isAI => senderId != "player";
+}
+
+[System.Serializable]
+public class MechanicState
+{
+    public string mechanicId;     // "glory", "flagellation", "notoriety"
+    public int currentValue;
+    public bool isActive;         // активирована ли механика (навык открыт)
 }

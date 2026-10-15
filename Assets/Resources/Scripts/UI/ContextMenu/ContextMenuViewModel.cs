@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
@@ -49,10 +49,13 @@ public class ContextMenuViewModel : BaseViewModel
         if (_targetItem?.Data == null) return;
 
         var action = _actions[actionIndex];
+        Debug.Log($"[ContextMenuViewModel] Выполнение действия: {action.ActionName} для предмета {_targetItem.Data.displayName}");
+
         action.Execute(_targetItem.Data, _targetItem);
 
-        // Обновляем инвентарь после выполнения действия
         _inventoryViewModel?.Reload();
+
+        Debug.Log($"[ContextMenuViewModel] Действие выполнено, инвентарь перезагружен");
 
         OnActionExecuted?.Invoke();
         Hide();
@@ -60,7 +63,6 @@ public class ContextMenuViewModel : BaseViewModel
 
     public override void Initialize()
     {
-        // Инициализация не требуется
     }
 
     public override void Cleanup()

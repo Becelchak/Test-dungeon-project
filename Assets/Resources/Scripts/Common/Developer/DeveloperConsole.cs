@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Простая runtime-консоль разработчика на IMGUI.
-/// Позволяет менять здоровье, стамину, воскрешать/убивать игрока и т.д.
-/// </summary>
 public class DeveloperConsole : MonoBehaviour
 {
     [Tooltip("Клавиша открытия/закрытия консоли")]
@@ -22,12 +18,14 @@ public class DeveloperConsole : MonoBehaviour
     private IPlayerProfileService _profileService;
     private IPlayerCombatService _combatService;
     private IInputService _inputService;
+    private IProgressionService _progressionService;
 
     private void Start()
     {
         _profileService = ServiceLocator.Instance.GetService<IPlayerProfileService>();
         _combatService = ServiceLocator.Instance.GetService<IPlayerCombatService>();
         _inputService = ServiceLocator.Instance.GetService<IInputService>();
+        _progressionService = ServiceLocator.Instance.GetService<IProgressionService>();
     }
 
     private void Update()
@@ -121,8 +119,15 @@ public class DeveloperConsole : MonoBehaviour
                         "  kill — убить игрока\n" +
                         "  revive — воскресить игрока и восстановить статы\n" +
                         "  godmode — переключить неуязвимость\n" +
-                        "  clear — очистить консоль\n"+
-                        "  clearinventory - очистить инвентарь");
+                        "  clear — очистить консоль\n" +
+                        "  clearinventory - очистить инвентарь\n" +
+                        "  addxp <n> — начислить n очков опыта\n" +
+                        "  setlevel <n> — выставить определенный уровень\n" +
+                        "  progression — показать текущие параметры прогрессии\n" +
+                        "  addtrait <id> — добавить особенность по ID\n" +
+                        "  removetrait <id> — удалить особенность по ID\n" +
+                        "  traits — показать активные особенности\n" +
+                        "  listtraits — показать все доступные особенности\n");
                     break;
 
                 case "heal":
@@ -169,6 +174,54 @@ public class DeveloperConsole : MonoBehaviour
                     ClearPlayerInventory();
                     break;
 
+                case "addxp":
+                    if (parts.Length < 2 || !int.TryParse(parts[1], out int xpValue))
+                    {
+                        Log("Ошибка: укажи число. Пример: addxp 100");
+                        break;
+                    }
+                    AddXP(xpValue);
+                    break;
+
+                case "setlevel":
+                    if (parts.Length < 2 || !int.TryParse(parts[1], out int levelValue))
+                    {
+                        Log("Ошибка: укажи число. Пример: setLevel 5");
+                        break;
+                    }
+                    SetLevel(levelValue);
+                    break;
+
+                case "progression":
+                    Log($"Текущий уровень {_progressionService.CurrentLevel}, накоплено {_progressionService.CurrentXP} опыта. До следующего уровня требуется {_progressionService.XPToNextLevel} опыта. Не потрачено {_progressionService.SkillPoints} очков навыка");
+                    break;
+
+                case "addtrait":
+                    if (parts.Length < 2)
+                    {
+                        Log("Ошибка: укажи ID особенности. Пример: addtrait lettered");
+                        break;
+                    }
+                    AddTrait(parts[1]);
+                    break;
+
+                case "removetrait":
+                    if (parts.Length < 2)
+                    {
+                        Log("Ошибка: укажи ID особенности. Пример: removetrait lettered");
+                        break;
+                    }
+                    RemoveTrait(parts[1]);
+                    break;
+
+                case "traits":
+                    ShowActiveTraits();
+                    break;
+
+                case "listtraits":
+                    ListAllTraits();
+                    break;
+
                 default:
                     Log($"Неизвестная команда: {cmd}. Введи 'help' для списка.");
                     break;
@@ -178,6 +231,48 @@ public class DeveloperConsole : MonoBehaviour
         {
             Log($"Ошибка выполнения команды: {e.Message}");
         }
+    }
+
+    private void AddXP(int value)
+    {
+        _progressionService.AddXP(value, XPSource.Console);
+    }
+
+    private void SetLevel(int level)
+    {
+        _progressionService.ResetToLevel(level);
+    }
+
+    private void AddTrait(string traitId)
+    {
+        _progressionService.AddTrait(traitId);
+    }
+
+    private void RemoveTrait(string traitId)
+    {
+        _progressionService.RemoveTrait(traitId);
+    }
+
+    private void ShowActiveTraits()
+    {
+        var activeTraits = _progressionService.GetActiveTraits();
+        if (activeTraits.Count == 0)
+        {
+            Log("Активных особенностей нет");
+            return;
+        }
+
+        Log($"Активные особенности ({activeTraits.Count}):");
+        foreach (var trait in activeTraits)
+        {
+            Log($"  - {trait.displayName} ({trait.traitId})");
+        }
+    }
+
+    private void ListAllTraits()
+    {
+        Log("Функция listtraits требует доступа к TraitDatabase напрямую");
+        Log("Используйте addtrait <id> для добавления конкретной особенности");
     }
 
     private void ClearPlayerInventory()
@@ -246,14 +341,13 @@ public class DeveloperConsole : MonoBehaviour
             return;
         }
 
-        // Временно отключаем godmode, чтобы ApplyDamage сработал
         bool previousGodMode = _combatService?.IsGodMode ?? false;
         if (_combatService != null)
             _combatService.IsGodMode = false;
 
         _profileService.ModifyHealth(-profile.health);
-        _combatService?.ApplyDamage(new DamageInfo() 
-        { 
+        _combatService?.ApplyDamage(new DamageInfo()
+        {
             BaseDamage = 1,
             DamageMultiplier = 1,
             DamageType = DamageType.True,

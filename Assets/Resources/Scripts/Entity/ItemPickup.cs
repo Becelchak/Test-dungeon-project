@@ -1,4 +1,5 @@
 ﻿using EventBusSystem;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -18,7 +19,9 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     private bool _canInteract = true;
 
-    public void Interact(GameObject interactor)
+    public Transform Transform => transform;
+
+    public void Interact(GameObject interactor, string optionId = "default")
     {
         if (!_canInteract || item == null) return;
 
@@ -46,7 +49,6 @@ public class ItemPickup : MonoBehaviour, IInteractable
         profileService.AddInventoryItem(inventoryItem);
         LogInventory(profileService.CurrentProfile);
 
-        // Проигрываем анимацию подбора поверх текущего состояния
         var animController = interactor.GetComponentInParent<PlayerAnimationController>();
         if (animController != null)
             animController.TriggerPickup();
@@ -61,7 +63,9 @@ public class ItemPickup : MonoBehaviour, IInteractable
             item = null;
         }
         else
+        {
             _canInteract = false;
+        }
     }
 
     private void LogInventory(PlayerProfile profile)
@@ -75,4 +79,14 @@ public class ItemPickup : MonoBehaviour, IInteractable
     public bool CanInteract(GameObject interactor) => _canInteract && item != null;
 
     public string GetInteractionPrompt() => item != null ? $"Подобрать {item.displayName}" : "Подобрать";
+
+    public string GetDisplayName() => item != null ? item.displayName : "Неизвестный предмет";
+
+    public List<InteractionOption> GetOptions()
+    {
+        return new List<InteractionOption>
+        {
+            new InteractionOption { Id = "pickup", Label = "Подобрать", Hotkey = KeyCode.E }
+        };
+    }
 }

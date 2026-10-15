@@ -87,7 +87,7 @@ public class ContextMenuView : BaseView<ContextMenuViewModel>
         {
             if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
             {
-                // РџСЂРѕРІРµСЂСЏРµРј, РєР»РёРєРЅСѓР» Р»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РІРЅРµ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РјРµРЅСЋ
+                // Проверяем, кликнул ли пользователь вне контекстного меню
                 PointerEventData pointerData = new PointerEventData(EventSystem.current)
                 {
                     position = Input.mousePosition

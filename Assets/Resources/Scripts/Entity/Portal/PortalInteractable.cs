@@ -10,14 +10,16 @@ public class PortalInteractable : MonoBehaviour, IInteractable
     private SceneLoadingService sceneLoader;
     private IWindowService windowsService;
 
+    public Transform Transform => transform;
+
     public void Start()
     {
         sceneLoader = (SceneLoadingService) ServiceLocator.Instance.GetService<ISceneLoadingService>();
         windowsService = ServiceLocator.Instance.GetService<IWindowService>();
-        
+
     }
 
-    public async void Interact(GameObject interactor)
+    public async void Interact(GameObject interactor, string optionId = "default")
     {
         ServiceLocator.Instance.GetService<IInputService>()?.DisableAllInput();
         canInteract = false;
@@ -26,5 +28,16 @@ public class PortalInteractable : MonoBehaviour, IInteractable
     }
 
     public bool CanInteract(GameObject interactor) => canInteract;
+
     public string GetInteractionPrompt() => "[E] Войти в портал";
+
+    public string GetDisplayName() => "Портал";
+
+    public System.Collections.Generic.List<InteractionOption> GetOptions()
+    {
+        return new System.Collections.Generic.List<InteractionOption>
+        {
+            new InteractionOption { Id = "enter", Label = "Войти", Hotkey = KeyCode.E }
+        };
+    }
 }

@@ -121,7 +121,7 @@ public class PlayerAttackState : PlayerStateBase
 
     private void CallMove()
     {
-        var stats = _equipmentStatsService?.CurrentStats;
+        var stats = _characterStatsService?.CurrentStats;
         if (stats == null)
         {
             _movementService.SetMovement(0f, 0f);

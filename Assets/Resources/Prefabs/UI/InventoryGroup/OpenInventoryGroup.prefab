@@ -58,6 +58,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 897784878370868403}
     m_Modifications:
+    - target: {fileID: 2635200633527908126, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+      propertyPath: infoPanel
+      value: 
+      objectReference: {fileID: 4011524383231365019}
+    - target: {fileID: 2635200633527908126, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+      propertyPath: infoTitle
+      value: 
+      objectReference: {fileID: 2406499674084609827}
+    - target: {fileID: 2635200633527908126, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+      propertyPath: infoDescription
+      value: 
+      objectReference: {fileID: 2033947331640432265}
+    - target: {fileID: 2771745712186230459, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3346027164797292336, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -14
+      objectReference: {fileID: 0}
     - target: {fileID: 5312689033351141410, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -147,6 +167,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+--- !u!114 &2033947331640432265 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3223956359628550494, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+  m_PrefabInstance: {fileID: 3496978487947651031}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &2406499674084609827 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1288691245356771572, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+  m_PrefabInstance: {fileID: 3496978487947651031}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!1 &4011524383231365019 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 516804842495125580, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
+  m_PrefabInstance: {fileID: 3496978487947651031}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8736338890711859189 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5312689033351141410, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
@@ -243,6 +290,14 @@ PrefabInstance:
     - target: {fileID: 4838151412921752775, guid: 007a9ce9eed2a9d4189a5f878c207dfd, type: 3}
       propertyPath: m_Name
       value: InventoryWindow
+      objectReference: {fileID: 0}
+    - target: {fileID: 5187652136580331531, guid: 007a9ce9eed2a9d4189a5f878c207dfd, type: 3}
+      propertyPath: m_Name
+      value: InfoPanelInventory
+      objectReference: {fileID: 0}
+    - target: {fileID: 5780625217583712520, guid: 007a9ce9eed2a9d4189a5f878c207dfd, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6442224276043612775, guid: 007a9ce9eed2a9d4189a5f878c207dfd, type: 3}
       propertyPath: m_AnchorMax.x

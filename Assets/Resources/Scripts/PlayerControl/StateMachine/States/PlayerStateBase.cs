@@ -11,7 +11,7 @@ public abstract class PlayerStateBase : MonoBehaviour
     protected IPlayerMovementService _movementService;
     protected PlayerProfileService _playerStats;
     protected IInputService _inputService;
-    protected IEquipmentStatsService _equipmentStatsService;
+    protected ICharacterStatsCalculator _characterStatsService;
     protected Vector3 _currentInput;
     protected PlayerAnimationController _animationController;
 
@@ -24,7 +24,7 @@ public abstract class PlayerStateBase : MonoBehaviour
         _inputService = ServiceLocator.Instance.GetService<IInputService>();
         _movementService = (PlayerMovementService) ServiceLocator.Instance.GetService<IPlayerMovementService>();
         _playerStats = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        _equipmentStatsService = ServiceLocator.Instance.GetService<IEquipmentStatsService>();
+        _characterStatsService = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
     }
 
     public virtual void Enter()

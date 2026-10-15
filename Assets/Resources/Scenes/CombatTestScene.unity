@@ -2247,6 +2247,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boardsword_lootable
       objectReference: {fileID: 0}
+    - target: {fileID: 3801785736466863464, guid: 36a268b127a87e34094caf7c5dfb0eeb, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2625,11 +2629,93 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4702218001350383187, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4702218001350383187, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+      insertIndex: 11
+      addedObject: {fileID: 1632806601}
+    - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+      insertIndex: 12
+      addedObject: {fileID: 1632806602}
+    - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1632806600}
+    - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1632806615}
   m_SourcePrefab: {fileID: 100100000, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+--- !u!1 &1632806599 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+  m_PrefabInstance: {fileID: 1632806598}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1632806600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632806599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e858576af6a7ce4ebc0a2395c625544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionTargetingService
+  interactableMask:
+    serializedVersion: 2
+    m_Bits: 98304
+  maxDistance: 1.5
+--- !u!114 &1632806601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632806599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b128e990da897428a67b793398cbbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStatsCalculator
+  healthPerStrength: 5
+  baseStamina: 100
+  staminaPerAgility: 2
+  speedPerAgility: 0.02
+  baseStaminaRegen: 5
+--- !u!114 &1632806602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632806599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2082c4eed941f0546bbe16c951e74f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressionService
+  progressionCurve: {fileID: 11400000, guid: 208b1c4b0a089e24882d50fd8bfa99f6, type: 2}
+  traitDatabase: {fileID: 11400000, guid: 47ca7f897d4eb6c4a8c90f55aa2b67da, type: 2}
+--- !u!114 &1632806615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632806599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 236ab7e3bb2afce4bb68894b5868be05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerService
+  database: {fileID: 11400000, guid: 69a2bb9f93fed3d40a0f33316d195f18, type: 2}
 --- !u!1001 &1697962431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2706,6 +2792,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 3152272863237671815, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3304851808727647067, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -2726,20 +2816,21 @@ PrefabInstance:
       propertyPath: m_Weight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3695322637768957505, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3953424080779650404, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
       propertyPath: m_Layer
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 3986513926607130756, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4266365569806672567, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
       propertyPath: m_WarningMessage
-      value: "\nBinding warning: Some generic clip(s) animate transforms that are
-        already bound by a Humanoid avatar. These transforms can only be changed
-        by Humanoid clips.\n\tTransform 'mixamorig:LeftHand_3'\n\tTransform 'mixamorig:RightShoulder_10'\n\tTransform
-        'mixamorig:LeftShoulder_6'\n\tTransform 'mixamorig:LeftForeArm_4'\n\tTransform
-        'mixamorig:RightForeArm_8'\n\tTransform 'mixamorig:RightHand_7'\n\tTransform
-        'mixamorig:LeftHand_3'\n\tTransform 'mixamorig:RightShoulder_10'\n\tTransform
-        'mixamorig:LeftShoulder_6'\n\tTransform 'mixamorig:LeftForeArm_4'\n\tand
-        more ..."
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4270121176747220931, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
       propertyPath: m_Layer
@@ -2933,12 +3024,32 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2953342907923660156, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 177123976}
+    - targetCorrespondingSourceObject: {fileID: 3986513926607130756, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1697962434}
   m_SourcePrefab: {fileID: 100100000, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
 --- !u!4 &1697962432 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7821787898098986282, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
   m_PrefabInstance: {fileID: 1697962431}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1697962433 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3986513926607130756, guid: a94ae3f4e81643240be127e88e67924a, type: 3}
+  m_PrefabInstance: {fileID: 1697962431}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1697962434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697962433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dbc47d6bbeb6df4f9b084fde16aa409, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionExecutor
 --- !u!1 &1833505608
 GameObject:
   m_ObjectHideFlags: 0
@@ -5088,6 +5199,10 @@ PrefabInstance:
     - target: {fileID: 3107863885988243648, guid: 39ce1e7203003da4aaf30ebd703087d3, type: 3}
       propertyPath: m_Name
       value: KiteShield_lootable
+      objectReference: {fileID: 0}
+    - target: {fileID: 3107863885988243648, guid: 39ce1e7203003da4aaf30ebd703087d3, type: 3}
+      propertyPath: m_Layer
+      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -16,16 +16,16 @@ public class PlayerAnimationController : MonoBehaviour
 
     private bool isRunning;
 
-    private IEquipmentStatsService _equipmentStatsService;
+    private ICharacterStatsCalculator _characterStatsService;
 
     public IEquipmentService EquipmentService => equipment;
 
     private void Start()
     {
         playerProfile = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        _equipmentStatsService = ServiceLocator.Instance.GetService<IEquipmentStatsService>();
+        _characterStatsService = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
 
-        var stats = _equipmentStatsService?.CurrentStats;
+        var stats = _characterStatsService?.CurrentStats;
         walkSpeed = stats?.MoveSpeed ?? playerProfile.CurrentProfile.speedMove;
         runSpeed = stats?.RunSpeed ?? playerProfile.CurrentProfile.speedRun;
 

@@ -22,8 +22,8 @@ TagManager:
   - PlayerHitbox
   - EnemyHitbox
   - Wall
-  - 
-  - 
+  - InteractableLoot
+  - InteractableEntity
   - 
   - 
   - 

@@ -11,16 +11,23 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
 
     public event Action<InventoryItem> OnItemAdded;
     public event Action<InventoryItem> OnItemRemoved;
+    public event Action OnProfileChanged;
 
     private void Awake()
     {
         base.Awake();
-        // Инициализируем сервис экипировки сразу при запуске
+        // Инициализация сервиса экипировки сразу при запуске
         _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
         if (_equipmentService == null)
         {
             Debug.LogWarning("[PlayerProfileService] IEquipmentService не найден при Awake. Будет инициализирован позже.");
         }
+    }
+
+    private void Start()
+    {
+        EventBus.Subscribe(this);
+        Debug.Log("[PlayerProfileService] Подписан на EventBus как IEquipmentRequestSubscriber");
     }
 
     public PlayerProfile CurrentProfile
@@ -33,7 +40,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     {
         PlayerProfile profile = null;
 
-        // Инициализируем сервис экипировки до загрузки профиля
+        // Инициализация сервиса экипировки до загрузки профиля
         if (_equipmentService == null)
         {
             _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
@@ -88,13 +95,13 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
 
         profile.stats = new PlayerStats { firstPlayDate = DateTime.Now };
 
-        // Инициализируем сервис экипировки
+        // Инициализация сервиса экипировки
         if (_equipmentService == null)
         {
             _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
         }
 
-        // Рандомное выставление параметров игрока
+        // Рандомное определение параметров игрока
         CreateRandomParameters(profile);
 
         Debug.Log("Создан новый профиль игрока по умолчанию");
@@ -103,7 +110,9 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
 
     public void CreateRandomParameters(PlayerProfile profile)
     {
-        profile.level = UnityEngine.Random.RandomRange(1, 40);
+        profile.currentLevel = UnityEngine.Random.RandomRange(1, 40);
+        profile.currentXP = 0;
+        profile.unspentSkillPoints = 0;
         profile.health = UnityEngine.Random.RandomRange(1, 250);
         profile.maxHealth = UnityEngine.Random.RandomRange(10, 250);
         profile.mana = UnityEngine.Random.RandomRange(0, 200);
@@ -163,6 +172,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             PlayerPrefs.SetString(PROFILE_KEY, json);
             PlayerPrefs.Save();
             _currentProfile = profile;
+            OnProfileChanged?.Invoke();
             Debug.Log("Профиль игрока сохранен");
         }
         catch (Exception e)
@@ -263,7 +273,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     {
         Debug.Log($"[ProfileService] Начало экипировки: {item.displayName} в слот {targetSlot}");
 
-        // Убеждаемся, что сервис экипировки инициализирован
+        // Проверка, точно ли сервис экипировки инициализирован
         if (_equipmentService == null)
         {
             _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
@@ -293,7 +303,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     {
         Debug.Log($"[ProfileService] Начало снятия: {item.itemName} из слота {slotType}");
 
-        // Убеждаемся, что сервис экипировки инициализирован
+        // Проверка, точно ли сервис экипировки инициализирован
         if (_equipmentService == null)
         {
             _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
@@ -315,13 +325,6 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         {
             Debug.LogWarning($"[ProfileService] Не удалось снять предмет из слота {slotType}");
         }
-    }
-
-    private void Start()
-    {
-        // Подписываемся на EventBus для обработки запросов экипировки
-        EventBus.Subscribe(this);
-        Debug.Log("[PlayerProfileService] Подписан на EventBus как IEquipmentRequestSubscriber");
     }
 
     private void OnDestroy()

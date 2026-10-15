@@ -1,4 +1,4 @@
-using EventBusSystem;
+﻿using EventBusSystem;
 using System.Linq;
 using UnityEngine;
 
@@ -17,11 +17,23 @@ public class EquipItemAction : IItemAction
         if (item == null) return;
 
         EquipmentSlotType targetSlot = GetFirstAvailableSlot(item);
-        if (targetSlot != EquipmentSlotType.Weapon1)
+
+        if (targetSlot == EquipmentSlotType.Unknown)
         {
-            EventBus.RaiseEvent<IEquipmentRequestSubscriber>(s =>
-                s.OnRequestEquipFromInventory(item, targetSlot));
+            Debug.Log($"[EquipItemAction] Аналогичный предмет уже экипирован! Повторно надеть такой же нельзя!");
+            return;
         }
+        if (targetSlot == EquipmentSlotType.Weapon1 && item.itemType != ItemType.Weapon)
+        {
+            // Если вернулся дефолтный слот, но это не оружие - значит нет подходящего слота
+            Debug.LogWarning($"[EquipItemAction] Нет подходящего слота для {item.displayName}");
+            return;
+        }
+
+        Debug.Log($"[EquipItemAction] Попытка экипировать {item.displayName} в слот {targetSlot}");
+
+        EventBus.RaiseEvent<IEquipmentRequestSubscriber>(s =>
+            s.OnRequestEquipFromInventory(item, targetSlot));
     }
 
     private EquipmentSlotType GetFirstAvailableSlot(ItemData item)
@@ -32,33 +44,59 @@ public class EquipItemAction : IItemAction
         switch (item.itemType)
         {
             case ItemType.Weapon:
-                // Ищем первый свободный оружейный слот
                 var weaponSlots = new[] { EquipmentSlotType.Weapon1, EquipmentSlotType.Weapon2, EquipmentSlotType.Weapon3 };
+                foreach (var slot in weaponSlots)
+                {
+                    var slotItem = equipmentService.GetItemInSlot(slot);
+                    if (slotItem != null && slotItem.itemId == item.itemId)
+                    {
+                        Debug.LogWarning($"[EquipItemAction] Предмет {item.displayName} уже экипирован в слоте {slot}");
+                        return EquipmentSlotType.Unknown; // Возврат пустого слота, поскольку экипировать в новый то же оружие нельзя
+                    }
+                }
+
                 foreach (var slot in weaponSlots)
                 {
                     var slotItem = equipmentService.GetItemInSlot(slot);
                     if (slotItem == null) return slot;
                 }
-                return EquipmentSlotType.Weapon1; // Если все заняты, экипируем в первый
+                // Если все заняты - возврат пустого слота
+                return EquipmentSlotType.Unknown;
 
             case ItemType.Armor:
                 if (item is ArmorData armor)
                 {
-                    switch (armor.armorType)
+                    var targetArmorSlot = armor.armorType switch
                     {
-                        case ArmorType.Head:
-                            return EquipmentSlotType.Head;
-                        case ArmorType.Body:
-                            return EquipmentSlotType.Body;
-                        case ArmorType.Legs:
-                            return EquipmentSlotType.Legs;
+                        ArmorType.Head => EquipmentSlotType.Head,
+                        ArmorType.Body => EquipmentSlotType.Body,
+                        ArmorType.Legs => EquipmentSlotType.Legs,
+                        _ => EquipmentSlotType.Body
+                    };
+
+                    var existingArmor = equipmentService.GetItemInSlot(targetArmorSlot);
+                    if (existingArmor != null && existingArmor.itemId == item.itemId)
+                    {
+                        Debug.LogWarning($"[EquipItemAction] Предмет {item.displayName} уже экипирован в слоте {targetArmorSlot}");
+                        return EquipmentSlotType.Weapon1;
                     }
+
+                    return targetArmorSlot;
                 }
                 return EquipmentSlotType.Body;
 
             case ItemType.Trinket:
-                // Ищем первый свободный слот для тринкетов
                 var trinketSlots = new[] { EquipmentSlotType.Trinket1, EquipmentSlotType.Trinket2, EquipmentSlotType.Trinket3 };
+                foreach (var slot in trinketSlots)
+                {
+                    var slotItem = equipmentService.GetItemInSlot(slot);
+                    if (slotItem != null && slotItem.itemId == item.itemId)
+                    {
+                        Debug.LogWarning($"[EquipItemAction] Предмет {item.displayName} уже экипирован в слоте {slot}");
+                        return EquipmentSlotType.Unknown; // Возврат пустого слота
+                    }
+                }
+
                 foreach (var slot in trinketSlots)
                 {
                     var slotItem = equipmentService.GetItemInSlot(slot);

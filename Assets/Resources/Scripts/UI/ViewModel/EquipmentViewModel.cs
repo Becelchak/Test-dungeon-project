@@ -10,6 +10,29 @@ public class EquipmentViewModel : BaseViewModel
     private readonly List<EquipmentSlotViewModel> _slots = new();
     public int ActiveWeaponSlotIndex => _equipment.ActiveWeaponSlotIndex;
 
+    private ItemData _hoveredItemData;
+    private Vector2 _infoPanelPosition;
+
+    public ItemData HoveredItemData
+    {
+        get => _hoveredItemData;
+        private set
+        {
+            _hoveredItemData = value;
+            OnPropertyChanged(nameof(HoveredItemData));
+        }
+    }
+
+    public Vector2 InfoPanelPosition
+    {
+        get => _infoPanelPosition;
+        private set
+        {
+            _infoPanelPosition = value;
+            OnPropertyChanged(nameof(InfoPanelPosition));
+        }
+    }
+
     public event Action OnSlotsRebuilt;
     public event Action OnActiveWeaponChanged;
 
@@ -50,6 +73,21 @@ public class EquipmentViewModel : BaseViewModel
     public void SetActiveWeaponSlot(int index)
     {
         _equipment.SetActiveWeaponSlot(index);
+    }
+
+    public void SetHoveredItem(ItemData data)
+    {
+        HoveredItemData = data;
+
+        if (data != null)
+        {
+            InfoPanelPosition = Input.mousePosition + new Vector3(20f, -20f);
+        }
+    }
+
+    public void ClearHoveredItem()
+    {
+        HoveredItemData = null;
     }
 
     /// <summary>

@@ -109,6 +109,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
             }
             else
             {
+                //var modifierBlockdamage = _profileService.CurrentProfile
                 finalDamage = Mathf.RoundToInt(damage * (1f - Mathf.Clamp01(reduction)));
                 Debug.Log($"[PlayerCombatService] Обычный блок ({blocker?.displayName ?? "без оружия"}). Урон снижен с {damage} до {finalDamage}.");
             }

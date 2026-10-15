@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class NPCStartDialogueInteractable : MonoBehaviour, IInteractable
 {
@@ -6,6 +7,8 @@ public class NPCStartDialogueInteractable : MonoBehaviour, IInteractable
     [SerializeField] private string interactionPrompt;
     private bool canInteract = true;
     private IWindowService windowService;
+
+    public Transform Transform => transform;
 
     void Start()
     {
@@ -16,12 +19,22 @@ public class NPCStartDialogueInteractable : MonoBehaviour, IInteractable
 
     public string GetInteractionPrompt() => interactionPrompt;
 
-    public void Interact(GameObject interactor)
+    public void Interact(GameObject interactor, string optionId = "default")
     {
-        windowService.ShowWindow<ClassicalDialogueViewModel>(UILayer.Dialogue, (viewModel) =>  
+        windowService.ShowWindow<ClassicalDialogueViewModel>(UILayer.Dialogue, (viewModel) =>
         {
             viewModel.Setup(npcIDString);
         });
+    }
+
+    public string GetDisplayName() => "NPC";
+
+    public List<InteractionOption> GetOptions()
+    {
+        return new List<InteractionOption>
+        {
+            new InteractionOption { Id = "talk", Label = "Поговорить", Hotkey = KeyCode.E }
+        };
     }
 
 }

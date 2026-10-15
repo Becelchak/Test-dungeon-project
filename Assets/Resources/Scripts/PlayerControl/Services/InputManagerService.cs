@@ -31,9 +31,10 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _parryAction { get; set; }
     public InputAction _openInventory {  get; set; }
     public InputAction _closeAction { get; set; }
-    public InputAction _unequipItem { get; set; }
+    public InputAction _changeEquipItemStatus { get; set; }
     public InputAction _leftClickAction { get; set; }
     public bool IsUnequipPressed { get; set; }
+    public bool IsEquipPressed { get; set; }
 
     private bool _gameplayInputBlocked = false;
 
@@ -130,11 +131,19 @@ public class InputManagerService : BaseService, IInputService
         _closeAction = _inputActions.FindAction("Cancel");
         _closeAction.performed += ctx => OnCancel?.Invoke();
 
-        _unequipItem = _inputActions.FindAction("RightClick");
-        if (_unequipItem != null)
+        _changeEquipItemStatus = _inputActions.FindAction("RightClick");
+        if (_changeEquipItemStatus != null)
         {
-            _unequipItem.performed += ctx => IsUnequipPressed = true;
-            _unequipItem.canceled += ctx => IsUnequipPressed = false;
+            _changeEquipItemStatus.performed += ctx =>
+            {
+                IsUnequipPressed = true;
+                IsEquipPressed = true;
+            };
+            _changeEquipItemStatus.canceled += ctx =>
+            {
+                IsUnequipPressed = false;
+                IsEquipPressed = false;
+            };
         }
 
         _leftClickAction = _inputActions.FindAction("Click");

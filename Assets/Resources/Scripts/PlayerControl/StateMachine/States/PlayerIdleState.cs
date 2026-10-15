@@ -38,7 +38,7 @@ public class PlayerIdleState : PlayerStateBase
         }
         else
         {
-            float deceleration = _equipmentStatsService?.CurrentStats?.Deceleration ?? _playerStats.CurrentProfile.deceleration;
+            float deceleration = _characterStatsService?.CurrentStats?.Deceleration ?? _playerStats.CurrentProfile.deceleration;
             _movementService._currentSpeed = Mathf.Lerp(_movementService._currentSpeed, 0f, deceleration * Time.deltaTime);
             _movementService.SetMovement(0f, deceleration);
         }
@@ -48,7 +48,7 @@ public class PlayerIdleState : PlayerStateBase
     {
         if (_stateMachine.playerAnimator.GetBool("Dodge"))
         {
-            var stats = _equipmentStatsService?.CurrentStats;
+            var stats = _characterStatsService?.CurrentStats;
 
             float targetSpeed = _movementService.IsRunning ? stats.RunSpeed : stats.MoveSpeed;
             float acceleration = stats.Acceleration;

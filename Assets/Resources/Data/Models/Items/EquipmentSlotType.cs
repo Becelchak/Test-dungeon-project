@@ -1,5 +1,6 @@
 ﻿public enum EquipmentSlotType
 {
+    Unknown = 0,
     Weapon1,
     Weapon2,
     Weapon3,

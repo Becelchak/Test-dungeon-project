@@ -1,4 +1,4 @@
-using System.Text;
+п»їusing System.Text;
 using System.Linq;
 using System;
 
@@ -18,19 +18,19 @@ public class PlayerContextService : BaseService, IPlayerContextService
         var profile = _playerProfileService.CurrentProfile;
         var sb = new StringBuilder();
 
-        sb.AppendLine($"Игрок: {profile.playerName}");
-        sb.AppendLine($"Степень прозрения: {profile.level} из 40 возможных");
-        sb.AppendLine($"Жизненные силы: {profile.health}/{profile.maxHealth}");
-        sb.AppendLine($"Магические силы: {profile.mana}/{profile.maxMana}");
-        sb.AppendLine($"Характеристики: Стойкость({profile.strength} из 20 возможных), Разум({profile.intelligence} из 20 возможных), Эквилибристика({profile.agility} из 20 возможных)");
+        sb.AppendLine($"РРіСЂРѕРє: {profile.playerName}");
+        sb.AppendLine($"РЎС‚РµРїРµРЅСЊ РїСЂРѕР·СЂРµРЅРёСЏ: {profile.currentLevel} РёР· 40 РІРѕР·РјРѕР¶РЅС‹С…");
+        sb.AppendLine($"Р–РёР·РЅРµРЅРЅС‹Рµ СЃРёР»С‹: {profile.health}/{profile.maxHealth}");
+        sb.AppendLine($"РњР°РіРёС‡РµСЃРєРёРµ СЃРёР»С‹: {profile.mana}/{profile.maxMana}");
+        sb.AppendLine($"РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё: РЎС‚РѕР№РєРѕСЃС‚СЊ({profile.strength} РёР· 20 РІРѕР·РјРѕР¶РЅС‹С…), Р Р°Р·СѓРј({profile.intelligence} РёР· 20 РІРѕР·РјРѕР¶РЅС‹С…), Р­РєРІРёР»РёР±СЂРёСЃС‚РёРєР°({profile.agility} РёР· 20 РІРѕР·РјРѕР¶РЅС‹С…)");
 
-        sb.AppendLine("\nСодержимое сумки:");
+        sb.AppendLine("\nРЎРѕРґРµСЂР¶РёРјРѕРµ СЃСѓРјРєРё:");
         sb.AppendLine(GetPlayerInventorySummary());
 
-        sb.AppendLine("\nСтатистика:");
+        sb.AppendLine("\nРЎС‚Р°С‚РёСЃС‚РёРєР°:");
         sb.AppendLine(GetPlayerStatsSummary());
 
-        sb.AppendLine("\nАктивные поручения:");
+        sb.AppendLine("\nРђРєС‚РёРІРЅС‹Рµ РїРѕСЂСѓС‡РµРЅРёСЏ:");
         sb.AppendLine(GetActiveQuestsSummary());
 
         return sb.ToString();
@@ -40,16 +40,16 @@ public class PlayerContextService : BaseService, IPlayerContextService
     {
         var profile = _playerProfileService.CurrentProfile;
         if (profile.inventory.Count == 0)
-            return "Инвентарь пуст";
+            return "РРЅРІРµРЅС‚Р°СЂСЊ РїСѓСЃС‚";
 
         var sb = new StringBuilder();
-        foreach (var item in profile.inventory.Take(10)) // Ограничиваем для избежания переполнения
+        foreach (var item in profile.inventory.Take(10)) // РћРіСЂР°РЅРёС‡РёРІР°РµРј РґР»СЏ РёР·Р±РµР¶Р°РЅРёСЏ РїРµСЂРµРїРѕР»РЅРµРЅРёСЏ
         {
             sb.AppendLine($"- {item.itemName} x{item.quantity}");
         }
 
         if (profile.inventory.Count > 10)
-            sb.AppendLine($"... и ещё {profile.inventory.Count - 10} предметов");
+            sb.AppendLine($"... Рё РµС‰С‘ {profile.inventory.Count - 10} РїСЂРµРґРјРµС‚РѕРІ");
 
         return sb.ToString();
     }
@@ -57,10 +57,10 @@ public class PlayerContextService : BaseService, IPlayerContextService
     public string GetPlayerStatsSummary()
     {
         var stats = _playerProfileService.CurrentProfile.stats;
-        return $"Убито врагов: {stats.enemiesKilled}\n" +
-               $"Выполнено квестов: {stats.questsCompleted}\n" +
-               $"Собрано золотых монет: {stats.goldCollected}\n" +
-               $"Время в игре: {stats.playTimeHours:F1} часов {stats.playTimeHours:F2} минут";
+        return $"РЈР±РёС‚Рѕ РІСЂР°РіРѕРІ: {stats.enemiesKilled}\n" +
+               $"Р’С‹РїРѕР»РЅРµРЅРѕ РєРІРµСЃС‚РѕРІ: {stats.questsCompleted}\n" +
+               $"РЎРѕР±СЂР°РЅРѕ Р·РѕР»РѕС‚С‹С… РјРѕРЅРµС‚: {stats.goldCollected}\n" +
+               $"Р’СЂРµРјСЏ РІ РёРіСЂРµ: {stats.playTimeHours:F1} С‡Р°СЃРѕРІ {stats.playTimeHours:F2} РјРёРЅСѓС‚";
     }
 
     public string GetActiveQuestsSummary()
@@ -69,12 +69,12 @@ public class PlayerContextService : BaseService, IPlayerContextService
         var activeQuests = quests.Where(q => q.Value.status == QuestStatus.InProgress).Take(5);
 
         if (!activeQuests.Any())
-            return "Нет активных квестов";
+            return "РќРµС‚ Р°РєС‚РёРІРЅС‹С… РєРІРµСЃС‚РѕРІ";
 
         var sb = new StringBuilder();
         foreach (var quest in activeQuests)
         {
-            sb.AppendLine($"- {quest.Key} (этап {quest.Value.currentStep})");
+            sb.AppendLine($"- {quest.Key} (СЌС‚Р°Рї {quest.Value.currentStep})");
         }
 
         return sb.ToString();

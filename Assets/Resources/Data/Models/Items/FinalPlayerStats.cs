@@ -31,4 +31,8 @@ public class FinalPlayerStats
     public float AttackRange;
     public float AttackDuration;
     public int Armor;
+
+    [Header("Специализированные механики")]
+    public int Glory;
+    public int MaxGlory;
 }

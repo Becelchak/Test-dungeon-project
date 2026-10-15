@@ -20,7 +20,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     private Vector3 moveDuraction;
     public CharacterController charController { get; set; }
-    private PlayerProfileService playerProfileService;
+    private IPlayerProfileService playerProfileService;
 
     private Vector3 _currentInput;
     private Vector2 _rawInput;
@@ -59,7 +59,7 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
         set { _moveDirection = value; }
     }
 
-    private IEquipmentStatsService _equipmentStatsService;
+    private ICharacterStatsCalculator _characterStatsService;
 
     public bool IsRunning { get => _isRunning; set 
         {
@@ -87,9 +87,9 @@ public class PlayerMovementService : BaseService, IPlayerMovementService
 
     public void Start()
     {
-        playerProfileService = (PlayerProfileService) ServiceLocator.Instance.GetService<IPlayerProfileService>();
-        _equipmentStatsService = ServiceLocator.Instance.GetService<IEquipmentStatsService>();
-        jumpForce = _equipmentStatsService?.CurrentStats?.JumpForce ?? playerProfileService.CurrentProfile.jumpForce;
+        playerProfileService = ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        _characterStatsService = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
+        jumpForce = _characterStatsService?.CurrentStats?.JumpForce ?? playerProfileService.CurrentProfile.jumpForce;
     }
 
     public void Jump()

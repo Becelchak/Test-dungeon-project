@@ -1,10 +1,13 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public interface IPlayerProfileService
 {
     public event Action<InventoryItem> OnItemAdded;
     public event Action<InventoryItem> OnItemRemoved;
+    public event Action OnProfileChanged;
     public PlayerProfile CurrentProfile { get; set; }
     void SaveProfile(PlayerProfile profile);
     void ResetProfile();

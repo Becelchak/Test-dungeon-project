@@ -20,6 +20,7 @@ public class InventoryItemSlot : MonoBehaviour,
     private RectTransform _ghost;
     private Canvas _rootCanvas;
     private IWindowService _windowService;
+    private IInputService _inputService;
 
     private void Awake()
     {
@@ -38,6 +39,7 @@ public class InventoryItemSlot : MonoBehaviour,
         _inventoryVm = inventoryVm;
         _rootCanvas = GetComponentInParent<Canvas>()?.rootCanvas;
         _windowService = ServiceLocator.Instance.GetService<IWindowService>();
+        _inputService = ServiceLocator.Instance.GetService<IInputService>();
         Refresh();
     }
 
@@ -106,7 +108,13 @@ public class InventoryItemSlot : MonoBehaviour,
     {
         if (_vm == null || _vm.Data == null) return;
 
-        if (e.button == PointerEventData.InputButton.Left)
+        // Проверяем InputService для определения типа клика
+        if (_inputService != null && _inputService.IsEquipPressed)
+        {
+            // Быстрая экипировка через RightClick
+            _inventoryVm?.RequestQuickEquip(_vm);
+        }
+        else if (e.button == PointerEventData.InputButton.Left)
         {
             ShowContextMenu();
         }
@@ -115,6 +123,8 @@ public class InventoryItemSlot : MonoBehaviour,
     private void ShowContextMenu()
     {
         if (_windowService == null) return;
+
+        Debug.Log($"[InventoryItemSlot] Показ контекстного меню для {_vm?.Data?.displayName}, inventoryVm = {_inventoryVm != null}");
 
         var contextMenuObj = _windowService.ShowWindow<ContextMenuViewModel>(UILayer.ContextMenu);
         if (contextMenuObj != null)
@@ -125,7 +135,6 @@ public class InventoryItemSlot : MonoBehaviour,
                 var viewModel = contextMenuView.viewModel as ContextMenuViewModel;
                 viewModel?.Show(_vm, _inventoryVm);
 
-                // Позиционируем меню у курсора
                 RectTransform menuRect = contextMenuObj.GetComponent<RectTransform>();
                 if (menuRect != null)
                 {

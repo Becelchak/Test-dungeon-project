@@ -31,10 +31,11 @@ public interface IInputService
     InputAction _openInventory {  get; set; }
     InputAction _closeAction { get; set; }
 
-    InputAction _unequipItem {  get; set; }
+    InputAction _changeEquipItemStatus {  get; set; }
     InputAction _leftClickAction { get; set; }
 
     bool IsUnequipPressed { get; set; }
+    bool IsEquipPressed { get; set; }
 
     Vector2 GetMovementInput();
     void EnableAllInput();

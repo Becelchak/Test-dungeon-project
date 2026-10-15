@@ -13,16 +13,21 @@ public class InventoryView : BaseView<InventoryViewModel>
     [SerializeField] private GameObject infoPanel;
     [SerializeField] private TMPro.TextMeshProUGUI infoTitle;
     [SerializeField] private TMPro.TextMeshProUGUI infoDescription;
+    [SerializeField] private Vector2 _panelOffset = new Vector3();
 
     private readonly List<InventoryItemSlot> _itemUIs = new();
 
+    private RectTransform _panelRt;
     public UILayer Layer => UILayer.InventoryGroup;
 
     protected override void SetupBindings()
     {
         ViewModel.PropertyChanged += OnPropertyChanged;
         ViewModel.Initialize();
-        //Rebuild();
+        if (infoPanel != null)
+        {
+            _panelRt = infoPanel.GetComponent<RectTransform>();
+        }
     }
 
     private void OnDestroy()
@@ -40,10 +45,16 @@ public class InventoryView : BaseView<InventoryViewModel>
         {
             UpdateInfoPanel(ViewModel.HoveredItemData);
         }
+
+        if (e.PropertyName == nameof(ViewModel.InfoPanelPosition))
+        {
+            UpdateInfoPanelPosition();
+        }
     }
 
     private void Rebuild()
     {
+        Debug.Log("Rebild");
         if (_itemUIs == null)
         {
             Debug.LogWarning("Список UI пуст!");
@@ -67,27 +78,43 @@ public class InventoryView : BaseView<InventoryViewModel>
     {
         if (infoPanel == null) return;
 
-        //Vector2 mousePos = Input.mousePosition;
-        //RectTransform rt = infoPanel.GetComponent<RectTransform>();
-
-        //if (infoPanel.activeSelf)
-        //{
-        //    Vector2 targetPosition = mousePos + new Vector2(20f, -20f);
-
-        //    if ((Vector2)rt.position != targetPosition)
-        //    {
-        //        rt.position = targetPosition;
-        //    }
-        //}
-
+        // Если предмета нет — выключить панель
         if (item == null)
         {
-            infoPanel.SetActive(false);
+            if (infoPanel.activeSelf)
+            {
+                infoPanel.SetActive(false);
+            }
             return;
         }
 
-        infoPanel.SetActive(true);
-        infoTitle.text = item.displayName;
-        infoDescription.text = item.description;
+        // Обновить текст только если он изменился
+        if (infoTitle.text != item.displayName)
+        {
+            infoTitle.text = item.displayName;
+        }
+        if (infoDescription.text != item.description)
+        {
+            infoDescription.text = item.description;
+        }
+
+        if (!infoPanel.activeSelf)
+        {
+            if (_panelRt != null)
+            {
+                _panelRt.position = ViewModel.InfoPanelPosition + _panelOffset;
+            }
+
+            Debug.Log("[UpdateInfoPanel] - InventoryView");
+            infoPanel.SetActive(true);
+        }
     }
+
+    private void UpdateInfoPanelPosition()
+    {
+        if (infoPanel == null || _panelRt == null) return;
+        _panelRt.position = ViewModel.InfoPanelPosition + _panelOffset;
+        Debug.Log("[UpdateInfoPanelPosition] - InventoryView");
+    }
+
 }

@@ -12,15 +12,26 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
     private readonly List<InventoryItemSlotViewModel> _items = new();
 
     private ItemData _hoveredItemData;
+    private Vector2 _infoPanelPosition;
 
     public ItemData HoveredItemData
     {
         get => _hoveredItemData;
         private set
         {
-            if (_hoveredItemData == value) return;
             _hoveredItemData = value;
             OnPropertyChanged(nameof(HoveredItemData));
+        }
+    }
+
+    public Vector2 InfoPanelPosition
+    {
+        get => _infoPanelPosition;
+        private set
+        {
+            if (_infoPanelPosition == value) return;
+            _infoPanelPosition = value;
+            OnPropertyChanged(nameof(InfoPanelPosition));
         }
     }
 
@@ -65,18 +76,43 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
     {
         if (vm?.Data == null) return;
         // Логика использования — за пределами этого ViewModel.
-        // Например, через EventBus.RaiseEvent<IItemUseRequest>(...)
     }
 
     /// <summary>Установить активный предмет для показа описания.</summary>
     public void SetHoveredItem(ItemData data)
     {
+        if (_hoveredItemData == data) return;
+
         HoveredItemData = data;
+
+        if (data != null)
+        {
+            InfoPanelPosition = Input.mousePosition + new Vector3(20f, -20f);
+        }
     }
 
     /// <summary>Очистить инфо-панель, когда курсор убран.</summary>
     public void ClearHoveredItem()
     {
         HoveredItemData = null;
+    }
+
+    /// <summary>Быстрая экипировка предмета (через RightClick).</summary>
+    public void RequestQuickEquip(InventoryItemSlotViewModel vm)
+    {
+        if (vm?.Data == null) return;
+
+        Debug.Log($"[InventoryViewModel] RequestQuickEquip: {vm.Data.displayName}");
+
+        var equipAction = new EquipItemAction();
+        if (equipAction.CanExecute(vm.Data))
+        {
+            equipAction.Execute(vm.Data, vm);
+            Reload();
+        }
+        else
+        {
+            Debug.LogWarning($"[InventoryViewModel] Нельзя экипировать {vm.Data.displayName}");
+        }
     }
 }
