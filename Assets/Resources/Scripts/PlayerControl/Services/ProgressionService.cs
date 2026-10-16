@@ -44,6 +44,7 @@ public class ProgressionService : BaseService, IProgressionService
         if (_profileService?.CurrentProfile != null)
         {
             InitializeProfileIfNeeded();
+            ApplyAllActiveTraits();
         }
     }
 
@@ -87,6 +88,28 @@ public class ProgressionService : BaseService, IProgressionService
 
         if (profile.unspentSkillPoints < 0)
             profile.unspentSkillPoints = 0;
+    }
+
+    private void ApplyAllActiveTraits()
+    {
+        var profile = _profileService.CurrentProfile;
+        if (profile.activeTraitIds == null) return;
+
+        foreach (var traitId in profile.activeTraitIds)
+        {
+            if (_allTraits.TryGetValue(traitId, out var trait))
+            {
+                ApplyTraitEffects(traitId);
+            }
+        }
+
+        var statsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
+        if (statsCalculator != null)
+        {
+            statsCalculator.SyncCurrentHealthWithMax();
+        }
+
+        Debug.Log($"[ProgressionService] Применены эффекты {profile.activeTraitIds.Count} активных особенностей");
     }
 
     public void AddXP(int amount, XPSource source)

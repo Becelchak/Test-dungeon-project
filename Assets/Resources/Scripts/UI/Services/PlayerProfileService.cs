@@ -8,6 +8,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     private const string PROFILE_KEY = "player_profile";
     private PlayerProfile _currentProfile;
     private IEquipmentService _equipmentService;
+    private ICharacterStatsCalculator _characterStatsCalculator;
 
     public event Action<InventoryItem> OnItemAdded;
     public event Action<InventoryItem> OnItemRemoved;
@@ -27,6 +28,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     private void Start()
     {
         EventBus.Subscribe(this);
+        _characterStatsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
         Debug.Log("[PlayerProfileService] Подписан на EventBus как IEquipmentRequestSubscriber");
     }
 
@@ -130,31 +132,53 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     public void ModifyHealth(int delta)
     {
         var profile = CurrentProfile;
-        profile.health = Mathf.Clamp(profile.health + delta, 0, profile.maxHealth);
+        var finalStats = _characterStatsCalculator.CurrentStats;
+        if (finalStats == null)
+        {
+            profile.health = Mathf.Clamp(profile.health + delta, 0, profile.maxHealth);
+        }
+        else
+        {
+            profile.health = Mathf.Clamp(profile.health + delta, 0, finalStats.MaxHealth);
+        }
         SaveProfile(profile);
+
+        var maxHealth = finalStats?.MaxHealth ?? profile.maxHealth;
         EventBus.RaiseEvent<IHealthChangedEventSubscriber>(
-            s => s.OnHealthChanged(new HealthChangedEvent(profile.health, profile.maxHealth))
+            s => s.OnHealthChanged(new HealthChangedEvent(profile.health, maxHealth))
         );
     }
 
     public void ModifyStamina(float delta)
     {
         var profile = CurrentProfile;
-        profile.stamina = Mathf.FloorToInt(Mathf.Clamp(profile.stamina + delta, 0, profile.maxStamina));
+        var finalStats = _characterStatsCalculator.CurrentStats;
+        if (finalStats == null)
+        {
+            if (profile.stamina < profile.maxStamina && delta > 0) return;
+            profile.stamina = Mathf.FloorToInt(Mathf.Clamp(profile.stamina + delta, 0, profile.maxStamina));
+        }
+        else
+        {
+            if (profile.stamina >= finalStats.MaxStamina && delta > 0) return;
+            profile.stamina = Mathf.FloorToInt(Mathf.Clamp(profile.stamina + delta, 0, finalStats.MaxStamina));
+        }
         SaveProfile(profile);
 
+        var maxStamina = finalStats?.MaxStamina ?? profile.maxStamina;
         EventBus.RaiseEvent<IStaminaChangedEventSubscriber>(
-            s => s.OnStaminaChanged(new StaminaChangedEvent(profile.stamina, profile.maxStamina))
+            s => s.OnStaminaChanged(new StaminaChangedEvent(profile.stamina, maxStamina))
         );
     }
     public void ModifyMana(int delta)
     {
         var profile = CurrentProfile;
-        profile.mana = Mathf.Clamp(profile.mana + delta, 0, profile.maxMana);
+        var finalStats = _characterStatsCalculator.CurrentStats;
+        profile.mana = Mathf.Clamp(profile.mana + delta, 0, finalStats.MaxMana);
         SaveProfile(profile);
 
         EventBus.RaiseEvent<IManaChangedEventSubscriber>(
-            s => s.OnManaChanged(new ManaChangedEvent(profile.mana, profile.maxMana))
+            s => s.OnManaChanged(new ManaChangedEvent(profile.mana, finalStats.MaxMana))
         );
     }
     public void SetMaxStamina(float value)

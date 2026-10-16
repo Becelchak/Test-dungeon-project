@@ -42,7 +42,7 @@ public class HudStatBar : MonoBehaviour
     /// <summary>
     /// Первичная инициализация. НЕ будит бар (он остаётся скрытым, если autoHide = true).
     /// </summary>
-    public void Initialize(int current, int max)
+    public void Initialize(int current, float max)
     {
         ApplyValue(current, max, instant: true);
         _initialized = true;
@@ -61,7 +61,7 @@ public class HudStatBar : MonoBehaviour
     /// <summary>
     /// Обновление значения. Пробуждает бар, если он скрыт.
     /// </summary>
-    public void SetValue(int current, int max)
+    public void SetValue(int current, float max)
     {
         ApplyValue(current, max, instant: false);
         WakeUp();
@@ -89,7 +89,7 @@ public class HudStatBar : MonoBehaviour
     // Внутренняя логика
     // ------------------------------------------------------------
 
-    private void ApplyValue(int current, int max, bool instant)
+    private void ApplyValue(int current, float max, bool instant)
     {
         float newFill = max > 0 ? Mathf.Clamp01((float)current / max) : 0f;
 

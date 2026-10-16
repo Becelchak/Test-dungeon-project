@@ -1,8 +1,8 @@
 ﻿public struct StaminaChangedEvent
 {
     public int CurrentStamina { get; }
-    public int MaxStamina { get; }
-    public StaminaChangedEvent(int current, int max)
+    public float MaxStamina { get; }
+    public StaminaChangedEvent(int current, float max)
     {
         CurrentStamina = current;
         MaxStamina = max;

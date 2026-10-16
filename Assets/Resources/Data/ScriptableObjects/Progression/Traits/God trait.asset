@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: God trait
   m_EditorClassIdentifier: Assembly-CSharp::TraitData
   traitId: godt
-  displayName: 
+  displayName: "\u0411\u043E\u0436\u0435_\u0442\u0435\u0441\u0442"
   description: 
   allowedArchetypes: []
   weight: 1

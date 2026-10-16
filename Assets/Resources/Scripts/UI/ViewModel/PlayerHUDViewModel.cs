@@ -1,10 +1,15 @@
 ﻿using EventBusSystem;
-public class PlayerHUDViewModel : BaseViewModel, 
+using Google.Protobuf;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEngine;
+public class PlayerHUDViewModel : BaseViewModel,
     IHealthChangedEventSubscriber,
     IStaminaChangedEventSubscriber,
-    IManaChangedEventSubscriber
+    IManaChangedEventSubscriber,
+    IStatsChangedEventSubscriber
 {
     private IPlayerProfileService _player;
+    private ICharacterStatsCalculator _statsCalculator;
 
     private int _health;
     public int Health
@@ -41,8 +46,8 @@ public class PlayerHUDViewModel : BaseViewModel,
         private set => SetProperty(ref _stamina, value);
     }
 
-    private int _maxStamina;
-    public int MaxStamina
+    private float _maxStamina;
+    public float MaxStamina
     {
         get => _maxStamina;
         private set => SetProperty(ref _maxStamina, value);
@@ -71,19 +76,38 @@ public class PlayerHUDViewModel : BaseViewModel,
         MaxMana = evt.MaxMana;
     }
 
+    public void OnStatsChanged(StatsChangedEvent evt)
+    {
+        MaxHealth = evt.Stats.MaxHealth;
+        MaxMana = evt.Stats.MaxMana;
+        MaxStamina = evt.Stats.MaxStamina;
+    }
+
     public override void Initialize()
     {
         _player = ServiceLocator.Instance.GetService<IPlayerProfileService>();
-
+        _statsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
         var p = _player.CurrentProfile;
-        Health = p.health;
-        MaxHealth = p.maxHealth;
-        Mana = p.mana;
-        MaxMana = p.maxMana;
-        Stamina = p.stamina;
-        MaxStamina = p.maxStamina;
-
+        if (_statsCalculator == null)
+        {
+            Health = p.health;
+            MaxHealth = p.maxHealth;
+            Mana = p.mana;
+            MaxMana = p.maxMana;
+            Stamina = p.stamina;
+            MaxStamina = p.maxStamina;
+        }
+        else
+        {
+            Health = p.health;
+            MaxHealth = _statsCalculator.CurrentStats.MaxHealth;
+            Mana = p.mana;
+            MaxMana = _statsCalculator.CurrentStats.MaxMana;
+            Stamina = p.stamina;
+            MaxStamina = _statsCalculator.CurrentStats.MaxStamina;
+        }
         EventBus.Subscribe(this);
+
     }
 
     public override void Cleanup()

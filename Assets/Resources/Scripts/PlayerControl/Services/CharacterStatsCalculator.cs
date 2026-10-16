@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using EventBusSystem;
 
 public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
 {
@@ -20,10 +21,7 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
     private IEquipmentService _equipment;
     private IProgressionService _progressionService;
     private ITriggerService _triggerService;
-
-    private Dictionary<StatType, List<SkillEffectData>> _modifiers = new Dictionary<StatType, List<SkillEffectData>>();
-    //private Dictionary<string, TriggeredEffect> _triggers = new Dictionary<string, TriggeredEffect>();
-    private HashSet<string> _unlockedMechanics = new HashSet<string>();
+    private IModifierService _modifierService;
 
     public FinalPlayerStats CurrentStats { get; private set; }
     public event Action<FinalPlayerStats> OnStatsChanged;
@@ -36,6 +34,7 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
         _equipment = ServiceLocator.Instance.GetService<IEquipmentService>();
         _progressionService = ServiceLocator.Instance.GetService<IProgressionService>();
         _triggerService = ServiceLocator.Instance.GetService<ITriggerService>();
+        _modifierService = ServiceLocator.Instance.GetService<IModifierService>();
 
         if (_equipment != null)
             _equipment.OnEquipmentChanged += OnEquipmentChanged;
@@ -45,8 +44,14 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
             _progressionService.OnLevelUp += OnLevelUp;
         }
 
+        if (_modifierService != null)
+        {
+            _modifierService.OnModifiersChanged += Recalculate;
+        }
+
         if (_profileService != null)
             _profileService.OnProfileChanged += Recalculate;
+
         Recalculate();
     }
 
@@ -56,9 +61,10 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
             _equipment.OnEquipmentChanged -= OnEquipmentChanged;
 
         if (_progressionService != null)
-        {
             _progressionService.OnLevelUp -= OnLevelUp;
-        }
+
+        if (_modifierService != null)
+            _modifierService.OnModifiersChanged -= Recalculate;
 
         if (_profileService != null)
             _profileService.OnProfileChanged -= Recalculate;
@@ -86,67 +92,65 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
         return effects;
     }
 
-    public void AddModifier(StatType stat, SkillEffectData source)
-    {
-        if (!_modifiers.ContainsKey(stat))
-            _modifiers[stat] = new List<SkillEffectData>();
+    //public void AddModifier(SkillEffectData source)
+    //{
+    //    // Deprecated: use ModifierService directly
+    //    Debug.LogWarning("[CharacterStatsCalculator] AddModifier(StatType, SkillEffectData) is deprecated. Use ModifierService instead.");
+    //}
 
-        if (!_modifiers[stat].Contains(source))
-        {
-            _modifiers[stat].Add(source);
-            Recalculate();
-        }
-    }
+    //public void RemoveModifier(SkillEffectData source)
+    //{
+    //    // Deprecated: use ModifierService directly
+    //    Debug.LogWarning("[CharacterStatsCalculator] RemoveModifier(StatType, SkillEffectData) is deprecated. Use ModifierService instead.");
+    //}
 
-    public void RemoveModifier(StatType stat, SkillEffectData source)
-    {
-        if (_modifiers.ContainsKey(stat))
-        {
-            _modifiers[stat].Remove(source);
-            Recalculate();
-        }
-    }
+    //public void UnlockMechanic(string mechanicId)
+    //{
+    //    if (_modifierService != null)
+    //    {
+    //        // Parse mechanicId to ModifierTarget if needed
+    //        // For now, just log
+    //        Debug.Log($"[CharacterStatsCalculator] Mechanic unlock requested: {mechanicId}");
+    //    }
+    //}
 
-    public void UnlockMechanic(string mechanicId)
-    {
-        if (_unlockedMechanics.Add(mechanicId))
-        {
-            Debug.Log($"[CharacterStatsCalculator] Mechanic unlocked: {mechanicId}");
-        }
-    }
+    //public void LockMechanic(string mechanicId)
+    //{
+    //    if (_modifierService != null)
+    //    {
+    //        Debug.Log($"[CharacterStatsCalculator] Mechanic lock requested: {mechanicId}");
+    //    }
+    //}
 
-    public void LockMechanic(string mechanicId)
-    {
-        _unlockedMechanics.Remove(mechanicId);
-    }
-
-    public bool HasMechanic(string mechanicId)
-    {
-        return _unlockedMechanics.Contains(mechanicId);
-    }
+    //public bool HasMechanic(string mechanicId)
+    //{
+    //    // Deprecated: use ModifierService.HasCapability instead
+    //    Debug.LogWarning("[CharacterStatsCalculator] HasMechanic is deprecated. Use ModifierService.HasCapability instead.");
+    //    return false;
+    //}
 
     public void RegisterTrigger(TriggeredEffect trigger)
     {
-        //if(!_triggers.ContainsKey(trigger.triggerId))
-        //{
-        //    _triggers.Add(trigger.triggerId, trigger);
-        //    Debug.Log($"Зарегестрирован триггер {trigger.triggerId}");
-        //}
-        //else
-        //    Debug.Log($"Триггер {trigger.triggerId} уже зарегестрирован!");
         _triggerService.Register(trigger);
     }
 
     public void UnregisterTrigger(TriggeredEffect trigger)
     {
-        //if (_triggers.ContainsKey(trigger.triggerId))
-        //{
-        //    _triggers.Remove(trigger.triggerId);
-        //    Debug.Log($"Удален триггер {trigger.triggerId}");
-        //}
-        //else
-        //    Debug.Log($"Триггер {trigger.triggerId} не найден!");
         _triggerService.Unregister(trigger);
+    }
+
+    public void SyncCurrentHealthWithMax()
+    {
+        var profile = _profileService?.CurrentProfile;
+        if (profile == null) return;
+
+        var maxHealth = CurrentStats.MaxHealth;
+        if (profile.health != maxHealth)
+        {
+            profile.health = maxHealth;
+            _profileService.SaveProfile(profile);
+            Debug.Log($"[CharacterStatsCalculator] Текущее здоровье синхронизировано с максимальным: {maxHealth}");
+        }
     }
 
     public void Recalculate()
@@ -160,6 +164,7 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
 
         var stats = new FinalPlayerStats();
 
+        // Базовые статы из профиля
         stats.Strength = profile.strength;
         stats.Intelligence = profile.intelligence;
         stats.Agility = profile.agility;
@@ -176,12 +181,14 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
         stats.HealthRegenRate = profile.healthRegenRate;
         stats.ManaRegenRate = profile.manahRegenRate;
 
+        // Базовые формулы
         stats.MaxHealth += Mathf.RoundToInt(healthPerStrength * Mathf.Pow(stats.Strength, 0.8f));
         stats.MaxStamina = baseStamina + stats.Agility * staminaPerAgility;
         stats.MoveSpeed *= 1f + stats.Agility * speedPerAgility;
         stats.RunSpeed *= 1f + stats.Agility * speedPerAgility;
         stats.StaminaRegenRate = baseStaminaRegen + stats.Agility * 0.5f + stats.MaxStamina * 0.02f;
 
+        // Бонусы от экипировки
         if (_equipment != null)
         {
             foreach (var slot in _equipment.Slots)
@@ -199,11 +206,40 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
             }
         }
 
-        ApplySkillModifiers(stats);
+        // Применяем модификаторы из ModifierService
+        ApplyModifierServiceModifiers(stats);
+
+        // Специальные механики (Слава и т.д.)
         ApplySpecialMechanics(profile, stats);
 
         CurrentStats = stats;
         OnStatsChanged?.Invoke(CurrentStats);
+        EventBus.RaiseEvent<IStatsChangedEventSubscriber>(
+            s => s.OnStatsChanged(new StatsChangedEvent(stats))
+        );
+    }
+
+    private void ApplyModifierServiceModifiers(FinalPlayerStats stats)
+    {
+        if (_modifierService == null) return;
+
+        // Применяем модификаторы ко всем статам
+        stats.Strength = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.Strength, stats.Strength));
+        stats.Intelligence = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.Intelligence, stats.Intelligence));
+        stats.Agility = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.Agility, stats.Agility));
+        stats.MaxHealth = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.MaxHealth, stats.MaxHealth));
+        stats.MaxMana = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.MaxMana, stats.MaxMana));
+        stats.MaxStamina = _modifierService.GetValue(ModifierTarget.MaxStamina, stats.MaxStamina);
+        stats.MoveSpeed = _modifierService.GetValue(ModifierTarget.MoveSpeed, stats.MoveSpeed);
+        stats.RunSpeed = _modifierService.GetValue(ModifierTarget.RunSpeed, stats.RunSpeed);
+        stats.JumpForce = _modifierService.GetValue(ModifierTarget.JumpForce, stats.JumpForce);
+        stats.Acceleration = _modifierService.GetValue(ModifierTarget.Acceleration, stats.Acceleration);
+        stats.Deceleration = _modifierService.GetValue(ModifierTarget.Deceleration, stats.Deceleration);
+        stats.RotationSpeed = _modifierService.GetValue(ModifierTarget.RotationSpeed, stats.RotationSpeed);
+        stats.HealthRegenRate = _modifierService.GetValue(ModifierTarget.HealthRegen, stats.HealthRegenRate);
+        stats.ManaRegenRate = _modifierService.GetValue(ModifierTarget.ManaRegen, stats.ManaRegenRate);
+        stats.AttackDamage = _modifierService.GetValue(ModifierTarget.OutgoingDamagePercent, stats.AttackDamage);
+        stats.Armor = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.Armor, stats.Armor));
     }
 
     private void ApplySpecialMechanics(PlayerProfile profile, FinalPlayerStats stats)
@@ -229,116 +265,6 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
                 break;
             case TrinketData trinket:
                 stats.MaxHealth += trinket.bonusHealth;
-                break;
-        }
-    }
-
-    private void ApplySkillModifiers(FinalPlayerStats stats)
-    {
-        foreach (var kvp in _modifiers)
-        {
-            foreach (var effect in kvp.Value)
-            {
-                if (effect is StatModifierEffect mod)
-                {
-                    ApplyStatModifier(stats, mod);
-                }
-            }
-        }
-    }
-
-    private void ApplyStatModifier(FinalPlayerStats stats, StatModifierEffect mod)
-    {
-        switch (mod.stat)
-        {
-            case StatType.Strength:
-                ApplyToStat(ref stats.Strength, mod);
-                break;
-            case StatType.Intelligence:
-                ApplyToStat(ref stats.Intelligence, mod);
-                break;
-            case StatType.Agility:
-                ApplyToStat(ref stats.Agility, mod);
-                break;
-            case StatType.Health:
-                ApplyToStat(ref stats.MaxHealth, mod);
-                break;
-            case StatType.Mana:
-                ApplyToStat(ref stats.MaxMana, mod);
-                break;
-            case StatType.Stamina:
-                ApplyToStat(ref stats.MaxStamina, mod);
-                break;
-            case StatType.MoveSpeed:
-                ApplyToStat(ref stats.MoveSpeed, mod);
-                break;
-            case StatType.RunSpeed:
-                ApplyToStat(ref stats.RunSpeed, mod);
-                break;
-            case StatType.JumpForce:
-                ApplyToStat(ref stats.JumpForce, mod);
-                break;
-            case StatType.Acceleration:
-                ApplyToStat(ref stats.Acceleration, mod);
-                break;
-            case StatType.Deceleration:
-                ApplyToStat(ref stats.Deceleration, mod);
-                break;
-            case StatType.RotationSpeed:
-                ApplyToStat(ref stats.RotationSpeed, mod);
-                break;
-            case StatType.HealthRegenRate:
-                ApplyToStat(ref stats.HealthRegenRate, mod);
-                break;
-            case StatType.ManaRegenRate:
-                ApplyToStat(ref stats.ManaRegenRate, mod);
-                break;
-            case StatType.StaminaRegenRate:
-                ApplyToStat(ref stats.StaminaRegenRate, mod);
-                break;
-            case StatType.AttackDamage:
-                ApplyToStat(ref stats.AttackDamage, mod);
-                break;
-            case StatType.AttackRange:
-                ApplyToStat(ref stats.AttackRange, mod);
-                break;
-            case StatType.AttackDuration:
-                ApplyToStat(ref stats.AttackDuration, mod);
-                break;
-            case StatType.Armor:
-                ApplyToStat(ref stats.Armor, mod);
-                break;
-        }
-    }
-
-    private void ApplyToStat(ref int stat, StatModifierEffect mod)
-    {
-        switch (mod.type)
-        {
-            case ModifierType.Add:
-                stat += Mathf.RoundToInt(mod.value);
-                break;
-            case ModifierType.Multiply:
-                stat *= Mathf.RoundToInt(mod.value);
-                break;
-            case ModifierType.Percent:
-                stat = Mathf.RoundToInt(stat * (1f + mod.value / 100f));
-                break;
-        }
-    }
-
-    private void ApplyToStat(ref float stat, StatModifierEffect mod)
-    {
-        switch (mod.type)
-        {
-            case ModifierType.Add:
-                stat += mod.value;
-                break;
-            case ModifierType.Multiply:
-                stat *= mod.value;
-                break;
-            case ModifierType.Percent:
-                stat *= (1f + mod.value / 100f);
                 break;
         }
     }

@@ -19,6 +19,7 @@ public class DeveloperConsole : MonoBehaviour
     private IPlayerCombatService _combatService;
     private IInputService _inputService;
     private IProgressionService _progressionService;
+    private ICharacterStatsCalculator _characterStatsCalculator;
 
     private void Start()
     {
@@ -26,6 +27,7 @@ public class DeveloperConsole : MonoBehaviour
         _combatService = ServiceLocator.Instance.GetService<IPlayerCombatService>();
         _inputService = ServiceLocator.Instance.GetService<IInputService>();
         _progressionService = ServiceLocator.Instance.GetService<IProgressionService>();
+        _characterStatsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
     }
 
     private void Update()
@@ -295,12 +297,12 @@ public class DeveloperConsole : MonoBehaviour
             Log("Ошибка: профиль игрока не найден.");
             return;
         }
-
-        int healthDelta = profile.maxHealth - profile.health;
-        int staminaDelta = profile.maxStamina - profile.stamina;
+        var finalStats = _characterStatsCalculator.CurrentStats;
+        int healthDelta = finalStats.MaxHealth - profile.health;
+        int staminaDelta = (int) finalStats.MaxStamina - profile.stamina;
         _profileService.ModifyHealth(healthDelta);
         _profileService.ModifyStamina(staminaDelta);
-        Log($"Восстановлено: HP={profile.maxHealth}, Stamina={profile.maxStamina}");
+        Log($"Восстановлено: HP={finalStats.MaxHealth}, Stamina={finalStats.MaxStamina}");
     }
 
     private void SetHealth(int value)
@@ -311,10 +313,10 @@ public class DeveloperConsole : MonoBehaviour
             Log("Ошибка: профиль игрока не найден.");
             return;
         }
-
-        int delta = Mathf.Clamp(value, 0, profile.maxHealth) - profile.health;
+        var finalStats = _characterStatsCalculator.CurrentStats;
+        int delta = Mathf.Clamp(value, 0, finalStats.MaxHealth) - profile.health;
         _profileService.ModifyHealth(delta);
-        Log($"Здоровье установлено: {profile.health}/{profile.maxHealth}");
+        Log($"Здоровье установлено: {profile.health}/{finalStats.MaxHealth}");
     }
 
     private void SetStamina(int value)

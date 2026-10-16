@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79405c2fddd5b37459d9ab9479fd6582, type: 3}
   m_Name: GodEffect
   m_EditorClassIdentifier: Assembly-CSharp::StatModifierEffect
-  stat: 3
-  type: 0
+  target: 3
+  op: 0
   value: 200

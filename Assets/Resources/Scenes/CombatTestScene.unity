@@ -2639,10 +2639,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
-      insertIndex: 11
+      insertIndex: 3
       addedObject: {fileID: 1632806601}
     - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
-      insertIndex: 12
+      insertIndex: 4
+      addedObject: {fileID: 1632806616}
+    - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
+      insertIndex: 13
       addedObject: {fileID: 1632806602}
     - targetCorrespondingSourceObject: {fileID: 263717846116194194, guid: c30853453787e9c47822f757d1c05cfb, type: 3}
       insertIndex: -1
@@ -2716,6 +2719,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerService
   database: {fileID: 11400000, guid: 69a2bb9f93fed3d40a0f33316d195f18, type: 2}
+--- !u!114 &1632806616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1632806599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c9bec8a0e98a14f8a308cd4b432197, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModifierService
 --- !u!1001 &1697962431
 PrefabInstance:
   m_ObjectHideFlags: 0
