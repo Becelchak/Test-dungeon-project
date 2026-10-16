@@ -2294,11 +2294,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1256996793636976421, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}
       propertyPath: sceneLayers.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1256996793636976421, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}
       propertyPath: sceneLayers.Array.data[3].layer
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 1256996793636976421, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}
+      propertyPath: sceneLayers.Array.data[4].layer
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 1256996793636976421, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}
       propertyPath: sceneLayers.Array.data[2].containerTransform
@@ -2306,6 +2310,10 @@ PrefabInstance:
       objectReference: {fileID: 951280607}
     - target: {fileID: 1256996793636976421, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}
       propertyPath: sceneLayers.Array.data[3].containerTransform
+      value: 
+      objectReference: {fileID: 951280607}
+    - target: {fileID: 1256996793636976421, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}
+      propertyPath: sceneLayers.Array.data[4].containerTransform
       value: 
       objectReference: {fileID: 951280607}
     - target: {fileID: 3201339940954661582, guid: 8564eb9331b32904aa36c2cd932f5297, type: 3}

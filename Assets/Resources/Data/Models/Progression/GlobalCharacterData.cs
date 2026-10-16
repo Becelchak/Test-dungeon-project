@@ -3,6 +3,16 @@
 public enum SkillBranch
 {
     warful = 1,
+    polimorfizm = 2,
+    pride = 3,
+    godliness = 4,
+    dichotomy = 5,
+    scholarchip = 6,
+    convict = 7,
+    felon = 8,
+    flagelliant = 9,
+    scholar = 10,
+    knight = 11
 }
 
 [System.Serializable]
