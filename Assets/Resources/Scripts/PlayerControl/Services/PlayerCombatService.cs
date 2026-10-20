@@ -1,6 +1,7 @@
 ﻿using EventBusSystem;
 using System;
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 /// <summary>
 /// Реализация боевого сервиса игрока. Управляет блоком, идеальным блоком и получением урона.
@@ -18,12 +19,14 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
 
     private IPlayerProfileService _profileService;
     private IEquipmentService _equipmentService;
+    private ICharacterStatsCalculator _characterStatsCalculator;
     private WeaponIKController _weaponIKController;
     private Animator _animatorController;
     private PlayerAnimationController _playerAnimationController;
 
     private IPlayerProfileService ProfileService => _profileService ??= ServiceLocator.Instance.GetService<IPlayerProfileService>();
     private IEquipmentService EquipmentService => _equipmentService ??= ServiceLocator.Instance.GetService<IEquipmentService>();
+    private ICharacterStatsCalculator CharacterStatsCalculator => _characterStatsCalculator ??= ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
     private WeaponIKController WeaponIK => _weaponIKController ??= UnityEngine.Object.FindObjectOfType<WeaponIKController>();
     private Animator PlayerAnimator => WeaponIK?.PlayerAnimator;
     private PlayerAnimationController PlayerAnimController => _playerAnimationController ??= WeaponIK?.GetComponent<PlayerAnimationController>();
@@ -90,29 +93,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
 
         if (IsBlocking)
         {
-            var blocker = GetActiveBlocker() as WeaponData;
-            float window = blocker?.Stats?.perfectBlockWindow ?? 0.5f;
-            float reduction = blocker?.Stats?.blockDamageReduction ?? 0.5f;
-
-            // Проверка, была ли атака заблокирована щитом (направленный блок)
-            if (!damageInfo.WasBlocked)
-            {
-                Debug.Log($"[PlayerCombatService] Атака не попала в щит! Блок не сработал.");
-            }
-            else if (Time.time - BlockStartTime <= window)
-            {
-                finalDamage = 0;
-                Debug.Log($"[PlayerCombatService] Идеальный блок ({blocker?.displayName ?? "без оружия"})! Урон полностью нивелирован.");
-                EventBus.RaiseEvent<IPerfectBlockEventSubscriber>(
-                    s => s.OnPerfectBlock(new PerfectBlockEvent(source, blocker))
-                );
-            }
-            else
-            {
-                //var modifierBlockdamage = _profileService.CurrentProfile
-                finalDamage = Mathf.RoundToInt(damage * (1f - Mathf.Clamp01(reduction)));
-                Debug.Log($"[PlayerCombatService] Обычный блок ({blocker?.displayName ?? "без оружия"}). Урон снижен с {damage} до {finalDamage}.");
-            }
+            CalculateBLockDamage(damage, damageInfo, source, ref finalDamage);
         }
 
         if (finalDamage > 0)
@@ -127,6 +108,44 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
             }
 
             PlayerAnimController?.PlayHitAnimation();
+        }
+    }
+
+    private void CalculateBLockDamage(int damage, DamageInfo damageInfo, GameObject source, ref int finalDamage)
+    {
+        var blocker = GetActiveBlocker() as WeaponData;
+        float window = blocker?.Stats?.perfectBlockWindow ?? 0.5f;
+        float reduction = blocker?.Stats?.blockDamageReduction ?? 0.5f;
+        float currentDamage = damage;
+
+        // Проверка, была ли атака заблокирована щитом (направленный блок)
+        if (!damageInfo.WasBlocked)
+        {
+            Debug.Log($"[PlayerCombatService] Атака не попала в щит! Блок не сработал.");
+        }
+        else if (Time.time - BlockStartTime <= window)
+        {
+            finalDamage = 0;
+            Debug.Log($"[PlayerCombatService] Идеальный блок ({blocker?.displayName ?? "без оружия"})! Урон полностью нивелирован.");
+            EventBus.RaiseEvent<IPerfectBlockEventSubscriber>(
+                s => s.OnPerfectBlock(new PerfectBlockEvent(source, blocker))
+            );
+        }
+        else
+        {
+            // Проценты поглощения
+            var blockPercent = CharacterStatsCalculator.CurrentStats.BlockPercent;
+            currentDamage *= (1f - blockPercent);
+
+            // Плоское поглощение
+            var blockFlat = CharacterStatsCalculator.CurrentStats.BlockFlat;
+            currentDamage -= blockFlat;
+            currentDamage = Math.Max(currentDamage, 0 );
+
+            finalDamage = Mathf.RoundToInt(currentDamage * (1f - Mathf.Clamp01(reduction)));
+            // Гарант того, что урон не будет полностью нивелирован
+            finalDamage = Math.Max(finalDamage, 1);
+            Debug.Log($"[PlayerCombatService] Обычный блок ({blocker?.displayName ?? "без оружия"}). Урон снижен с {damage} до {finalDamage}.");
         }
     }
 

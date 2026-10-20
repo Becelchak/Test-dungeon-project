@@ -2714,6 +2714,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProgressionService
   progressionCurve: {fileID: 11400000, guid: 208b1c4b0a089e24882d50fd8bfa99f6, type: 2}
   traitDatabase: {fileID: 11400000, guid: 47ca7f897d4eb6c4a8c90f55aa2b67da, type: 2}
+  skillDatabase: {fileID: 11400000, guid: ab3ab93652c59e74fb76d301db7ea2cc, type: 2}
 --- !u!114 &1632806615
 MonoBehaviour:
   m_ObjectHideFlags: 0

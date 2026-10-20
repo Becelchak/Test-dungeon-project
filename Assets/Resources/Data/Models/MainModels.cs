@@ -156,6 +156,7 @@ public class PlayerProfile
     public float manahRegenRate = 2.5f;
     public float staminaRegenRate = 5;
     public float staminaRegenAccumulation = 0;
+    // Боевые характеристики
 
     // Инвентарь
     public List<InventoryItem> inventory = new List<InventoryItem>();

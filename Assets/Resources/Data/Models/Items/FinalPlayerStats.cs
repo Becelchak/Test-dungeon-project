@@ -30,7 +30,9 @@ public class FinalPlayerStats
     public float AttackDamage;
     public float AttackRange;
     public float AttackDuration;
-    public int Armor;
+    public int Armor = 0;
+    public float BlockPercent = 0;
+    public int BlockFlat = 0;
 
     [Header("Специализированные механики")]
     public int Glory;

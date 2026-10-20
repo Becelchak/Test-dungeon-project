@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class ProgressionService : BaseService, IProgressionService
@@ -7,8 +8,10 @@ public class ProgressionService : BaseService, IProgressionService
     [Header("Progression Data")]
     [SerializeField] private ProgressionCurveData progressionCurve;
     [SerializeField] private TraitDatabase traitDatabase;
+    [SerializeField] private SkillDatabase skillDatabase;
 
     private IPlayerProfileService _profileService;
+    private ICharacterStatsCalculator _characterStatsCalculator;
     private Dictionary<string, SkillNodeData> _allSkillNodes;
     private Dictionary<string, TraitData> _allTraits;
     public Dictionary<string, TraitData> AllTraits => _allTraits;
@@ -25,6 +28,7 @@ public class ProgressionService : BaseService, IProgressionService
     public event Action<int> OnSkillPointsChanged;
     public event Action<int> OnInsightChanged;
     public event Action<SkillNodeData> OnNodeUnlocked;
+    public event Action<SkillNodeData> OnNodeLocked;
     public event Action<string> OnTraitAdded;
     public event Action<string> OnTraitRemoved;
 
@@ -33,6 +37,7 @@ public class ProgressionService : BaseService, IProgressionService
     private void Start()
     {
         _profileService = ServiceLocator.Instance.GetService<IPlayerProfileService>();
+        _characterStatsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
         LoadSkillNodes();
         LoadTraits();
 
@@ -45,21 +50,23 @@ public class ProgressionService : BaseService, IProgressionService
         {
             InitializeProfileIfNeeded();
             ApplyAllActiveTraits();
+            ApplyActiveSkills();
         }
     }
 
     private void LoadSkillNodes()
     {
-        _allSkillNodes = new Dictionary<string, SkillNodeData>();
-        var nodes = Resources.LoadAll<SkillNodeData>("Data/ScriptableObjects/Skills");
-        foreach (var node in nodes)
+        if(skillDatabase != null)
         {
-            if (!string.IsNullOrEmpty(node.nodeId))
-            {
-                _allSkillNodes[node.nodeId] = node;
-            }
+            _allSkillNodes = skillDatabase.Database;
+            Debug.Log($"[ProgressionService] Загружено {_allSkillNodes.Count} узлов навыков");
         }
-        Debug.Log($"[ProgressionService] Загружено {_allSkillNodes.Count} узлов навыков");
+        else
+        {
+            _allSkillNodes = new Dictionary<string, SkillNodeData>();
+            Debug.LogWarning("[ProgressionService] SkillDatabase не назначен в Inspector");
+        }
+
     }
 
     private void LoadTraits()
@@ -103,13 +110,25 @@ public class ProgressionService : BaseService, IProgressionService
             }
         }
 
-        var statsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
-        if (statsCalculator != null)
-        {
-            statsCalculator.SyncCurrentHealthWithMax();
-        }
+        _characterStatsCalculator?.SyncCurrentHealthWithMax();
 
         Debug.Log($"[ProgressionService] Применены эффекты {profile.activeTraitIds.Count} активных особенностей");
+    }
+
+    private void ApplyActiveSkills()
+    {
+        var profile = _profileService.CurrentProfile;
+        if(profile.unlockedSkillIds == null) return;
+
+        foreach(var skillNodeId in profile.unlockedSkillIds)
+        {
+            if (_allSkillNodes.TryGetValue(skillNodeId, out var skillNode))
+                ApplySkillEffect(skillNodeId);
+        }
+
+        _characterStatsCalculator?.SyncCurrentHealthWithMax();
+
+        Debug.Log($"[ProgressionService] Применены эффекты {profile.unlockedSkillIds.Count} активных способностей");
     }
 
     public void AddXP(int amount, XPSource source)
@@ -292,6 +311,10 @@ public class ProgressionService : BaseService, IProgressionService
         return _allSkillNodes.Values;
     }
 
+    /// <summary>
+    /// Получить все доступные для открытия ноды способностей
+    /// </summary>
+    /// <returns></returns>
     public IReadOnlyCollection<SkillNodeData> GetAvailableNodes()
     {
         var available = new List<SkillNodeData>();
@@ -420,19 +443,7 @@ public class ProgressionService : BaseService, IProgressionService
             return false;
         }
 
-        profile.unlockedSkillIds.Add(nodeId);
-
-        foreach (var effect in node.effects)
-        {
-            var calc = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
-            if (calc != null)
-            {
-                effect.Apply(calc);
-            }
-        }
-
-        OnNodeUnlocked?.Invoke(node);
-        Debug.Log($"[ProgressionService] Узел {nodeId} ({node.displayName}) разблокирован");
+        AddSkill(nodeId);
         return true;
     }
 
@@ -490,8 +501,7 @@ public class ProgressionService : BaseService, IProgressionService
     {
         if (!_allTraits.TryGetValue(traitId, out var trait)) return;
 
-        var calc = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
-        if (calc == null)
+        if (_characterStatsCalculator == null)
         {
             Debug.LogWarning("[ProgressionService] CharacterStatsCalculator не найден");
             return;
@@ -501,7 +511,7 @@ public class ProgressionService : BaseService, IProgressionService
         {
             if (effect != null)
             {
-                effect.Apply(calc);
+                effect.Apply(_characterStatsCalculator);
             }
         }
     }
@@ -510,14 +520,75 @@ public class ProgressionService : BaseService, IProgressionService
     {
         if (!_allTraits.TryGetValue(traitId, out var trait)) return;
 
-        var calc = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
-        if (calc == null) return;
+        if (_characterStatsCalculator == null) return;
 
         foreach (var effect in trait.effects)
         {
             if (effect != null)
             {
-                effect.Remove(calc);
+                effect.Remove(_characterStatsCalculator);
+            }
+        }
+    }
+
+    public void AddSkill(string skillId)
+    {
+        _allSkillNodes.TryGetValue(skillId, out var node);
+        if (node == null) return;
+
+        var profile = _profileService?.CurrentProfile;
+        profile.unlockedSkillIds.Add(skillId);
+
+        foreach (var effect in node.effects)
+        {
+            if (_characterStatsCalculator != null)
+            {
+                effect.Apply(_characterStatsCalculator);
+            }
+        }
+        OnNodeUnlocked?.Invoke(node);
+        Debug.Log($"[ProgressionService] Узел {skillId} ({node.displayName}) разблокирован");
+    }
+
+    public void RemoveSkill(string skillId)
+    {
+        var profile = _profileService?.CurrentProfile;
+        if(!_allSkillNodes.TryGetValue(skillId, out var node))
+        {
+            Debug.LogWarning($"[ProgressionService] Способность {skillId} не найдена, нечего удалять");
+            return;
+        }
+        if (profile == null)
+        {
+            Debug.LogWarning("[ProgressionService] Профиль не найден");
+            return;
+        }
+
+        if (!profile.unlockedSkillIds.Contains(skillId))
+        {
+            Debug.LogWarning($"[ProgressionService] Способность {skillId} не активна");
+            return;
+        }
+        profile.unlockedSkillIds.Remove(skillId);
+        OnNodeLocked.Invoke(node);
+        Debug.Log($"[ProgressionService] Узел {skillId} ({node.displayName}) заблокирован");
+    }
+
+    private void ApplySkillEffect(string skillId)
+    {
+        if (!_allSkillNodes.TryGetValue(skillId, out var skill)) return;
+
+        if (_characterStatsCalculator == null)
+        {
+            Debug.LogWarning("[ProgressionService] CharacterStatsCalculator не найден");
+            return;
+        }
+
+        foreach (var effect in skill.effects)
+        {
+            if (effect != null)
+            {
+                effect.Apply(_characterStatsCalculator);
             }
         }
     }

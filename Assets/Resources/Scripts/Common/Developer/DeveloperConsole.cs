@@ -129,7 +129,10 @@ public class DeveloperConsole : MonoBehaviour
                         "  addtrait <id> — добавить особенность по ID\n" +
                         "  removetrait <id> — удалить особенность по ID\n" +
                         "  traits — показать активные особенности\n" +
-                        "  listtraits — показать все доступные особенности\n");
+                        "  listtraits — показать все доступные особенности\n" +
+                        "  addskill <id> — добавить способность по id\n" +
+                        "  removeskill <id> — удалить способность по ID\n" +
+                        "  skills — показать активные скиллы\n");
                     break;
 
                 case "heal":
@@ -224,6 +227,25 @@ public class DeveloperConsole : MonoBehaviour
                     ListAllTraits();
                     break;
 
+                case "addskill":
+                    if (parts.Length < 2)
+                    {
+                        Log("Ошибка: укажи ID особенности. Пример: removetrait lettered");
+                        break;
+                    }
+                    AddSkill(parts[1]);
+                    break;
+                case "skills":
+                    ShowActiveSkills();
+                    break;
+                case "removeskill":
+                    if (parts.Length < 2)
+                    {
+                        Log("Ошибка: укажи ID особенности. Пример: removetrait lettered");
+                        break;
+                    }
+                    RemoveSkill(parts[1]);
+                    break;
                 default:
                     Log($"Неизвестная команда: {cmd}. Введи 'help' для списка.");
                     break;
@@ -232,6 +254,32 @@ public class DeveloperConsole : MonoBehaviour
         catch (Exception e)
         {
             Log($"Ошибка выполнения команды: {e.Message}");
+        }
+    }
+
+    private void AddSkill(string skillId)
+    {
+        _progressionService.AddSkill(skillId);
+    }
+
+    private void RemoveSkill(string skillId)
+    {
+        _progressionService.RemoveSkill(skillId);
+    }
+
+    private void ShowActiveSkills()
+    {
+        var skills = _progressionService.GetUnlockedNodes();
+        if (skills.Count == 0)
+        {
+            Log("Активных особенностей нет");
+            return;
+        }
+
+        Log($"Активные особенности ({skills.Count}):");
+        foreach (var skill in skills)
+        {
+            Log($"  - {skill.displayName} ({skill.nodeId})");
         }
     }
 

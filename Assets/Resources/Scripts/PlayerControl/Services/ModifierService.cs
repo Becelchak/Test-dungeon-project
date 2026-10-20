@@ -33,6 +33,8 @@ public class ModifierService : BaseService, IModifierService
                     break;
                 case ModifierOp.Percent:
                     result *= (1f + modifier.Value / 100f);
+                    if (result <= 0f)
+                        result = modifier.Value / 100f;
                     break;
             }
         }

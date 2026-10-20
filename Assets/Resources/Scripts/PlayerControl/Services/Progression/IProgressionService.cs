@@ -56,6 +56,8 @@ public interface IProgressionService
     bool TryUnlock(string nodeId);
     void AddTrait(string traitId);
     void RemoveTrait(string traitId);
+    void AddSkill(string skillId);
+    void RemoveSkill(string skillId);
     IReadOnlyList<TraitData> GetActiveTraits();
 
 
@@ -68,4 +70,5 @@ public interface IProgressionService
     /// </summary>
     event Action<int> OnInsightChanged;
     event Action<SkillNodeData> OnNodeUnlocked;
+    public event Action<SkillNodeData> OnNodeLocked;
 }

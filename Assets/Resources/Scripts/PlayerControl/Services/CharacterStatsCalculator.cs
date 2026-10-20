@@ -91,44 +91,6 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
             effects.AddRange(traits[sourceId].effects);
         return effects;
     }
-
-    //public void AddModifier(SkillEffectData source)
-    //{
-    //    // Deprecated: use ModifierService directly
-    //    Debug.LogWarning("[CharacterStatsCalculator] AddModifier(StatType, SkillEffectData) is deprecated. Use ModifierService instead.");
-    //}
-
-    //public void RemoveModifier(SkillEffectData source)
-    //{
-    //    // Deprecated: use ModifierService directly
-    //    Debug.LogWarning("[CharacterStatsCalculator] RemoveModifier(StatType, SkillEffectData) is deprecated. Use ModifierService instead.");
-    //}
-
-    //public void UnlockMechanic(string mechanicId)
-    //{
-    //    if (_modifierService != null)
-    //    {
-    //        // Parse mechanicId to ModifierTarget if needed
-    //        // For now, just log
-    //        Debug.Log($"[CharacterStatsCalculator] Mechanic unlock requested: {mechanicId}");
-    //    }
-    //}
-
-    //public void LockMechanic(string mechanicId)
-    //{
-    //    if (_modifierService != null)
-    //    {
-    //        Debug.Log($"[CharacterStatsCalculator] Mechanic lock requested: {mechanicId}");
-    //    }
-    //}
-
-    //public bool HasMechanic(string mechanicId)
-    //{
-    //    // Deprecated: use ModifierService.HasCapability instead
-    //    Debug.LogWarning("[CharacterStatsCalculator] HasMechanic is deprecated. Use ModifierService.HasCapability instead.");
-    //    return false;
-    //}
-
     public void RegisterTrigger(TriggeredEffect trigger)
     {
         _triggerService.Register(trigger);
@@ -240,6 +202,8 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
         stats.ManaRegenRate = _modifierService.GetValue(ModifierTarget.ManaRegen, stats.ManaRegenRate);
         stats.AttackDamage = _modifierService.GetValue(ModifierTarget.OutgoingDamagePercent, stats.AttackDamage);
         stats.Armor = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.Armor, stats.Armor));
+        stats.BlockPercent = _modifierService.GetValue(ModifierTarget.BlockPercent, stats.BlockPercent);
+        stats.BlockFlat = Mathf.RoundToInt(_modifierService.GetValue(ModifierTarget.BlockFlat, stats.BlockFlat));
     }
 
     private void ApplySpecialMechanics(PlayerProfile profile, FinalPlayerStats stats)
