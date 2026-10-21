@@ -16,4 +16,5 @@ MonoBehaviour:
   displayName: "\u0412\u043E\u0438\u043D\u0441\u0442\u0432\u0435\u043D\u043D\u043E\u0441\u0442\u044C"
   description: 
   branch: 1
-  nodeIds: []
+  nodeIds:
+  - defstance

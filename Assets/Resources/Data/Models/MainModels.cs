@@ -124,7 +124,7 @@ public class PlayerProfile
     //public List<string> activeTriggersId = new();
 
     // Характеристики механические
-    public string archetypeId;
+    public string archetypeId = "knight";
     public List<string> activeTraitIds = new();
     public List<string> unlockedSkillIds = new();
 

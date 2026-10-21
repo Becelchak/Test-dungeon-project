@@ -7,7 +7,7 @@ public class SkillNodeData : ScriptableObject
     public string nodeId;
     public string displayName;
     [TextArea] public string description;
-    public Sprite icon;
+    public Texture icon;
 
     [Header("Graph")]
     [Tooltip("Id предшественника навыка")]

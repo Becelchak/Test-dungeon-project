@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Progression/Archetype")]
@@ -17,7 +17,7 @@ public class ArchetypeData : ScriptableObject
 
     [Header("Skill Trees")]
     [Tooltip("Уникальная ветка типажа")]
-    public List<SkillBranchData> ownBranches;
+    public SkillBranchData ownBranch;
     [Tooltip("Общие ветки типажей")]
     public List<SkillBranchData> allowedSharedBranches;
 }

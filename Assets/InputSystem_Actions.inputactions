@@ -711,6 +711,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenSkills",
+                    "type": "Button",
+                    "id": "af94daa0-c51d-47fe-9a93-b2fa26813b55",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1146,11 +1155,22 @@
                 {
                     "name": "",
                     "id": "59bac6d9-ec76-46e9-bcaa-ca13107bc1b9",
-                    "path": "<Keyboard>/f2",
+                    "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
                     "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fa1298ca-bb81-4ad6-a1a0-ad32d4ad2d07",
+                    "path": "<Keyboard>/f2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "action": "OpenSkills",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -122,6 +122,7 @@ public class DeveloperConsole : MonoBehaviour
                         "  revive — воскресить игрока и восстановить статы\n" +
                         "  godmode — переключить неуязвимость\n" +
                         "  clear — очистить консоль\n" +
+                        "  resetprofile — очистить профиль и создать его заново\n" +
                         "  clearinventory - очистить инвентарь\n" +
                         "  addxp <n> — начислить n очков опыта\n" +
                         "  setlevel <n> — выставить определенный уровень\n" +
@@ -173,6 +174,10 @@ public class DeveloperConsole : MonoBehaviour
 
                 case "clear":
                     _logLines.Clear();
+                    break;
+
+                case "resetprofile":
+                    _profileService.ResetProfile();
                     break;
 
                 case "clearinventory":

@@ -16,6 +16,7 @@ public class InputManagerService : BaseService, IInputService
     public event Action<bool> OnBlock;
     public event Action OnParry;
     public event Action OnOpenInventory;
+    public event Action OnOpenSkills;
     public event Action OnCancel;
     public event Action OnLeftClick;
 
@@ -30,6 +31,7 @@ public class InputManagerService : BaseService, IInputService
     public InputAction _blockAction { get; set; }
     public InputAction _parryAction { get; set; }
     public InputAction _openInventory {  get; set; }
+    public InputAction _openSkills { get; set; }
     public InputAction _closeAction { get; set; }
     public InputAction _changeEquipItemStatus { get; set; }
     public InputAction _leftClickAction { get; set; }
@@ -127,6 +129,9 @@ public class InputManagerService : BaseService, IInputService
 
         _openInventory = _inputActions.FindAction("OpenInventory");
         _openInventory.performed += ctx => OnOpenInventory?.Invoke();
+
+        _openSkills = _inputActions.FindAction("OpenSkills");
+        _openSkills.performed += ctx => OnOpenSkills?.Invoke();
 
         _closeAction = _inputActions.FindAction("Cancel");
         _closeAction.performed += ctx => OnCancel?.Invoke();

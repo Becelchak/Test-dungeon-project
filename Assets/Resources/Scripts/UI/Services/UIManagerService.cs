@@ -23,6 +23,7 @@ public class UIManagerService : BaseService, IUIManagerService
         _input = ServiceLocator.Instance.GetService<IInputService>();
 
         _input.OnOpenInventory += ToggleInventory;
+        _input.OnOpenSkills += ShowSkillsPanel;
         _input.OnCancel += CloseTop;
     }
 
@@ -33,7 +34,6 @@ public class UIManagerService : BaseService, IUIManagerService
             CloseSpecificWindow<InventoryViewModel>();
             CloseSpecificWindow<EquipmentViewModel>();
             CloseSpecificWindow<ContextMenuViewModel>();
-            //_input.SetGameplayInputActive(true);
         }
         else
         {
@@ -53,6 +53,27 @@ public class UIManagerService : BaseService, IUIManagerService
                 Layer = UILayer.InventoryGroup,
                 ViewModelType = typeof(EquipmentViewModel),
                 CloseAction = () => _windowService.CloseWindow<EquipmentViewModel>()
+            });
+
+            SetGameplayControlsEnabled(false);
+        }
+    }
+
+    public void ShowSkillsPanel()
+    {
+        if (_windowService.IsWindowOpen<SkillsPanelViewModel>())
+        {
+            CloseSpecificWindow<SkillsPanelViewModel>();
+        }
+        else
+        {
+            _windowService.ShowWindow<SkillsPanelViewModel>(UILayer.Skills);
+
+            _uiStack.Push(new OpenUiElement
+            {
+                Layer = UILayer.Skills,
+                ViewModelType = typeof(SkillsPanelViewModel),
+                CloseAction = () => _windowService.CloseWindow<SkillsPanelViewModel>()
             });
 
             SetGameplayControlsEnabled(false);

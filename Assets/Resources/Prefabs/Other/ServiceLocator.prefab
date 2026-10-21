@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3390793313035308619}
   - component: {fileID: 6241578718505583808}
   - component: {fileID: 3015174127438741634}
+  - component: {fileID: 3564217031261235031}
+  - component: {fileID: 4803592339933986894}
   - component: {fileID: 5508155705868067558}
   - component: {fileID: 8288075510705487271}
   - component: {fileID: 2801370398747318407}
@@ -19,8 +21,10 @@ GameObject:
   - component: {fileID: 4185081372094673314}
   - component: {fileID: 370049400468932136}
   - component: {fileID: 8801645924411173381}
-  - component: {fileID: 4702218001350383187}
+  - component: {fileID: 6871214379146375729}
   - component: {fileID: 4279527608736803576}
+  - component: {fileID: 1799204415752663619}
+  - component: {fileID: 3150093512750046433}
   m_Layer: 5
   m_Name: ServiceLocator
   m_TagString: Untagged
@@ -77,6 +81,36 @@ MonoBehaviour:
   equipmentPrefab: {fileID: 6588561125672318610, guid: b5c299b7d2dd85c4b9d2848330c0c122, type: 3}
   loadingScreenPrefab: {fileID: 5692849397523290970, guid: 43f8f9b681a2bd2468ad17b492e4c003, type: 3}
   contextMenuPrefab: {fileID: 3544921645370448186, guid: 0718350d8d87ebd46b536191e8d356c1, type: 3}
+  skillsPanelPrefab: {fileID: 4110767285360399435, guid: 823c92b05f9fb804986aa430c958e837, type: 3}
+--- !u!114 &3564217031261235031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b128e990da897428a67b793398cbbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterStatsCalculator
+  healthPerStrength: 5
+  baseStamina: 100
+  staminaPerAgility: 2
+  speedPerAgility: 0.02
+  baseStaminaRegen: 5
+--- !u!114 &4803592339933986894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1c9bec8a0e98a14f8a308cd4b432197, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModifierService
 --- !u!114 &5508155705868067558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentService
   _slots: []
   _activeWeaponSlotIndex: 0
---- !u!114 &4702218001350383187
+--- !u!114 &6871214379146375729
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,14 +220,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 263717846116194194}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf3c9b35af52e494db8ba1dddbe1a76f, type: 3}
+  m_Script: {fileID: 11500000, guid: 2082c4eed941f0546bbe16c951e74f16, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EquipmentStatsCalculator
-  healthPerStrength: 5
-  baseStamina: 100
-  staminaPerAgility: 2
-  speedPerAgility: 0.02
-  baseStaminaRegen: 5
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressionService
+  progressionCurve: {fileID: 11400000, guid: 208b1c4b0a089e24882d50fd8bfa99f6, type: 2}
+  traitDatabase: {fileID: 11400000, guid: 47ca7f897d4eb6c4a8c90f55aa2b67da, type: 2}
+  skillDatabase: {fileID: 11400000, guid: ab3ab93652c59e74fb76d301db7ea2cc, type: 2}
 --- !u!114 &4279527608736803576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,3 +238,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4da4d91e2c6e823419087d49925c1ef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatService
+--- !u!114 &1799204415752663619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e858576af6a7ce4ebc0a2395c625544, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractionTargetingService
+  interactableMask:
+    serializedVersion: 2
+    m_Bits: 98304
+  maxDistance: 1.5
+--- !u!114 &3150093512750046433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 236ab7e3bb2afce4bb68894b5868be05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TriggerService
+  database: {fileID: 11400000, guid: 69a2bb9f93fed3d40a0f33316d195f18, type: 2}

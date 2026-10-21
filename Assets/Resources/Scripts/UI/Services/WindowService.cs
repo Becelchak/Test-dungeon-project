@@ -17,6 +17,7 @@ public class WindowService : BaseService, IWindowService
     [SerializeField] private GameObject equipmentPrefab;
     [SerializeField] private GameObject loadingScreenPrefab;
     [SerializeField] private GameObject contextMenuPrefab;
+    [SerializeField] private GameObject skillsPanelPrefab;
 
 
     private Dictionary<Type, GameObject> _openWindows = new Dictionary<Type, GameObject>();
@@ -122,6 +123,7 @@ public class WindowService : BaseService, IWindowService
         if (type == typeof(AIDialogueViewModel)) return aiDialoguePrefab;
         if (type == typeof(ClassicalDialogueViewModel)) return classicalDialoguePrefab;
         if (type == typeof(ContextMenuViewModel)) return contextMenuPrefab;
+        if (type == typeof(SkillsPanelViewModel)) return skillsPanelPrefab;
         //TO DO: Переписать на ViewModel
         if (type == typeof(LoadingScreenUI)) return loadingScreenPrefab;
 

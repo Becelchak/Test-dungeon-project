@@ -15,6 +15,7 @@ public interface IInputService
     event Action<bool> OnBlock;
     event Action OnParry;
     event Action OnOpenInventory;
+    event Action OnOpenSkills;
     event Action OnCancel;
     event Action OnLeftClick;
 
