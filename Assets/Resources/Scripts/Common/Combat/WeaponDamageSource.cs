@@ -14,7 +14,7 @@ public class WeaponDamageSource : MonoBehaviour
     public float BaseDamage;
 
     [Tooltip("Тип урона")]
-    public DamageType DamageType = DamageType.Physical;
+    public DamageType DamageType = DamageType.True;
 
     private HashSet<IDamageable> _hitTargets = new HashSet<IDamageable>();
 

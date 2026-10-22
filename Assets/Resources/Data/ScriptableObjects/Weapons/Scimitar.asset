@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb97a34184cf54e4791a379d957b8dc8, type: 3}
+  m_Name: Scimitar
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  itemId: scimitar
+  displayName: "\u0421\u043A\u0438\u043C\u0438\u0442\u0430\u0440"
+  description: "\u0427\u0443\u0434\u043D\u043E\u0435 \u043E\u0440\u0443\u0436\u0438\u0435
+    \u043E\u0442\u043A\u0443\u0434\u0430-\u0442\u043E \u0441 \u044E\u0433\u0430 \u0438\u0437
+    \u0437\u0435\u043C\u0435\u043B\u044C \u043A\u0430\u0433\u0430\u043D\u0430\u0442\u0430
+    \u041B\u0435\u043D\u043C\u0444\u0435\u043D\u0430. \u0420\u0430\u0437\u0438\u0442
+    \u0432\u0440\u0430\u0433\u043E\u0432 \u043D\u0435 \u0442\u0430\u043A \u0443\u0436
+    \u0438 \u0441\u0438\u043B\u044C\u043D\u043E, \u0437\u0430\u0442\u043E \u0431\u044B\u0441\u0442\u0440\u043E. "
+  icon: {fileID: 0}
+  itemType: 0
+  rarity: 3
+  isStackable: 0
+  maxStackSize: 1
+  weaponType: 1
+  handling: 0
+  attackAnimationClips:
+  - {fileID: 7400000, guid: bd9c7c1a6a7df4642b03ab5e36ddac97, type: 2}
+  weaponPrefab: {fileID: 686466943887150555, guid: 028831148d7ccd845916ddb0304e4a1a, type: 3}
+  weaponHolderOffset: {x: 0, y: 0, z: 0}
+  weaponHolderRotationOffsetEuler: {x: 180, y: 0, z: 75}
+  weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
+  weaponHolderAttackRotationOffsetEuler: {x: 180, y: 0, z: 75}
+  blockAnimationClip: {fileID: 7400000, guid: e2eb3a8372b01fc4a8ae92fe3fc7b56b, type: 2}
+  parryAnimationClip: {fileID: 7400000, guid: 9b1baa5128016c4499b787387b551567, type: 2}
+  hitAnimationClip: {fileID: 0}
+  deathAnimationClip: {fileID: 0}
+  rightHandPositionOffset: {x: 0, y: 0, z: 0}
+  rightHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  leftHandPositionOffset: {x: 0, y: 0, z: 0}
+  leftHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
+  aimRotationAxis: {x: 1, y: 0, z: 0}
+  aimPivotOffset: {x: 0, y: 0, z: 0}
+  maxAimAngleUp: 90
+  maxAimAngleDown: 180
+  aimSpeed: 360
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 10240
+  jsonFile: {fileID: 4900000, guid: 635af29185aabd84cbdc2a3d20fa1aa8, type: 3}
+  stats:
+    weaponId: sword_scimitar_02
+    damage: 9.5
+    range: 2.05
+    attackDuration: 0.8
+    perfectBlockWindow: 0.1
+    blockDamageReduction: 0.08
+    parryWindow: 0.2
+    parryStaminaCost: 18
+    attackStaminaCost: 15
+    weakAttackSpeedMultiplier: 1.65
+    weakAttackDamageMultiplier: 0.35

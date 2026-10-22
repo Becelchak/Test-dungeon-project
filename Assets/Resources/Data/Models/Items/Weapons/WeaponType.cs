@@ -5,5 +5,7 @@
     Axe,
     Greatsword,
     Dagger,
-    Shield
+    Shield,
+    Mace,
+    Polearm
 }

@@ -1,0 +1,13 @@
+﻿{
+  "weaponId": "polearm_01",
+  "damage": 38,
+  "range": 3.2,
+  "attackDuration": 2,
+  "perfectBlockWindow": 0.04,
+  "blockDamageReduction": 0.18,
+  "parryWindow": 0.12,
+  "parryStaminaCost": 35,
+  "attackStaminaCost": 22,
+  "weakAttackSpeedMultiplier": 2.2,
+  "weakAttackDamageMultiplier": 0.85
+}

@@ -27,7 +27,6 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
     public event Action<FinalPlayerStats> OnStatsChanged;
 
     protected override Type GetServiceType() => typeof(ICharacterStatsCalculator);
-
     private void Start()
     {
         _profileService = ServiceLocator.Instance.GetService<IPlayerProfileService>();

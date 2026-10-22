@@ -52,7 +52,7 @@ MonoBehaviour:
   aimSpeed: 70
   aimLayers:
     serializedVersion: 2
-    m_Bits: 8256
+    m_Bits: 8704
   jsonFile: {fileID: 4900000, guid: e0f576dbff09d2e4ea012e0ad2547d8c, type: 3}
   stats:
     weaponId: sword_01

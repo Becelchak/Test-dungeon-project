@@ -1,0 +1,13 @@
+﻿{
+  "weaponId": "sword_scimitar_02",
+  "damage": 9.5,
+  "range": 2.05,
+  "attackDuration": 0.8,
+  "perfectBlockWindow": 0.1,
+  "blockDamageReduction": 0.08,
+  "parryWindow": 0.2,
+  "parryStaminaCost": 18,
+  "attackStaminaCost": 15,
+  "weakAttackSpeedMultiplier": 1.65,
+  "weakAttackDamageMultiplier": 0.35
+}

@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb97a34184cf54e4791a379d957b8dc8, type: 3}
+  m_Name: Morning_star
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponData
+  itemId: morning_star
+  displayName: "\u0417\u0432\u0435\u0437\u0434\u043D\u0430\u044F \u0431\u0443\u043B\u0430\u0432\u0430"
+  description: "\u041B\u0435\u0433\u043A\u043E\u0435 \u0438 \u0431\u044B\u0441\u0442\u0440\u043E\u0435
+    \u043E\u0440\u0443\u0436\u0438\u0435, \u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0435
+    \u0434\u0440\u043E\u0431\u0438\u0442\u044C \u043A\u043E\u0441\u0442\u0438 \u043D\u0435\u0434\u0440\u0443\u0433\u043E\u0432.
+    \u0415\u0441\u043B\u0438 \u0432\u0440\u0430\u0433 \u043D\u0435 \u0443\u043C\u0440\u0435\u0442
+    \u043E\u0442 \u043F\u0435\u0440\u0435\u043B\u043E\u043C\u0430 \u043A\u043E\u0441\u0442\u0435\u0439,
+    \u043A\u0440\u043E\u0432\u043E\u0442\u0435\u0447\u0435\u043D\u0438\u0435 \u0434\u043E\u0431\u044C\u0435\u0442
+    \u0435\u0433\u043E \u0441\u043B\u0435\u0434\u043E\u043C."
+  icon: {fileID: 0}
+  itemType: 0
+  rarity: 1
+  isStackable: 0
+  maxStackSize: 1
+  weaponType: 6
+  handling: 0
+  attackAnimationClips:
+  - {fileID: 7400000, guid: bd9c7c1a6a7df4642b03ab5e36ddac97, type: 2}
+  weaponPrefab: {fileID: 5951920708512008400, guid: 2d0e8099286a2b14fa81b189a8ed255f, type: 3}
+  weaponHolderOffset: {x: -0.1, y: 0, z: 0}
+  weaponHolderRotationOffsetEuler: {x: 180, y: 0, z: 75}
+  weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
+  weaponHolderAttackRotationOffsetEuler: {x: 180, y: 0, z: 75}
+  blockAnimationClip: {fileID: 0}
+  parryAnimationClip: {fileID: 7400000, guid: da19c13d63c294f48a6f6a68967d9fc7, type: 2}
+  hitAnimationClip: {fileID: 0}
+  deathAnimationClip: {fileID: 0}
+  rightHandPositionOffset: {x: 0, y: 0, z: 0}
+  rightHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  leftHandPositionOffset: {x: 0, y: 0, z: 0}
+  leftHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
+  twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
+  aimRotationAxis: {x: 1, y: 0, z: 0}
+  aimPivotOffset: {x: 0, y: 0, z: 0}
+  maxAimAngleUp: 45
+  maxAimAngleDown: 25
+  aimSpeed: 5
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 8704
+  jsonFile: {fileID: 4900000, guid: b4e130ff547f7724bb87496a475aff49, type: 3}
+  stats:
+    weaponId: mace_01
+    damage: 10.2
+    range: 2.4
+    attackDuration: 0.75
+    perfectBlockWindow: 0.15
+    blockDamageReduction: 0.1
+    parryWindow: 0.15
+    parryStaminaCost: 8
+    attackStaminaCost: 8
+    weakAttackSpeedMultiplier: 1.85
+    weakAttackDamageMultiplier: 0.45

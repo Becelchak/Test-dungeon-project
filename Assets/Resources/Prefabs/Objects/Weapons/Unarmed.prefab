@@ -155,4 +155,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponDamageSource
   IsActive: 0
   BaseDamage: 0
-  DamageType: 0
+  DamageType: 2

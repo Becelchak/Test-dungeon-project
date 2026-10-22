@@ -100,11 +100,11 @@ public class PlayerHUDViewModel : BaseViewModel,
         else
         {
             Health = p.health;
-            MaxHealth = _statsCalculator.CurrentStats.MaxHealth;
+            MaxHealth = _statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxHealth : p.maxHealth;
             Mana = p.mana;
-            MaxMana = _statsCalculator.CurrentStats.MaxMana;
+            MaxMana = _statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxMana : p.maxMana;
             Stamina = p.stamina;
-            MaxStamina = _statsCalculator.CurrentStats.MaxStamina;
+            MaxStamina = _statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxStamina : p.stamina;
         }
         EventBus.Subscribe(this);
 

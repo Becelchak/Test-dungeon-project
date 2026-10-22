@@ -1,0 +1,13 @@
+﻿{
+  "weaponId": "mace_01",
+  "damage": 10.2,
+  "range": 2.4,
+  "attackDuration": 0.75,
+  "perfectBlockWindow": 0.15,
+  "blockDamageReduction": 0.1,
+  "parryWindow": 0.15,
+  "parryStaminaCost": 8,
+  "attackStaminaCost": 8,
+  "weakAttackSpeedMultiplier": 1.85,
+  "weakAttackDamageMultiplier": 0.45
+}

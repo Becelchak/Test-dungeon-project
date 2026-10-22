@@ -48,7 +48,7 @@ MonoBehaviour:
   aimSpeed: 100
   aimLayers:
     serializedVersion: 2
-    m_Bits: 8256
+    m_Bits: 8704
   jsonFile: {fileID: 4900000, guid: 85c264457ae54104e8a2b5ce739f9018, type: 3}
   stats:
     weaponId: hands_01
