@@ -10,6 +10,7 @@ public class ServiceLocator : MonoBehaviour
     private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
     private static GameObject _prefab;
     [SerializeField] private static string PrefabServiceLocatorDefaultPath = "Prefabs/Other/ServiceLocator";
+    [SerializeField] private bool isDebuggeMode;
     //[SerializeField] private string defaultPrefabPath = "Prefabs/Other/ServiceLocator";
 
     public static ServiceLocator Instance
@@ -54,7 +55,8 @@ public class ServiceLocator : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("ЗАПУСТИЛСЯ ЛОКАТОР");
+        if(isDebuggeMode)
+            Debug.Log("ЗАПУСТИЛСЯ ЛОКАТОР");
         if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
@@ -75,7 +77,8 @@ public class ServiceLocator : MonoBehaviour
         foreach (var service in services)
         {
             // Сервисы зарегистрируют себя автоматически через BaseService.Awake()
-            Debug.Log($"Found service: {service.GetType().Name}");
+            if (isDebuggeMode)
+                Debug.Log($"Found service: {service.GetType().Name}");
         }
     }
 
@@ -90,7 +93,8 @@ public class ServiceLocator : MonoBehaviour
         else
         {
             _services.Add(serviceType, service);
-            Debug.Log($"Registered service: {serviceType.Name}");
+            if (isDebuggeMode)
+                Debug.Log($"Registered service: {serviceType.Name}");
         }
     }
 
@@ -103,7 +107,8 @@ public class ServiceLocator : MonoBehaviour
         }
         else
         {
-            Debug.Log($"Service: {serviceType.Name} not found for delete");
+            if (isDebuggeMode)
+                Debug.Log($"Service: {serviceType.Name} not found for delete");
         }
     }
 
@@ -131,14 +136,17 @@ public class ServiceLocator : MonoBehaviour
 
     public void OnDestroy()
     {
-        Debug.Log("УНИЧТОЖИЛСЯ ЛОКАТОР");
+        if (isDebuggeMode)
+            Debug.Log("УНИЧТОЖИЛСЯ ЛОКАТОР");
     }
 
     public void DebugServices(string context)
     {
-        Debug.Log($"=== ServiceLocator state at {context} ===");
+        if (isDebuggeMode)
+            Debug.Log($"=== ServiceLocator state at {context} ===");
         foreach (var kv in _services)
-            Debug.Log($"- {kv.Key.Name} : {kv.Value}");
+            if (isDebuggeMode)
+                Debug.Log($"- {kv.Key.Name} : {kv.Value}");
     }
 
     private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;

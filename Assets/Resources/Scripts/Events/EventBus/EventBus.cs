@@ -1,4 +1,4 @@
-namespace EventBusSystem
+﻿namespace EventBusSystem
 {
     using System;
     using System.Collections.Generic;
@@ -9,6 +9,7 @@ namespace EventBusSystem
     {
         private static readonly Dictionary<Type, SubscribersList<IGlobalSubscriber>> s_Subscribers
             = new Dictionary<Type, SubscribersList<IGlobalSubscriber>>();
+        [SerializeField] static private bool isDebuggeMode;
 
         private static readonly object s_Lock = new object();
 
@@ -56,7 +57,8 @@ namespace EventBusSystem
                 }
             }
 
-            Debug.Log($"[EventBus] Вызов события для {typeof(TSubscriber).Name}, подписчиков: {subscribers.List.Count}");
+            if (isDebuggeMode)
+                Debug.Log($"EventBus] Вызов события для {typeof(TSubscriber).Name}, подписчиков: {subscribers.List.Count}");
 
             subscribers.Executing = true;
             foreach (IGlobalSubscriber subscriber in subscribers.List.ToList())

@@ -71,6 +71,14 @@ public class WeaponData : ItemData
     [Tooltip("Слои для raycast курсора: враги + земля. Должны исключать коллайдеры игрока.")]
     public LayerMask aimLayers;
 
+    [Header("Multi-Position Constraint")]
+    [Tooltip("Локальная позиция кончика лезвия относительно корня оружия для прицеливания.")]
+    public Vector3 bladeTipOffset = Vector3.zero;
+    [Tooltip("Локальный поворот кончика лезвия при ударе.")]
+    public Vector3 bladeTipRotationOffset = Vector3.zero;
+    [Tooltip("Сохранять ли оффсет оружия при прицеливании.")]
+    public bool maintainOffset = true;
+
     [Header("Data Source (JSON)")]
     [Tooltip("Ссылка на JSON файл в проекте")]
     [SerializeField] private TextAsset jsonFile;

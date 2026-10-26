@@ -84,10 +84,16 @@ public class CharacterStatsCalculator : BaseService, ICharacterStatsCalculator
         var skills = _progressionService.AllSkillNodes;
         var traits = _progressionService.AllTraits;
         var effects = new List<SkillEffectData>();
-        if (skills.ContainsKey(sourceId))
-            effects.AddRange(skills[sourceId].effects);
-        if (traits.ContainsKey(sourceId))
-            effects.AddRange(traits[sourceId].effects);
+        if(skills != null)
+        {
+            if (skills.ContainsKey(sourceId))
+                effects.AddRange(skills[sourceId].effects);
+        }
+        if(traits != null)
+        {
+            if (traits.ContainsKey(sourceId))
+                effects.AddRange(traits[sourceId].effects);
+        }
         return effects;
     }
     public void RegisterTrigger(TriggeredEffect trigger)

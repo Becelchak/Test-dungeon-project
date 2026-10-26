@@ -6,7 +6,7 @@ public class SkillNodeViewModel : BaseViewModel
     private string _nodeId;
     private string _displayName;
     private string _description;
-    private Texture _icon;
+    private Sprite _icon;
     private int _cost;
     private bool _isUnlocked;
     private bool _canUnlock;
@@ -30,7 +30,7 @@ public class SkillNodeViewModel : BaseViewModel
         private set => SetProperty(ref _description, value);
     }
 
-    public Texture Icon
+    public Sprite Icon
     {
         get => _icon;
         private set => SetProperty(ref _icon, value);
@@ -64,7 +64,7 @@ public class SkillNodeViewModel : BaseViewModel
 
     private IProgressionService _progressionService;
 
-    public SkillNodeViewModel(string nodeId, string displayName, string description, Texture icon, int cost, IProgressionService progressionService)
+    public SkillNodeViewModel(string nodeId, string displayName, string description, Sprite icon, int cost, IProgressionService progressionService)
     {
         _nodeId = nodeId;
         _displayName = displayName;

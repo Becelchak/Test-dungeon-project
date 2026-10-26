@@ -12,7 +12,8 @@ public class EquipmentService : BaseService, IEquipmentService
     [SerializeField] private int _activeWeaponSlotIndex = 0;
     private int _previousWeaponSlotIndex = 0;
     private bool IsDead;
-
+    [Header("Тестирование")]
+    [SerializeField] private bool isDebuggeMode;
     private WeaponData _unarmedWeapon;
 
     public IReadOnlyList<EquipmentSlot> Slots => _slots;
@@ -154,7 +155,8 @@ public class EquipmentService : BaseService, IEquipmentService
             return false;
         }
 
-        Debug.Log($"[EquipmentService] Экипировано {item.displayName} в слот {slotType}.");
+        if (isDebuggeMode)
+            Debug.Log($"[EquipmentService] Экипировано {item.displayName} в слот {slotType}.");
 
         OnEquipmentChanged?.Invoke(slotType, item);
 
@@ -179,7 +181,8 @@ public class EquipmentService : BaseService, IEquipmentService
         var previousShield = CurrentShield;
         var removedItem = slot.Unequip();
 
-        Debug.Log($"[EquipmentService] Снято {removedItem.displayName} из слота {slotType}.");
+        if (isDebuggeMode)
+            Debug.Log($"[EquipmentService] Снято {removedItem.displayName} из слота {slotType}.");
 
         OnEquipmentChanged?.Invoke(slotType, null);
 
@@ -205,7 +208,8 @@ public class EquipmentService : BaseService, IEquipmentService
         var selectedItem = GetItemInSlot(EquipmentSlotType.Weapon1 + index);
         if (selectedItem is WeaponData selectedWeapon && selectedWeapon.handling == WeaponHandling.OffHand)
         {
-            Debug.Log("[EquipmentService] Слот со щитом нельзя сделать активным оружием.");
+            if (isDebuggeMode)
+                Debug.Log("[EquipmentService] Слот со щитом нельзя сделать активным оружием.");
             return;
         }
 

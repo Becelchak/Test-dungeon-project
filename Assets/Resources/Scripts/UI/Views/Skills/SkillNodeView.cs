@@ -10,7 +10,7 @@ public class SkillNodeView : MonoBehaviour
 
     [Header("UI Components")]
     [Tooltip("Иконка навыка. Может назначаться само, если изображение на объекте")]
-    public RawImage iconImage;
+    public Image iconImage;
     public Outline outlineImage;
     [Tooltip("Кнопка взаимодействия с навыком. Может назначаться сама, если кнопка на объекте")]
     public Button unlockButton;
@@ -32,13 +32,13 @@ public class SkillNodeView : MonoBehaviour
         _viewModel = viewModel;
 
         if (iconImage == null)
-            iconImage = gameObject.GetComponent<RawImage>();
+            iconImage = gameObject.GetComponent<Image>();
         else
-            iconImage.texture = viewModel.Icon;
+            iconImage.sprite = viewModel.Icon;
 
         UpdateStatus();
 
-        // Подписываемся на изменения свойств
+        // Подписка на изменения свойств
         _viewModel.PropertyChanged += OnPropertyChanged;
 
         if (unlockButton != null)
