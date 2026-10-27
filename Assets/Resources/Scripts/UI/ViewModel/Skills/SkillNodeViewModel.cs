@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using System.Windows.Input;
 using UnityEngine;
 
 public class SkillNodeViewModel : BaseViewModel
@@ -11,6 +13,7 @@ public class SkillNodeViewModel : BaseViewModel
     private bool _isUnlocked;
     private bool _canUnlock;
     private bool _isLocked;
+    private List<SkillNodeData> _requriedSkillNodes = new List<SkillNodeData>();
 
     public string NodeId
     {
@@ -60,6 +63,12 @@ public class SkillNodeViewModel : BaseViewModel
         private set => SetProperty(ref _isLocked, value);
     }
 
+    public List<SkillNodeData> SkillNodes
+    {
+        get => _requriedSkillNodes;
+        private set => SetProperty(ref _requriedSkillNodes, value);
+    }
+
     public ICommand UnlockCommand { get; private set; }
 
     private IProgressionService _progressionService;
@@ -76,6 +85,7 @@ public class SkillNodeViewModel : BaseViewModel
         UnlockCommand = new RelayCommand(ExecuteUnlock, CanExecuteUnlock);
 
         UpdateUnlockStatus();
+        FindRequiredNodes();
     }
 
     public void UpdateUnlockStatus()
@@ -84,8 +94,20 @@ public class SkillNodeViewModel : BaseViewModel
 
         IsUnlocked = _progressionService.IsUnlocked(_nodeId);
         _progressionService.CanUnlock(_nodeId, out var reason);
-        CanUnlock = !IsUnlocked && reason != UnlockReason.RequirementFailed;
+        CanUnlock = !IsUnlocked && (reason == UnlockReason.Ok || reason == UnlockReason.Console);
         IsLocked = !IsUnlocked && !CanUnlock;
+    }
+
+    private void FindRequiredNodes()
+    {
+        var skillData = _progressionService.GetSkillNodeData(_nodeId);
+        foreach (var node in _progressionService.GetAllNodes())
+        {
+            if (skillData.requiredNodes.Contains(node.nodeId))
+            {
+                _requriedSkillNodes.Add(node);
+            }
+        }
     }
 
     private void ExecuteUnlock()

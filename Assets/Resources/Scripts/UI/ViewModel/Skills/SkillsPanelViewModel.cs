@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public enum SkillsTabType
@@ -186,10 +187,10 @@ public class SkillsPanelViewModel : BaseViewModel
         // Update the node's unlock status
         foreach (var branch in Branches)
         {
-            var nodeVm = branch.Nodes.FirstOrDefault(n => n.NodeId == node.nodeId);
-            if (nodeVm != null)
+            //var nodeVm = branch.Nodes.FirstOrDefault(n => n.NodeId == node.nodeId);
+            foreach(var nodeVm in branch.Nodes)
             {
-                nodeVm.UpdateUnlockStatus();
+                nodeVm?.UpdateUnlockStatus();
             }
         }
     }

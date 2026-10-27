@@ -17,7 +17,8 @@ MonoBehaviour:
   description: "\u041F\u043E\u0437\u0432\u043E\u043B\u044F\u0435\u0442 \u043C\u0435\u043D\u044F\u0442\u044C
     \u0445\u0432\u0430\u0442\u043A\u0443 \u043E\u0440\u0443\u0436\u0438\u044F"
   icon: {fileID: -399082182, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - duelist
   cost: 1
   branch: 1
   effects: []

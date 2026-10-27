@@ -18,7 +18,8 @@ MonoBehaviour:
     \u0432\u044B\u043D\u043E\u0441\u043B\u0438\u0432\u043E\u0441\u0442\u0438 \u043D\u0430
     \u0430\u0442\u0430\u043A\u0443 \u043D\u0430 25%"
   icon: {fileID: -817195607, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - maelstorm
   cost: 1
   branch: 1
   effects: []

@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UIElements;
+using System.Net;
 
 public class SkillBranchView : MonoBehaviour
 {
@@ -10,16 +11,19 @@ public class SkillBranchView : MonoBehaviour
     public string branchId;
     public TextMeshProUGUI branchNameText;
     public Image branchIconImage;
+    public UILineRenderer globalLineRenderer;
 
     [Header("Nodes Container")]
-    public Transform nodesContainer;
-
+    [SerializeField] private Transform nodesContainer;
+    [SerializeField] float offset = 28.5f;
     private SkillBranchViewModel _viewModel;
     private Dictionary<string, SkillNodeView> _nodeViews = new Dictionary<string, SkillNodeView>();
+    private RectTransform localCanvasRect;
 
     public void Bind(SkillBranchViewModel viewModel)
     {
         _viewModel = viewModel;
+        localCanvasRect = globalLineRenderer.GetComponent<RectTransform>();
 
         if (branchNameText != null)
             branchNameText.text = viewModel.DisplayName;
@@ -69,8 +73,41 @@ public class SkillBranchView : MonoBehaviour
 
     private void DrawConnections()
     {
-        // TODO: Implement line drawing between nodes
-        // Need use SkillNodeData.requiredNodes to determine connections
+        List<UILineRenderer.LineSegment> allSegments = new List<UILineRenderer.LineSegment>();
+        foreach (var nodeView in _nodeViews.Values)
+        {
+            var nodesForConnection = nodeView.GetRequiredNodes();
+            foreach (var node in nodesForConnection)
+            {
+                CreateLineBetween(nodeView, _nodeViews[node.nodeId], ref allSegments);
+            }
+        }
+        globalLineRenderer.SetSegments(allSegments);
+    }
+
+    private void CreateLineBetween(SkillNodeView parent, SkillNodeView child, ref List<UILineRenderer.LineSegment> allSegments)
+    {
+
+        var parentRect = parent.GetComponent<RectTransform>();
+        var childRect = child.GetComponent<RectTransform>();
+
+        Vector3 parentWorld = parentRect.TransformPoint(Vector2.zero);
+        Vector3 childWorld = childRect.TransformPoint(Vector2.zero);
+
+        Vector2 startPos = localCanvasRect.InverseTransformPoint(parentWorld);
+        Vector2 endPos = localCanvasRect.InverseTransformPoint(childWorld);
+
+
+        Vector2 direction = (endPos - startPos).normalized;
+        float distance = Vector2.Distance(startPos, endPos);
+
+        if (distance > offset)
+        {
+            startPos += direction * offset;
+            endPos -= direction * offset;
+        }
+
+        allSegments.Add(new UILineRenderer.LineSegment(startPos, endPos));
     }
 
     private void OnDestroy()

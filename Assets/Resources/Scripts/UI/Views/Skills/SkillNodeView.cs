@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using TMPro;
 using System;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 public class SkillNodeView : MonoBehaviour
 {
@@ -14,6 +16,8 @@ public class SkillNodeView : MonoBehaviour
     public Outline outlineImage;
     [Tooltip("Кнопка взаимодействия с навыком. Может назначаться сама, если кнопка на объекте")]
     public Button unlockButton;
+    [Tooltip("Линия рендера связей между навыками")]
+    public UILineRenderer lineRenderer;
 
     [Header("Colors")]
     [Tooltip("Цвет для доступных навыков (бледный оранжевый)")]
@@ -37,7 +41,6 @@ public class SkillNodeView : MonoBehaviour
             iconImage.sprite = viewModel.Icon;
 
         UpdateStatus();
-
         // Подписка на изменения свойств
         _viewModel.PropertyChanged += OnPropertyChanged;
 
@@ -71,6 +74,11 @@ public class SkillNodeView : MonoBehaviour
         {
             UpdateStatus();
         }
+    }
+
+    public List<SkillNodeData> GetRequiredNodes()
+    {
+        return _viewModel.SkillNodes;
     }
 
     private void UpdateStatus()

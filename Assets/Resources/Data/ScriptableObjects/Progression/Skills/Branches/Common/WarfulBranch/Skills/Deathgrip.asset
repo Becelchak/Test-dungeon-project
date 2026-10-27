@@ -21,7 +21,8 @@ MonoBehaviour:
     \u043D\u0430\u043D\u043E\u0441\u0438\u0442 \u043D\u0430 20% \u0431\u043E\u043B\u044C\u0448\u0435
     \u0443\u0440\u043E\u043D\u0430"
   icon: {fileID: -763514639, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - swordmanstreinght
   cost: 1
   branch: 1
   effects: []

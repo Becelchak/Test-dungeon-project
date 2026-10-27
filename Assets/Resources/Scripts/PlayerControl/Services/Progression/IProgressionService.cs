@@ -59,6 +59,7 @@ public interface IProgressionService
     void AddSkill(string skillId);
     void RemoveSkill(string skillId);
     IReadOnlyList<TraitData> GetActiveTraits();
+    SkillNodeData GetSkillNodeData(string skillId);
 
 
     // События

@@ -23,7 +23,8 @@ MonoBehaviour:
     \u0442\u0430\u043A \u0436\u0435 \u0432\u043E\u0441\u0441\u0442\u0430\u043D\u0430\u0432\u043B\u0438\u0432\u0430\u0435\u0442\u0441\u044F
     15 \u0441\u0442\u0430\u043C\u0438\u043D\u044B."
   icon: {fileID: -895640844, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - defstance
   cost: 1
   branch: 0
   effects: []

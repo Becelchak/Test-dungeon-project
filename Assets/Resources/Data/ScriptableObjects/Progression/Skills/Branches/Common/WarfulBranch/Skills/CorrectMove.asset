@@ -19,7 +19,8 @@ MonoBehaviour:
     \u0441 \u043D\u0443\u043B\u0435\u0432\u043E\u0439 \u0432\u044B\u043D\u043E\u0441\u043B\u0438\u0432\u043E\u0441\u0442\u044C\u044E
     \u043D\u0430 25%"
   icon: {fileID: -1081385479, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - defstance
   cost: 1
   branch: 1
   effects: []

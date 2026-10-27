@@ -19,7 +19,9 @@ MonoBehaviour:
     \u0443\u0440\u043E\u043D\u0430, \u0430 \u043F\u043E\u0441\u043B\u0435 \u0438\u0434\u0435\u0430\u043B\u044C\u043D\u043E\u0433\u043E
     \u0431\u043B\u043E\u043A\u0430 \u043D\u0430 150%"
   icon: {fileID: 908774557, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - combatstyle
+  - perfectblock
   cost: 1
   branch: 0
   effects: []

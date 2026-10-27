@@ -541,7 +541,7 @@ public class ProgressionService : BaseService, IProgressionService
 
         foreach (var effect in node.effects)
         {
-            if (_characterStatsCalculator != null)
+            if (_characterStatsCalculator != null && effect != null)
             {
                 effect.Apply(_characterStatsCalculator);
             }
@@ -569,8 +569,8 @@ public class ProgressionService : BaseService, IProgressionService
             Debug.LogWarning($"[ProgressionService] Способность {skillId} не активна");
             return;
         }
+        OnNodeLocked?.Invoke(node);
         profile.unlockedSkillIds.Remove(skillId);
-        OnNodeLocked.Invoke(node);
         Debug.Log($"[ProgressionService] Узел {skillId} ({node.displayName}) заблокирован");
     }
 
@@ -607,5 +607,12 @@ public class ProgressionService : BaseService, IProgressionService
             }
         }
         return activeTraits;
+    }
+
+    public SkillNodeData GetSkillNodeData(string skillNodeId)
+    {
+        if(AllSkillNodes.ContainsKey(skillNodeId))
+            return AllSkillNodes[skillNodeId];
+        else return null;
     }
 }

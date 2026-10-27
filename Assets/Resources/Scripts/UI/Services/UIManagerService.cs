@@ -113,7 +113,6 @@ public class UIManagerService : BaseService, IUIManagerService
             tempStack.Add(element);
         }
 
-        // Возвращаем остальные элементы обратно в стек в правильном порядке
         for (int i = tempStack.Count - 1; i >= 0; i--)
         {
             _uiStack.Push(tempStack[i]);

@@ -18,7 +18,8 @@ MonoBehaviour:
     \u043D\u043E\u0441\u0438\u0442\u044C \u0434\u0432\u0443\u0440\u0443\u0447\u043D\u043E\u0435
     \u043E\u0440\u0443\u0436\u0438\u0435"
   icon: {fileID: 694540154, guid: 1834ca1d8589c0047bb958780ffed919, type: 3}
-  requiredNodes: []
+  requiredNodes:
+  - basefencing
   cost: 1
   branch: 1
   effects: []
