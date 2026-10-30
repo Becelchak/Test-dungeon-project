@@ -14,6 +14,9 @@ public class PlayerMoveState : PlayerStateBase
     public override void Enter()
     {
         base.Enter();
+        // Защита IK слоя от зависания
+        _stateMachine.aimIKController?.SetAimActive(false);
+        _stateMachine.aimIKController?.SetAttackMode(null);
         _isBlocking = _stateMachine.CombatService.IsBlocking;
         _stateMachine.playerAnimator.SetBool("Block", _isBlocking);
         speedMove = _playerStats.CurrentProfile.speedMove;
@@ -22,6 +25,11 @@ public class PlayerMoveState : PlayerStateBase
         Vector2 input = _inputService.GetMovementInput();
         _movementService.UpdateMovementInput(input);
         _movementService.IsRunning = false;
+    }
+
+    public override void Update()
+    {
+        base.Update();
     }
 
     public override void FixedUpdate()

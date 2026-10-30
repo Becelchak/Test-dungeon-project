@@ -10,6 +10,10 @@ public class PlayerIdleState : PlayerStateBase
     public override void Enter()
     {
         base.Enter();
+        // Защита IK слоя от зависания
+        _stateMachine.aimIKController?.SetAimActive(false);
+        _stateMachine.aimIKController?.SetAttackMode(null);
+
         _movementService.CalculateMovementDirection();
         _movementService.SetMovement( 0, _playerStats.CurrentProfile.deceleration);
         _stateMachine.playerAnimator.SetBool("IsGrounded", _movementService.CheckGround());

@@ -27,9 +27,10 @@ MonoBehaviour:
   maxStackSize: 1
   weaponType: 1
   handling: 0
-  attackAnimationClips:
-  - {fileID: 7400000, guid: bd9c7c1a6a7df4642b03ab5e36ddac97, type: 2}
+  attacks:
+  - {fileID: 11400000, guid: 0992f37d2a23ccb40bb4ddaa6f945a50, type: 2}
   weaponPrefab: {fileID: 686466943887150555, guid: 028831148d7ccd845916ddb0304e4a1a, type: 3}
+  bladeLocalDirection: {x: 0, y: 0, z: -1}
   weaponHolderOffset: {x: 0, y: 0, z: 0}
   weaponHolderRotationOffsetEuler: {x: 180, y: 0, z: 75}
   weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
@@ -43,14 +44,6 @@ MonoBehaviour:
   leftHandPositionOffset: {x: 0, y: 0, z: 0}
   leftHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
   twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
-  aimRotationAxis: {x: 1, y: 0, z: 0}
-  aimPivotOffset: {x: 0, y: 0, z: 0}
-  maxAimAngleUp: 90
-  maxAimAngleDown: 180
-  aimSpeed: 360
-  aimLayers:
-    serializedVersion: 2
-    m_Bits: 10240
   jsonFile: {fileID: 4900000, guid: 635af29185aabd84cbdc2a3d20fa1aa8, type: 3}
   stats:
     weaponId: sword_scimitar_02

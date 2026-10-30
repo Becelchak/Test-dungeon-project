@@ -22,12 +22,14 @@ MonoBehaviour:
   maxStackSize: 1
   weaponType: 7
   handling: 2
-  attackAnimationClips: []
+  attacks:
+  - {fileID: 11400000, guid: 54cd0450cf08ebd4a8a7189f589faa9b, type: 2}
   weaponPrefab: {fileID: 7930951863275663760, guid: c06c8a5f2b50f3946bcf72fa52de6372, type: 3}
+  bladeLocalDirection: {x: 0, y: 1, z: 0}
   weaponHolderOffset: {x: 0.044, y: -0.059, z: 0.312}
   weaponHolderRotationOffsetEuler: {x: 180, y: 0, z: 125}
   weaponHolderAttackOffset: {x: 0.115, y: -0.006, z: -0.017}
-  weaponHolderAttackRotationOffsetEuler: {x: 5.956175, y: 4.53146, z: 37.371983}
+  weaponHolderAttackRotationOffsetEuler: {x: 0, y: 0, z: 0}
   blockAnimationClip: {fileID: 0}
   parryAnimationClip: {fileID: 0}
   hitAnimationClip: {fileID: 0}
@@ -37,14 +39,6 @@ MonoBehaviour:
   leftHandPositionOffset: {x: 0, y: 0, z: 0}
   leftHandRotationOffsetEuler: {x: 270, y: 33.020004, z: 0}
   twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
-  aimRotationAxis: {x: 0, y: 0, z: 1}
-  aimPivotOffset: {x: 0, y: 0, z: 0}
-  maxAimAngleUp: 90
-  maxAimAngleDown: 30
-  aimSpeed: 1
-  aimLayers:
-    serializedVersion: 2
-    m_Bits: 8704
   jsonFile: {fileID: 4900000, guid: 8c1fbfa2d74345144987d2b5061f9d14, type: 3}
   stats:
     weaponId: polearm_01

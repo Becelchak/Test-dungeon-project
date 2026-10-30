@@ -1012,6 +1012,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 0}
   playerAnimationController: {fileID: 0}
   weaponIKController: {fileID: 0}
+  aimIKController: {fileID: 0}
 --- !u!114 &3926565487814445382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1087,6 +1088,10 @@ MonoBehaviour:
   weightLerpSpeed: 4
   idleReturnDuration: 0.05
   useRightHandIK: 0
+  _showAimDebug: 1
+  _aimMarkerSize: 0.08
+  _aimLineColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _aimMarkerColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &4075783719935607994
 MonoBehaviour:
   m_ObjectHideFlags: 0

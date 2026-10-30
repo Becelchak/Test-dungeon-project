@@ -28,9 +28,10 @@ MonoBehaviour:
   maxStackSize: 1
   weaponType: 6
   handling: 0
-  attackAnimationClips:
-  - {fileID: 7400000, guid: bd9c7c1a6a7df4642b03ab5e36ddac97, type: 2}
+  attacks:
+  - {fileID: 11400000, guid: 0992f37d2a23ccb40bb4ddaa6f945a50, type: 2}
   weaponPrefab: {fileID: 5951920708512008400, guid: 2d0e8099286a2b14fa81b189a8ed255f, type: 3}
+  bladeLocalDirection: {x: 0, y: 1, z: 0}
   weaponHolderOffset: {x: -0.1, y: 0, z: 0}
   weaponHolderRotationOffsetEuler: {x: 180, y: 0, z: 75}
   weaponHolderAttackOffset: {x: 0, y: 0, z: 0}
@@ -44,14 +45,6 @@ MonoBehaviour:
   leftHandPositionOffset: {x: 0, y: 0, z: 0}
   leftHandRotationOffsetEuler: {x: 0, y: 0, z: 0}
   twoHandedAttackPositionOffset: {x: 0, y: 0, z: 0}
-  aimRotationAxis: {x: 1, y: 0, z: 0}
-  aimPivotOffset: {x: 0, y: 0, z: 0}
-  maxAimAngleUp: 45
-  maxAimAngleDown: 25
-  aimSpeed: 5
-  aimLayers:
-    serializedVersion: 2
-    m_Bits: 8704
   jsonFile: {fileID: 4900000, guid: b4e130ff547f7724bb87496a475aff49, type: 3}
   stats:
     weaponId: mace_01

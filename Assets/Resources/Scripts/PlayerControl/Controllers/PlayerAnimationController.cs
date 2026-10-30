@@ -181,16 +181,29 @@ public class PlayerAnimationController : MonoBehaviour
         animator.SetTrigger("Death");
     }
 
-    public void TriggerRandomAttack(WeaponData weapon)
+    /// <summary>
+    /// Выбирает случайную атаку из WeaponData.attacks, подменяет Base_Attack,
+    /// возвращает AttackDefinition (для SetAttackMode).
+    /// </summary>
+    public AttackDefinition TriggerRandomAttack(WeaponData weapon)
     {
-        if (weapon == null || weapon.attackAnimationClips == null || weapon.attackAnimationClips.Count == 0)
+        if (weapon == null || weapon.attacks == null || weapon.attacks.Count == 0)
         {
-            Debug.LogWarning($"[PlayerAnimationController] У оружия нет анимаций атаки: {weapon?.name}");
-            return;
+            Debug.LogWarning($"[PlayerAnimationController] У оружия нет атак: {weapon?.name}");
+            return null;
         }
 
-        int randomIndex = Random.Range(0, weapon.attackAnimationClips.Count);
-        overrideController["Base_Attack"] = weapon.attackAnimationClips[randomIndex];
+        int randomIndex = Random.Range(0, weapon.attacks.Count);
+        var attack = weapon.attacks[randomIndex];
+
+        if (attack == null || attack.clip == null)
+        {
+            Debug.LogWarning($"[PlayerAnimationController] Атака без клипа у {weapon.name}");
+            return null;
+        }
+
+        overrideController["Base_Attack"] = attack.clip;
+        return attack;
     }
 
     public float GetCurrentAttackClipLength()

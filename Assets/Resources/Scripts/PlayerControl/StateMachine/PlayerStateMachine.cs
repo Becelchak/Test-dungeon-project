@@ -17,6 +17,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
     public Animator playerAnimator;
     public PlayerAnimationController playerAnimationController;
     public WeaponIKController weaponIKController;
+    public AimIKController aimIKController;
 
     private void OnEnable()
     {
@@ -39,7 +40,7 @@ public class PlayerStateMachine : MonoBehaviour, IDialogueEventSubscriber, IPlay
             Debug.LogError("[PlayerStateMachine] PlayerCombatService не найден в ServiceLocator! Добавьте компонент PlayerCombatService на сцену.");
         charRotate = GetComponent<CharacterRotator>();
         playerAnimationController = GetComponent<PlayerAnimationController>();
-        //interactor = GameObject.Find("Interactor").GetComponent<Interactor>();
+        aimIKController = GetComponent<AimIKController>();
         interactor = GetComponentInChildren<Interactor>();
         playerAnimator = GetComponentInChildren<Animator>();
         weaponIKController = GetComponentInChildren<WeaponIKController>();

@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerAttackState : PlayerStateBase
 {
     private IEquipmentService _equipment;
+    private AttackDefinition _currentAttack;
     private float _attackTimer;
     private float _attackDuration;
     private bool _hasAttacked;
@@ -20,6 +21,7 @@ public class PlayerAttackState : PlayerStateBase
     public override void Enter()
     {
         base.Enter();
+
         var weapon = _equipment.CurrentWeapon;
         if (weapon == null)
         {
@@ -28,30 +30,44 @@ public class PlayerAttackState : PlayerStateBase
             return;
         }
 
-        _attackDuration = weapon.Stats.attackDuration * (_isWeakAttack ? weapon.Stats.weakAttackSpeedMultiplier : 1f);
-        var ikController = _stateMachine.weaponIKController;
-
-        if (ikController != null)
+        // 1. Выбирается атака (клип + тип + вес IK)
+        _currentAttack = _stateMachine.playerAnimationController.TriggerRandomAttack(weapon);
+        if (_currentAttack == null)
         {
-            // Переключаем оружие в боевую позу.
-            // Для двуручного — возвращаем в иерархию правой руки, сохраняя хват левой руки.
-            ikController.SetPose(WeaponIKController.WeaponPose.Attack, instantly: true);
+            Debug.LogWarning("[PlayerAttackState] Нет валидной AttackDefinition — прерываем атаку");
+            _stateMachine.TransitionToState(new PlayerIdleState(_stateMachine, _movementService));
+            return;
         }
 
-        // Активируем хитбокс оружия с учётом слабой атаки
+        // Проверка AimIKController
+        if (_stateMachine.aimIKController == null)
+        {
+            Debug.LogError("[PlayerAttackState] AimIKController не назначен! Атака без IK.");
+        }
+
+        // Активация aim-слой для ОБЕИХ типов:
+        // Slash — там работает pitch корпуса, Thrust — position/rotation IK.
+        if (_stateMachine.aimIKController != null)
+        {
+            _stateMachine.aimIKController.SetAttackMode(_currentAttack);
+            _stateMachine.aimIKController.SetAimActive(true);
+            _stateMachine.aimIKController.SetAttackProgress(0f);
+        }
+
+        if (_stateMachine.weaponIKController != null)
+            _stateMachine.weaponIKController.SetPose(WeaponIKController.WeaponPose.Attack, instantly: true);
+
         _stateMachine.CombatService.SetWeaponDamageSource(true, _isWeakAttack);
 
-        _stateMachine.playerAnimationController.TriggerRandomAttack(weapon);
-
+        _attackDuration = weapon.Stats.attackDuration * (_isWeakAttack ? weapon.Stats.weakAttackSpeedMultiplier : 1f);
         float nativeClipLength = _stateMachine.playerAnimationController.GetCurrentAttackClipLength();
-
-        // Высчитываем нужную скорость: если клип 3 сек, а мы хотим 1.5 сек, скорость должна быть 3 / 1.5 = 2.0
         float calculatedSpeed = nativeClipLength / Mathf.Max(_attackDuration, 0.001f);
 
         _stateMachine.playerAnimator.SetFloat("AttackDuraction", calculatedSpeed);
         _stateMachine.playerAnimator.SetTrigger("Attack");
         _stateMachine.playerAnimator.SetInteger("WeaponType", (int)weapon.weaponType);
         _stateMachine.playerAnimator.SetBool("Block", false);
+
         _attackTimer = 0f;
         _hasAttacked = false;
     }
@@ -59,10 +75,16 @@ public class PlayerAttackState : PlayerStateBase
     public override void Update()
     {
         _attackTimer += Time.deltaTime;
+
+        // Пуш прогресса в AimIKController каждый кадр
+        float progress = _attackDuration > 0.0001f
+            ? Mathf.Clamp01(_attackTimer / _attackDuration)
+            : 1f;
+        _stateMachine.aimIKController.SetAttackProgress(progress);
+
         if (!_hasAttacked && _attackTimer > _attackDuration * 0.7f)
-        {
             _hasAttacked = true;
-        }
+
         if (_attackTimer >= _attackDuration)
         {
             Vector2 input = _inputService.GetMovementInput();
@@ -77,27 +99,27 @@ public class PlayerAttackState : PlayerStateBase
     {
         base.Exit();
 
-        // Возвращаем двуручное оружие в IDLE-родителя и восстанавливаем веса хвата
         var ikController = _stateMachine.weaponIKController;
         var weapon = _equipment.CurrentWeapon;
         var combatService = _stateMachine.CombatService;
 
         if (ikController != null && weapon != null)
         {
-            // Если игрок всё ещё блокирует — не возвращаем в Idle, а восстанавливаем позу блока
             if (combatService != null && combatService.IsBlocking)
-            {
                 ikController.SetPose(WeaponIKController.WeaponPose.Block, instantly: true);
-            }
             else
-            {
                 ikController.SetPose(WeaponIKController.WeaponPose.Idle, instantly: false);
-            }
         }
 
-        // Восстанавливаем состояние блока, если кнопка всё ещё удерживается
         _stateMachine.playerAnimator.SetBool("Block", combatService.IsBlocking);
         combatService.SetWeaponDamageSource(false);
+
+        // Сброс IK-слоя атаки
+        _stateMachine.aimIKController.SetAimActive(false);
+        _stateMachine.aimIKController.SetAttackMode(null);
+        _stateMachine.aimIKController.SetAttackProgress(0f);
+
+        _currentAttack = null;
     }
 
     public override void HandleMovement(Vector3 direction)
@@ -116,7 +138,7 @@ public class PlayerAttackState : PlayerStateBase
 
     public override void HandleAttackInput()
     {
-        // Можно разрешить комбо-атаки, если анимация уже близка к завершению
+
     }
 
     private void CallMove()
