@@ -26,7 +26,8 @@ MonoBehaviour:
   requiredNodes:
   - defstance
   cost: 1
-  branch: 0
-  effects: []
+  branch: 1
+  effects:
+  - {fileID: 11400000, guid: 98126874ab5e2db4facd22c17c16ad75, type: 2}
   minInsightLevel: 1
   requiredTraits: []

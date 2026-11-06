@@ -21,6 +21,7 @@ MonoBehaviour:
   - basefencing
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: fa0c04acd6dd8f5499c51717c29490cc, type: 2}
   minInsightLevel: 1
   requiredTraits: []

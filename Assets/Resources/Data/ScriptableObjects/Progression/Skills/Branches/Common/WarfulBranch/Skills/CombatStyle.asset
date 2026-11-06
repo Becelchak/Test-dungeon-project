@@ -21,6 +21,7 @@ MonoBehaviour:
   - duelist
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: c0fd1ff80b2806f4ba2f97aa2eca57b5, type: 2}
   minInsightLevel: 5
   requiredTraits: []

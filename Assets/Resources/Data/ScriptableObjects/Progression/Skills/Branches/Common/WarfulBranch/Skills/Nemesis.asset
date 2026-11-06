@@ -23,7 +23,11 @@ MonoBehaviour:
   - combatstyle
   - perfectblock
   cost: 1
-  branch: 0
-  effects: []
+  branch: 1
+  effects:
+  - {fileID: 11400000, guid: 28c697284b0db8e4387b8d05db88e2b2, type: 2}
+  - {fileID: 11400000, guid: a78ace49be3623a41a89f64ce2a7247f, type: 2}
+  - {fileID: 11400000, guid: 3009600bc1726614e89632c5559520fe, type: 2}
+  - {fileID: 11400000, guid: e6e64f68561030d45b32371e67ebcefc, type: 2}
   minInsightLevel: 5
   requiredTraits: []

@@ -21,6 +21,6 @@ MonoBehaviour:
   cost: 1
   branch: 1
   effects:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 40cf67af82ec62448be0edfc24a32d0e, type: 2}
   minInsightLevel: 1
   requiredTraits: []

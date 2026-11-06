@@ -24,6 +24,7 @@ MonoBehaviour:
   - nemesis
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 0}
   minInsightLevel: 1
   requiredTraits: []

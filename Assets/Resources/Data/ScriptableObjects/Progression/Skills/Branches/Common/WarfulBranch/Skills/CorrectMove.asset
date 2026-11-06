@@ -23,6 +23,7 @@ MonoBehaviour:
   - defstance
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 0e3efbf0ed007eb4aa8381d3cc530ec8, type: 2}
   minInsightLevel: 3
   requiredTraits: []

@@ -15,7 +15,7 @@ MonoBehaviour:
   itemId: polearm_bardiche
   displayName: "\u0411\u0435\u0440\u0434\u044B\u0448"
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: -1138937469, guid: 24b3a6cc9595c384687caa3f8af777a7, type: 3}
   itemType: 0
   rarity: 3
   isStackable: 0

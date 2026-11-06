@@ -23,6 +23,7 @@ MonoBehaviour:
   - correctmove
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 8f89c8d5de374c6469085fbccfa94f86, type: 2}
   minInsightLevel: 1
   requiredTraits: []

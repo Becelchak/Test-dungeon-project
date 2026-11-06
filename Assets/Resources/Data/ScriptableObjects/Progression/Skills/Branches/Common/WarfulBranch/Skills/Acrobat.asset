@@ -22,6 +22,7 @@ MonoBehaviour:
   - maelstorm
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 8b23c6161b3b45842b481762d37a8d70, type: 2}
   minInsightLevel: 5
   requiredTraits: []

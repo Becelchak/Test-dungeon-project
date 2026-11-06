@@ -25,6 +25,8 @@ MonoBehaviour:
   - swordmanstreinght
   cost: 1
   branch: 1
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 0ee221aa7113e444687243f07f7017f7, type: 2}
+  - {fileID: 11400000, guid: 323b619afd4c9204ab7641b54a5b002d, type: 2}
   minInsightLevel: 1
   requiredTraits: []
