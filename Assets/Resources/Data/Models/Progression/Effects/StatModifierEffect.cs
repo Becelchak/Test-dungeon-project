@@ -11,8 +11,7 @@ public class StatModifierEffect : SkillEffectData
 
     public override void Apply(ICharacterStatsCalculator c)
     {
-        if (_modifierService == null)
-        _modifierService = ServiceLocator.Instance.GetService<IModifierService>();
+        _modifierService ??= ServiceLocator.Instance.GetService<IModifierService>();
 
         if (_modifierService != null)
         {

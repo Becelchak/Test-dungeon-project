@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90e629a67a9bc704493e9ec74b503a91, type: 3}
   m_Name: trowWeaponGrabCapability
   m_EditorClassIdentifier: Assembly-CSharp::UnlockCapabilityEffect
-  capability: 35
+  capability: 357

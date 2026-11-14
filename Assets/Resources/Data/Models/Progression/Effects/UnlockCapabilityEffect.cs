@@ -5,13 +5,9 @@ public class UnlockCapabilityEffect : SkillEffectData
 {
     public ModifierTarget capability;
     private IModifierService modifierService;
-
-    public void Awake()
-    {
-        modifierService = ServiceLocator.Instance.GetService<IModifierService>();
-    }
     public override void Apply(ICharacterStatsCalculator c)
     {
+        modifierService = ServiceLocator.Instance.GetService<IModifierService>();
         if (modifierService != null)
         {
             modifierService.AddModifier(new StatModifier
@@ -21,6 +17,11 @@ public class UnlockCapabilityEffect : SkillEffectData
                 Op = ModifierOp.Override,
                 Value = 1f
             });
+        }
+        else
+        {
+            Debug.LogError("[UnlockCapabilityEffect] IModifierService not found"); 
+            return;
         }
     }
 

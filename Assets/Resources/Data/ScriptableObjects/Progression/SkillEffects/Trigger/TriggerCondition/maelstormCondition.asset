@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: maelstormCondition
   m_EditorClassIdentifier: Assembly-CSharp::StatBelowCondition
   threshold: 0.3
-  target: 9
+  target: 52

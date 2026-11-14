@@ -132,11 +132,11 @@ public class PlayerProfile
     public int currentLevel = 1;
     public int unspentSkillPoints;
 
-    public int health;
+    public float health;
     public int maxHealth;
-    public int mana;
+    public float mana;
     public int maxMana;
-    public int stamina;
+    public float stamina;
     public int maxStamina;
     // Характеристики движения
     public float maxSpeed = 8f;

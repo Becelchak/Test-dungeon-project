@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79405c2fddd5b37459d9ab9479fd6582, type: 3}
   m_Name: lowStaminaOutgoingDamageCorrectMove
   m_EditorClassIdentifier: Assembly-CSharp::StatModifierEffect
-  target: 31
+  target: 253
   op: 3
   value: -25

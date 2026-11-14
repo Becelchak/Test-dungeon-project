@@ -8,4 +8,82 @@ AvatarMask:
   m_PrefabAsset: {fileID: 0}
   m_Name: upper_body_mask
   m_Mask: 00000000010000000100000000000000000000000100000001000000010000000100000000000000000000000100000001000000
-  m_Elements: []
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Object_9
+    m_Weight: 1
+  - m_Path: Sketchfab_model
+    m_Weight: 1
+  - m_Path: Sketchfab_model/root
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:LeftUpLeg_18
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:LeftUpLeg_18/mixamorig:LeftLeg_17
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:LeftUpLeg_18/mixamorig:LeftLeg_17/mixamorig:LeftFoot_16
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:LeftUpLeg_18/mixamorig:LeftLeg_17/mixamorig:LeftFoot_16/mixamorig:LeftToeBase_15
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:LeftUpLeg_18/mixamorig:LeftLeg_17/mixamorig:LeftFoot_16/mixamorig:LeftToeBase_15/mixamorig:LeftToe_End_14
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:LeftUpLeg_18/mixamorig:LeftLeg_17/mixamorig:LeftFoot_16/mixamorig:LeftToeBase_15/mixamorig:LeftToe_End_14/mixamorig:LeftToe_End_14_end
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:RightUpLeg_23
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:RightUpLeg_23/mixamorig:RightLeg_22
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:RightUpLeg_23/mixamorig:RightLeg_22/mixamorig:RightFoot_21
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:RightUpLeg_23/mixamorig:RightLeg_22/mixamorig:RightFoot_21/mixamorig:RightToeBase_20
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:RightUpLeg_23/mixamorig:RightLeg_22/mixamorig:RightFoot_21/mixamorig:RightToeBase_20/mixamorig:RightToe_End_19
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:RightUpLeg_23/mixamorig:RightLeg_22/mixamorig:RightFoot_21/mixamorig:RightToeBase_20/mixamorig:RightToe_End_19/mixamorig:RightToe_End_19_end
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:LeftShoulder_6
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:LeftShoulder_6/mixamorig:LeftArm_5
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:LeftShoulder_6/mixamorig:LeftArm_5/mixamorig:LeftForeArm_4
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:LeftShoulder_6/mixamorig:LeftArm_5/mixamorig:LeftForeArm_4/mixamorig:LeftHand_3
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:LeftShoulder_6/mixamorig:LeftArm_5/mixamorig:LeftForeArm_4/mixamorig:LeftHand_3/mixamorig:LeftHand_3_end
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:Neck_2
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:Neck_2/mixamorig:Head_1
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:Neck_2/mixamorig:Head_1/mixamorig:HeadTop_End_0
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:Neck_2/mixamorig:Head_1/mixamorig:HeadTop_End_0/mixamorig:HeadTop_End_0_end
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:RightShoulder_10
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:RightShoulder_10/mixamorig:RightArm_9
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:RightShoulder_10/mixamorig:RightArm_9/mixamorig:RightForeArm_8
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:RightShoulder_10/mixamorig:RightArm_9/mixamorig:RightForeArm_8/mixamorig:RightHand_7
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/GLTF_created_0_rootJoint/mixamorig:Hips_24/mixamorig:Spine_13/mixamorig:Spine1_12/mixamorig:Spine2_11/mixamorig:RightShoulder_10/mixamorig:RightArm_9/mixamorig:RightForeArm_8/mixamorig:RightHand_7/mixamorig:RightHand_7_end
+    m_Weight: 0
+  - m_Path: Sketchfab_model/root/GLTF_SceneRootNode/Armature_27/GLTF_created_0/Knight_body_26
+    m_Weight: 0

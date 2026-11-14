@@ -17,4 +17,4 @@ MonoBehaviour:
   slashBodyAimWeight: 0.7
   thrustImpactStart: 0.2
   thrustImpactEnd: 0.95
-  thrustWeightRamp: 0.1
+  thrustWeightRamp: 0.5

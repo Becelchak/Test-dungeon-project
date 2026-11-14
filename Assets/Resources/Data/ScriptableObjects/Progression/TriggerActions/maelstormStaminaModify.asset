@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4ae430e617e82e49a933164573e9019, type: 3}
   m_Name: maelstormStaminaModify
   m_EditorClassIdentifier: Assembly-CSharp::ModifyStat
-  target: 36
+  target: 254
   type: 1
   value: 1.15

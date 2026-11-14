@@ -33,7 +33,7 @@ public class AttackDefinition : ScriptableObject
     [Tooltip("Конец активной фазы удара (где IK начинает гаснуть).")]
     public float thrustImpactEnd = 0.6f;
 
-    [Range(0.05f, 0.3f)]
+    [Range(0.05f, 0.5f)]
     [Tooltip("Длительность плавного включения/выключения IK вокруг окна.")]
     public float thrustWeightRamp = 0.1f;
 
