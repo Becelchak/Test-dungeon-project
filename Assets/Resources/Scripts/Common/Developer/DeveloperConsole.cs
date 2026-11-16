@@ -351,8 +351,8 @@ public class DeveloperConsole : MonoBehaviour
             return;
         }
         var finalStats = _characterStatsCalculator.CurrentStats;
-        int healthDelta = finalStats.MaxHealth - profile.health;
-        int staminaDelta = (int) finalStats.MaxStamina - profile.stamina;
+        float healthDelta = finalStats.MaxHealth - profile.health;
+        float staminaDelta = finalStats.MaxStamina - profile.stamina;
         _profileService.ModifyHealth(healthDelta);
         _profileService.ModifyStamina(staminaDelta);
         Log($"Восстановлено: HP={finalStats.MaxHealth}, Stamina={finalStats.MaxStamina}");
@@ -367,7 +367,7 @@ public class DeveloperConsole : MonoBehaviour
             return;
         }
         var finalStats = _characterStatsCalculator.CurrentStats;
-        int delta = Mathf.Clamp(value, 0, finalStats.MaxHealth) - profile.health;
+        var delta = Mathf.Clamp(value, 0, finalStats.MaxHealth) - profile.health;
         _profileService.ModifyHealth(delta);
         Log($"Здоровье установлено: {profile.health}/{finalStats.MaxHealth}");
     }
@@ -382,7 +382,7 @@ public class DeveloperConsole : MonoBehaviour
         }
 
         _profileService.SetMaxStamina(value);
-        int delta = Mathf.Clamp(value, 0, profile.maxStamina) - profile.stamina;
+        var delta = Mathf.Clamp(value, 0, profile.maxStamina) - profile.stamina;
         _profileService.ModifyStamina(delta);
         Log($"Стамина установлена: {profile.stamina}/{profile.maxStamina}");
     }

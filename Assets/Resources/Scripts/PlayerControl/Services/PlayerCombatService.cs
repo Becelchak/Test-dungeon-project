@@ -47,6 +47,11 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
     /// <returns>true, если парирование удалось начать.</returns>
     public bool TryStartParry()
     {
+        if(!CharacterStatsCalculator.HasCapability(ModifierTarget.Capability_Parry))
+        {
+            Debug.LogWarning("[PlayerCombatService] Вы не умеете парировать!.");
+            return false;
+        }
         var blocker = GetActiveBlocker() as WeaponData;
         float cost = blocker?.Stats?.parryStaminaCost ?? 0f;
         float window = blocker?.Stats?.parryWindow ?? 0.2f;
@@ -123,7 +128,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         {
             Debug.Log($"[PlayerCombatService] Атака не попала в щит! Блок не сработал.");
         }
-        else if (Time.time - BlockStartTime <= window)
+        else if (Time.time - BlockStartTime <= window && CharacterStatsCalculator.HasCapability(ModifierTarget.Capability_PerfectBlock))
         {
             finalDamage = 0;
             Debug.Log($"[PlayerCombatService] Идеальный блок ({blocker?.displayName ?? "без оружия"})! Урон полностью нивелирован.");
@@ -168,7 +173,7 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
 
         var weapon = EquipmentService.CurrentWeapon;
         float cost = weapon?.Stats?.attackStaminaCost ?? 0f;
-        int stamina = ProfileService?.CurrentProfile?.stamina ?? 0;
+        float stamina = ProfileService?.CurrentProfile?.stamina ?? 0;
 
         if (stamina >= cost)
         {
@@ -198,6 +203,8 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
     public void SetWeaponDamageSource(bool isAttack, bool isWeakAttack = false)
     {
         var source = WeaponIK?.CurrentWeaponDamageSource;
+        var playerStats = CharacterStatsCalculator.CurrentStats;
+        source.BaseDamage = playerStats.AttackDamage;
         if (source == null)
         {
             Debug.LogWarning("[PlayerCombatService] Не найден WeaponDamageSource на текущем runtime-оружии. Убедись, что на префабе оружия есть компонент WeaponDamageSource с триггер-коллайдером.");
@@ -205,18 +212,46 @@ public class PlayerCombatService : BaseService, IPlayerCombatService
         }
 
         var weapon = EquipmentService.CurrentWeapon;
+        float multiplier = 1f + playerStats.OutgoingDamagePercent;
+        switch (weapon.handling)
+        {
+            case WeaponHandling.RightHand:
+            case WeaponHandling.LeftHand:
+                source.BaseDamage += playerStats.OneHandDamage;
+                break;
+            case WeaponHandling.BothHands:
+                source.BaseDamage += playerStats.TwoHandDamage;
+                break;
+            case WeaponHandling.OffHand:
+                // Безоружным?
+                //source.BaseDamage += playerStats.TrowDamage;
+                break;
+        }
+        switch (source.DamageType)
+        {
+            case DamageType.Slashing:
+                multiplier += playerStats.SlashDamageModifier;
+                break;
+            case DamageType.Piercing:
+                multiplier += playerStats.PierceDamageModifier;
+                break;
+            case DamageType.Blunt:
+                multiplier += playerStats.BluntDamageModifier;
+                break;
+        }
         if (weapon != null && weapon.Stats != null)
         {
             float damage = weapon.Stats.damage;
             if (isWeakAttack)
-                damage *= weapon.Stats.weakAttackDamageMultiplier;
-            source.BaseDamage = damage;
+                multiplier *= weapon.Stats.weakAttackDamageMultiplier + playerStats.LowStaminaOutgoingDamagePercent;
         }
 
         if (isAttack)
             source.ResetHits();
 
         source.IsActive = isAttack;
+
+        source.BaseDamage = source.BaseDamage * multiplier + playerStats.OutgoingDamageFlat;
     }
 
     /// <summary>

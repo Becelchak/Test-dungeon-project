@@ -1,8 +1,8 @@
 ﻿public struct ManaChangedEvent
 {
-    public int CurrentMana { get; }
-    public int MaxMana { get; }
-    public ManaChangedEvent(int current, int max)
+    public float CurrentMana { get; }
+    public float MaxMana { get; }
+    public ManaChangedEvent(float current, float max)
     {
         CurrentMana = current;
         MaxMana = max;

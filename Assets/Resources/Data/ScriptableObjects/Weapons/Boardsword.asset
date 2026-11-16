@@ -30,7 +30,8 @@ MonoBehaviour:
   weaponType: 1
   handling: 0
   attacks:
-  - {fileID: 11400000, guid: 0992f37d2a23ccb40bb4ddaa6f945a50, type: 2}
+  - {fileID: 11400000, guid: 4363e91e20167b44ca4c840e5fdd66e7, type: 2}
+  - {fileID: 11400000, guid: 0b7ba1077bb84dd4485001f467ff3239, type: 2}
   weaponPrefab: {fileID: 3249083749712518619, guid: c521a73cc43793347b746969a0276431, type: 3}
   bladeLocalDirection: {x: 0, y: 1, z: 0}
   weaponHolderOffset: {x: 0, y: 0, z: 0}
@@ -51,7 +52,7 @@ MonoBehaviour:
     weaponId: sword_01
     damage: 17.5
     range: 1.25
-    attackDuration: 1.1
+    attackDuration: 1.7
     perfectBlockWindow: 0.1
     blockDamageReduction: 0.12
     parryWindow: 0.18

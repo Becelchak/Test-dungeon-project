@@ -11,45 +11,45 @@ public class PlayerHUDViewModel : BaseViewModel,
     private IPlayerProfileService _player;
     private ICharacterStatsCalculator _statsCalculator;
 
-    private int _health;
+    private float _health;
     public int Health
     {
-        get => _health;
+        get => Mathf.CeilToInt(_health);
         private set => SetProperty(ref _health, value);
     }
 
-    private int _maxHealth;
+    private float _maxHealth;
     public int MaxHealth
     {
-        get => _maxHealth;
+        get => Mathf.CeilToInt(_maxHealth);
         private set => SetProperty(ref _maxHealth, value);
     }
 
-    private int _mana;
+    private float _mana;
     public int Mana
     {
-        get => _mana;
+        get => Mathf.CeilToInt(_mana);
         private set => SetProperty(ref _mana, value);
     }
 
-    private int _maxMana;
+    private float _maxMana;
     public int MaxMana
     {
-        get => _maxMana;
+        get => Mathf.CeilToInt(_maxMana);
         private set => SetProperty(ref _maxMana, value);
     }
 
-    private int _stamina;
+    private float _stamina;
     public int Stamina
     {
-        get => _stamina;
+        get => Mathf.CeilToInt(_stamina);
         private set => SetProperty(ref _stamina, value);
     }
 
     private float _maxStamina;
-    public float MaxStamina
+    public int MaxStamina
     {
-        get => _maxStamina;
+        get => Mathf.CeilToInt(_maxStamina);
         private set => SetProperty(ref _maxStamina, value);
     }
 
@@ -60,27 +60,27 @@ public class PlayerHUDViewModel : BaseViewModel,
 
     public void OnHealthChanged(HealthChangedEvent evt)
     {
-        Health = evt.CurrentHealth;
-        MaxHealth = evt.MaxHealth;
+        Health = Mathf.CeilToInt(evt.CurrentHealth);
+        MaxHealth = Mathf.CeilToInt(evt.MaxHealth);
     }
 
     public void OnStaminaChanged(StaminaChangedEvent evt)
     {
-        Stamina = evt.CurrentStamina;
-        MaxStamina = evt.MaxStamina;
+        Stamina = Mathf.CeilToInt(evt.CurrentStamina);
+        MaxStamina = Mathf.CeilToInt(evt.MaxStamina);
     }
 
     public void OnManaChanged(ManaChangedEvent evt)
     {
-        Mana = evt.CurrentMana;
-        MaxMana = evt.MaxMana;
+        Mana = Mathf.CeilToInt(evt.CurrentMana);
+        MaxMana = Mathf.CeilToInt(evt.MaxMana);
     }
 
     public void OnStatsChanged(StatsChangedEvent evt)
     {
-        MaxHealth = evt.Stats.MaxHealth;
-        MaxMana = evt.Stats.MaxMana;
-        MaxStamina = evt.Stats.MaxStamina;
+        MaxHealth = Mathf.CeilToInt(evt.Stats.MaxHealth);
+        MaxMana = Mathf.CeilToInt(evt.Stats.MaxMana);
+        MaxStamina = Mathf.CeilToInt(evt.Stats.MaxStamina);
     }
 
     public override void Initialize()
@@ -90,21 +90,21 @@ public class PlayerHUDViewModel : BaseViewModel,
         var p = _player.CurrentProfile;
         if (_statsCalculator == null)
         {
-            Health = p.health;
+            Health = Mathf.CeilToInt(p.health);
             MaxHealth = p.maxHealth;
-            Mana = p.mana;
+            Mana = Mathf.CeilToInt(p.mana);
             MaxMana = p.maxMana;
-            Stamina = p.stamina;
+            Stamina = Mathf.CeilToInt(p.stamina);
             MaxStamina = p.maxStamina;
         }
         else
         {
-            Health = p.health;
-            MaxHealth = _statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxHealth : p.maxHealth;
-            Mana = p.mana;
-            MaxMana = _statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxMana : p.maxMana;
-            Stamina = p.stamina;
-            MaxStamina = _statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxStamina : p.stamina;
+            Health = Mathf.CeilToInt(p.health);
+            MaxHealth = Mathf.CeilToInt(_statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxHealth : p.maxHealth);
+            Mana = Mathf.CeilToInt(p.mana);
+            MaxMana = Mathf.CeilToInt(_statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxMana : p.maxMana);
+            Stamina = Mathf.CeilToInt(p.stamina);
+            MaxStamina = Mathf.CeilToInt(_statsCalculator.CurrentStats != null ? _statsCalculator.CurrentStats.MaxStamina : p.stamina);
         }
         EventBus.Subscribe(this);
 

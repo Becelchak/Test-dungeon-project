@@ -11,4 +11,5 @@ public interface ICharacterStatsCalculator
     void SyncCurrentHealthWithMax();
 
     event Action<FinalPlayerStats> OnStatsChanged;
+    bool HasCapability(ModifierTarget capability);
 }

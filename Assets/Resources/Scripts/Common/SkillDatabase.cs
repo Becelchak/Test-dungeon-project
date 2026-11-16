@@ -40,7 +40,7 @@ public class SkillDatabase : ScriptableObject, ISerializationCallbackReceiver
         }
 
         UnityEditor.EditorUtility.SetDirty(this);
-        Debug.Log($"[TraitDatabase] База данных успешно обновлена! Найдено особенностей: {allSkills.Count}");
+        Debug.Log($"[SkillDatabase] База данных успешно обновлена! Найдено особенностей: {allSkills.Count}");
 #endif
     }
 
@@ -54,20 +54,20 @@ public class SkillDatabase : ScriptableObject, ISerializationCallbackReceiver
 
             if (string.IsNullOrWhiteSpace(skill.nodeId))
             {
-                Debug.Log($"[TraitDatabase] Особенность '{skill.name}' пропущена, так как у неё нет traitId.");
+                Debug.Log($"[SkillDatabase] Особенность '{skill.name}' пропущена, так как у неё нет traitId.");
                 continue;
             }
 
             if (_database.ContainsKey(skill.nodeId))
             {
-                Debug.LogWarning($"[TraitDatabase] Дубликат ID обнаружен: '{skill.nodeId}' (Ассет: {skill.name}). Пропущен.");
+                Debug.LogWarning($"[SkillDatabase] Дубликат ID обнаружен: '{skill.nodeId}' (Ассет: {skill.name}). Пропущен.");
                 continue;
             }
 
             _database.Add(skill.nodeId, skill);
         }
 
-        Debug.Log($"[TraitDatabase] Рантайм база данных успешно инициализирована. Загружено особенностей: {_database.Count}");
+        Debug.Log($"[SkillDatabase] Рантайм база данных успешно инициализирована. Загружено способностей: {_database.Count}");
     }
 
     public void OnBeforeSerialize() { }

@@ -15,5 +15,19 @@ MonoBehaviour:
   branchId: polimorfizm
   displayName: "\u041F\u043E\u043B\u0438\u043C\u043E\u0440\u0444\u0438\u0437\u043C"
   description: 
+  icon: {fileID: 0}
   branch: 2
-  nodeIds: []
+  nodeIds:
+  - animalinstinct
+  - beast
+  - daywalker
+  - fiend
+  - flexiblemind
+  - grace
+  - ironstomach
+  - musclesofsteel
+  - purgingimperfection
+  - scarred
+  - thickskin
+  - tumbling
+  - woundclosure

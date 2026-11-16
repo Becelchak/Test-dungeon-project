@@ -129,7 +129,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         profile.stats.enemiesKilled = UnityEngine.Random.RandomRange(0, 50);
     }
 
-    public void ModifyHealth(int delta)
+    public void ModifyHealth(float delta)
     {
         var profile = CurrentProfile;
         var finalStats = _characterStatsCalculator.CurrentStats;
@@ -170,7 +170,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             s => s.OnStaminaChanged(new StaminaChangedEvent(profile.stamina, maxStamina))
         );
     }
-    public void ModifyMana(int delta)
+    public void ModifyMana(float delta)
     {
         var profile = CurrentProfile;
         var finalStats = _characterStatsCalculator.CurrentStats;
@@ -317,8 +317,11 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             type = item.itemType
         };
 
-        RemoveInventoryItem(itemInventory);
         bool equipResult = _equipmentService.Equip(item, targetSlot);
+        if (equipResult)
+        {
+            RemoveInventoryItem(itemInventory);
+        }
 
         Debug.Log($"[ProfileService] Экипировка завершена. Результат: {equipResult}. Предмет {item.itemId} в слот {targetSlot}");
     }

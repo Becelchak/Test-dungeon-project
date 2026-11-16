@@ -51,6 +51,8 @@ public class EquipmentService : BaseService, IEquipmentService
     public event Action<EquipmentSlotType, ItemData> OnEquipmentChanged;
     public event Action<WeaponData> OnWeaponChanged;
     public event Action<WeaponData> OnShieldChanged;
+    private ICharacterStatsCalculator _characterStatsCalculator;
+    private ICharacterStatsCalculator CharacterStatsCalculator => _characterStatsCalculator ??= ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
 
     protected override Type GetServiceType() => typeof(IEquipmentService);
 
@@ -67,17 +69,18 @@ public class EquipmentService : BaseService, IEquipmentService
         }
 
         // Заглушка для теста смены оружия
-        var anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Claymor");
-        if (anotherWeapon != null)
-            Equip(anotherWeapon, EquipmentSlotType.Weapon2);
-        anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Boardsword");
-        if (anotherWeapon != null)
-            Equip(anotherWeapon, EquipmentSlotType.Weapon3);
+        //var anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Claymor");
+        //if (anotherWeapon != null)
+        //    Equip(anotherWeapon, EquipmentSlotType.Weapon2);
+        //anotherWeapon = Resources.Load<WeaponData>("Data/ScriptableObjects/Weapons/Boardsword");
+        //if (anotherWeapon != null)
+        //    Equip(anotherWeapon, EquipmentSlotType.Weapon3);
     }
 
     private void Start()
     {
         var input = ServiceLocator.Instance.GetService<IInputService>();
+        _characterStatsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
         if (input != null)
             input.OnSwitchWeaponSlot += HandleSwitchWeaponSlot;
     }
@@ -137,12 +140,24 @@ public class EquipmentService : BaseService, IEquipmentService
             return false;
         }
 
-        if (item is WeaponData weaponData && weaponData.handling == WeaponHandling.OffHand)
+        if (item is WeaponData weaponData)
         {
-            if (slotType < EquipmentSlotType.Weapon1 || slotType > EquipmentSlotType.Weapon3)
+            switch (weaponData.handling)
             {
-                Debug.LogWarning($"[EquipmentService] Щит {item.displayName} можно экипировать только в оружейный слот.");
-                return false;
+                case WeaponHandling.OffHand:
+                    if (slotType < EquipmentSlotType.Weapon1 || slotType > EquipmentSlotType.Weapon3)
+                    {
+                        Debug.LogWarning($"[EquipmentService] Щит {item.displayName} можно экипировать только в оружейный слот.");
+                        return false;
+                    }
+                    break;
+                case WeaponHandling.BothHands:
+                    if(!CharacterStatsCalculator.CurrentStats.HasCapability(ModifierTarget.Capability_TwoHandWeapon))
+                    {
+                        Debug.LogWarning($"{item.displayName} - двуручное оружие. Вы не умеете его носить!");
+                        return false;
+                    }
+                    break;
             }
         }
 

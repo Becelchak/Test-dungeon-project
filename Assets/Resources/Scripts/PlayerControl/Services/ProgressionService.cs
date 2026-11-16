@@ -169,6 +169,7 @@ public class ProgressionService : BaseService, IProgressionService
                 profile.currentLevel++;
                 int pointsToGrant = progressionCurve.skillPointsPerLevel;
                 profile.unspentSkillPoints += pointsToGrant;
+                profile.currentXP -= xpForNext;
 
                 Debug.Log($"[ProgressionService] Уровень повышен до {profile.currentLevel}! Получено {pointsToGrant} очков навыков.");
                 OnLevelUp?.Invoke(profile.currentLevel);

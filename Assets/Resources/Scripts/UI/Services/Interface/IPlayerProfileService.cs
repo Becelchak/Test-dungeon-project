@@ -11,9 +11,9 @@ public interface IPlayerProfileService
     public PlayerProfile CurrentProfile { get; set; }
     void SaveProfile(PlayerProfile profile);
     void ResetProfile();
-    void ModifyHealth(int delta);
+    void ModifyHealth(float delta);
     void ModifyStamina(float delta);
-    void ModifyMana(int delta);
+    void ModifyMana(float delta);
     void SetMaxStamina(float value);
     void AddInventoryItem(InventoryItem item);
     void RemoveInventoryItem(InventoryItem item);
