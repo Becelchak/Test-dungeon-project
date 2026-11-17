@@ -27,6 +27,7 @@ MonoBehaviour:
   handling: 2
   attacks:
   - {fileID: 11400000, guid: ef43be9808a609e4e8dcab41451d5b21, type: 2}
+  - {fileID: 11400000, guid: a67c6cbb539657f469e866695b5fad02, type: 2}
   weaponPrefab: {fileID: 5649426590539653510, guid: 964975a60606c7b468532068a37b0235, type: 3}
   bladeLocalDirection: {x: 0, y: 1, z: 0}
   weaponHolderOffset: {x: 0, y: 0.22, z: 0.421}

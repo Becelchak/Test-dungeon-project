@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ffa36f6b19929c64888d137399c37605, type: 3}
-  m_Name: LongSword thurst attack
+  m_Name: LongSword slash attack v2
   m_EditorClassIdentifier: Assembly-CSharp::AttackDefinition
-  clip: {fileID: 7400000, guid: 909cf93470c7b21499a0ced39181e164, type: 2}
-  type: 1
-  slashBodyAimWeight: 0.7
+  clip: {fileID: 7400000, guid: 474fb88c4064eff4fa186baa2e8ece05, type: 2}
+  type: 0
+  slashBodyAimWeight: 0.45
   thrustImpactStart: 0.2
   thrustImpactEnd: 0.95
   thrustWeightRamp: 0.5

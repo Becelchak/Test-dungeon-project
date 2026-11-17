@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackDefinition
   clip: {fileID: 7400000, guid: 6fc0f6bbfd4a256429d1e1c9c7ed67af, type: 2}
   type: 1
-  slashBodyAimWeight: 0.95
-  thrustImpactStart: 0.2
+  slashBodyAimWeight: 1
+  thrustImpactStart: 0.1
   thrustImpactEnd: 0.95
-  thrustWeightRamp: 0.1
+  thrustWeightRamp: 0.5
