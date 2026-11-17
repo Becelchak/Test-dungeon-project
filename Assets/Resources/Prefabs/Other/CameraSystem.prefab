@@ -30,8 +30,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221908409237768640}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.45858082, y: 0.000000026483919, z: -0.000000013666775, w: 0.88865274}
-  m_LocalPosition: {x: -3.8303967, y: 6.953529, z: -7.325013}
+  m_LocalRotation: {x: 0.39083472, y: 2.8507388e-22, z: -1.584704e-22, w: 0.9204609}
+  m_LocalPosition: {x: -3.1267247, y: 5.3361917, z: -18.273912}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b5d7c088409d9a40b7b09aa707777f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineOrbitalFollow
-  TargetOffset: {x: 0, y: 5.45, z: -0.85}
+  TargetOffset: {x: 0, y: 4, z: 0.15}
   TrackerSettings:
     BindingMode: 0
     PositionDamping: {x: 1, y: 1, z: 1}
@@ -124,7 +124,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 17.5
+    Value: 15.5
     Center: 17.5
     Range: {x: -10, y: 45}
     Wrap: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 0, y: -0.95, z: 0}
+  TargetOffset: {x: 0, y: 0.5, z: 0}
   Damping: {x: 0.5, y: 0.5}
   Lookahead:
     Enabled: 0
@@ -179,7 +179,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 221908409237768640}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbe43d662878a7c43bcd44d43c9e2094, type: 3}
   m_Name: 
@@ -200,7 +200,7 @@ MonoBehaviour:
     UseFollowTarget:
       Enabled: 0
       YOffset: 0
-    Strategy: 0
+    Strategy: 2
     MaximumEffort: 4
     SmoothingTime: 0
     Damping: 0.5
@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a396cdfc62a224c439a90fa00b4af002, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraInputHandler
-  sensitivity: 2
+  sensitivity: 3
 --- !u!1 &939772552990981376
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,8 +310,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 939772552990981376}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.45858085, y: 0.000000026483923, z: -0.000000013666778, w: 0.88865274}
-  m_LocalPosition: {x: -3.8303967, y: 6.953529, z: -7.325013}
+  m_LocalRotation: {x: 0.39083472, y: 2.6568734e-22, z: -1.1281288e-22, w: 0.9204609}
+  m_LocalPosition: {x: -3.1267247, y: 5.3361917, z: -18.273912}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

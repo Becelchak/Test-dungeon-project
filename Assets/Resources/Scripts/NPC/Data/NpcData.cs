@@ -94,6 +94,10 @@ public class NpcData : ScriptableObject
     [Tooltip("Множитель скорости при отступлении")]
     public float retreatSpeedMultiplier = 1.3f;
 
+    [Header("Прогрессия")]
+    [Tooltip("Количество опыта, выдаваемое игроку за убийство этого NPC")]
+    public int xpReward = 10;
+
     [Header("Тактика: агрессия")]
     [Tooltip("Порог здоровья игрока (доля от максимума), ниже которого NPC переходит в агрессивное наступление")]
     [Range(0f, 1f)]

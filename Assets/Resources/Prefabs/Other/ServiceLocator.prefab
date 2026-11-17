@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 4279527608736803576}
   - component: {fileID: 1799204415752663619}
   - component: {fileID: 3150093512750046433}
+  - component: {fileID: 3547431622496885906}
   m_Layer: 5
   m_Name: ServiceLocator
   m_TagString: Untagged
@@ -63,6 +64,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d6e0bb031eeae4429d6fbd21286dbaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ServiceLocator
+  isDebuggeMode: 0
 --- !u!114 &3015174127438741634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,6 +213,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentService
   _slots: []
   _activeWeaponSlotIndex: 0
+  isDebuggeMode: 0
 --- !u!114 &6871214379146375729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,3 +270,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TriggerService
   database: {fileID: 11400000, guid: 69a2bb9f93fed3d40a0f33316d195f18, type: 2}
+--- !u!114 &3547431622496885906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 263717846116194194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdb5bc5bdb9730e4fbf00daf32f695a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AimingService
+  aimLayers:
+    serializedVersion: 2
+    m_Bits: 27200
+  maxDistance: 20
+  playerTransform: {fileID: 0}
+  debugDraw: 1
+  debugLog: 0

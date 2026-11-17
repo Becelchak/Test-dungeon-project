@@ -1,9 +1,9 @@
-﻿using System;
+﻿using EventBusSystem;
+using System;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class ProgressionService : BaseService, IProgressionService
+public class ProgressionService : BaseService, IProgressionService, IEnemyKilledEventSubscriber
 {
     [Header("Progression Data")]
     [SerializeField] private ProgressionCurveData progressionCurve;
@@ -46,12 +46,20 @@ public class ProgressionService : BaseService, IProgressionService
             Debug.LogError("[ProgressionService] ProgressionCurveData не назначен!");
         }
 
+        EventBus.Subscribe(this);
+
         if (_profileService?.CurrentProfile != null)
         {
             InitializeProfileIfNeeded();
             ApplyAllActiveTraits();
             ApplyActiveSkills();
         }
+    }
+
+    private void OnDestroy()
+    {
+        EventBus.Unsubscribe(this);
+        base.OnDestroy();
     }
 
     private void LoadSkillNodes()
@@ -144,8 +152,10 @@ public class ProgressionService : BaseService, IProgressionService
 
         profile.currentXP += amount;
         OnXPChanged?.Invoke(profile.currentXP);
-        _profileService.SaveProfile(profile);
+        EventBus.RaiseEvent<IXPChangedEventSubscriber>(s => s.OnXPChanged(
+            new XPChangedEvent(amount, profile.currentXP, profile.currentLevel, source)));
         CheckLevelUp(profile);
+        _profileService.SaveProfile(profile);
     }
 
     private void CheckLevelUp(PlayerProfile profile)
@@ -173,8 +183,9 @@ public class ProgressionService : BaseService, IProgressionService
 
                 Debug.Log($"[ProgressionService] Уровень повышен до {profile.currentLevel}! Получено {pointsToGrant} очков навыков.");
                 OnLevelUp?.Invoke(profile.currentLevel);
+                EventBus.RaiseEvent<ILevelUpEventSubscriber>(s => s.OnLevelUp(
+                    new LevelUpEvent(profile.currentLevel, pointsToGrant)));
                 OnSkillPointsChanged?.Invoke(profile.unspentSkillPoints);
-                _profileService.SaveProfile(profile);
             }
             else
             {
@@ -615,5 +626,13 @@ public class ProgressionService : BaseService, IProgressionService
         if(AllSkillNodes.ContainsKey(skillNodeId))
             return AllSkillNodes[skillNodeId];
         else return null;
+    }
+
+    public void OnEnemyKilled(EnemyKilledEvent evt)
+    {
+        if (evt.Data == null || evt.Killer == null || !evt.Killer.CompareTag("Player"))
+            return;
+
+        AddXP(evt.Data.xpReward, XPSource.Combat);
     }
 }

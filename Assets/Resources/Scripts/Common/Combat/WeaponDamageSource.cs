@@ -16,7 +16,28 @@ public class WeaponDamageSource : MonoBehaviour
     [Tooltip("Тип урона")]
     public DamageType DamageType = DamageType.True;
 
+    [Tooltip("Владелец оружия. Если не назначен — ищется автоматически: ближайший IDamageable среди родителей (NpcController для NPC, PlayerDamageReceiver для игрока).")]
+    [SerializeField] private Transform _ownerOverride;
+
+    private Transform _owner;
+    private bool _ownerResolved;
     private HashSet<IDamageable> _hitTargets = new HashSet<IDamageable>();
+
+    /// <summary>
+    /// Определяет владельца оружия: явный override, иначе ближайший IDamageable
+    /// среди родителей, иначе корень иерархии (старое поведение).
+    /// </summary>
+    private Transform ResolveOwner()
+    {
+        if (_ownerOverride != null) return _ownerOverride;
+        if (!_ownerResolved)
+        {
+            var damageable = GetComponentInParent<IDamageable>();
+            _owner = damageable != null ? damageable.Transform : null;
+            _ownerResolved = true;
+        }
+        return _owner;
+    }
 
     private void Awake()
     {
@@ -59,8 +80,16 @@ public class WeaponDamageSource : MonoBehaviour
         var target = other.GetComponentInParent<IDamageable>();
         if (target == null) return;
 
+        Transform owner = ResolveOwner();
+
         // Не бьём самих себя
-        if (target.Transform.root == transform.root) return;
+        if (owner != null)
+        {
+            if (target.Transform == owner
+                || target.Transform.IsChildOf(owner)
+                || owner.IsChildOf(target.Transform)) return;
+        }
+        else if (target.Transform.root == transform.root) return;
 
         // Один взмах — одно попадание в цель
         if (_hitTargets.Contains(target)) return;
@@ -75,7 +104,7 @@ public class WeaponDamageSource : MonoBehaviour
             BaseDamage = BaseDamage,
             DamageMultiplier = multiplier,
             DamageType = DamageType,
-            Attacker = transform.root,
+            Attacker = owner != null ? owner : transform.root,
             HitboxType = hitbox != null ? hitbox.HitboxType : HitboxType.Other,
             HitPoint = other.ClosestPoint(transform.position),
             WasBlocked = shieldMarker != null && IsShieldOwnerBlocking(shieldMarker.Owner),

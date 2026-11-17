@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using EventBusSystem;
+using UnityEngine;
 
 /// <summary>
 /// Верхний уровень управления NPC. Реализует IDamageable и связывает сервисы между собой.
@@ -17,6 +18,7 @@ public class NpcController : MonoBehaviour, IDamageable
     private NpcCombatService _combat;
     private NpcPerception _perception;
     private NpcAnimationController _animation;
+    private Transform _lastAttacker;
 
     private void Awake()
     {
@@ -56,6 +58,7 @@ public class NpcController : MonoBehaviour, IDamageable
     public void ApplyDamage(DamageInfo damageInfo)
     {
         if (!IsAlive) return;
+        if (damageInfo.Attacker != null) _lastAttacker = damageInfo.Attacker;
         _health.ApplyDamage(damageInfo);
     }
 
@@ -73,6 +76,9 @@ public class NpcController : MonoBehaviour, IDamageable
         _stateMachine.enabled = false;
         _combat.enabled = false;
         _perception.enabled = false;
+
+        EventBus.RaiseEvent<IEnemyKilledEventSubscriber>(s => s.OnEnemyKilled(
+            new EnemyKilledEvent(_data, gameObject, _lastAttacker != null ? _lastAttacker.gameObject : null)));
 
         // TODO: включить ragdoll, отключить коллайдеры, дроп лута и т.д.
         Debug.Log($"[NpcController] {gameObject.name} погиб.");

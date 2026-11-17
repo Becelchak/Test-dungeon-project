@@ -87,7 +87,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.1
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -581,6 +581,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3270376479384892437}
     m_Modifications:
+    - target: {fileID: 2541355398053540441, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2541355398053540441, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2837932717602909740, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2837932717602909740, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767770946932759135, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4767770946932759135, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4783319496313465811, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
       propertyPath: m_BlocksRaycasts
       value: 0
@@ -689,37 +713,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1098604324051103772, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6029540578519669039, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1780921958800548040}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
---- !u!1 &2706421150181938710 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6029540578519669039, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
-  m_PrefabInstance: {fileID: 8512393216740626233}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1780921958800548040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2706421150181938710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!224 &3228683368384466367 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6551768708094722694, guid: 181e23a9b1e8ade4381e2a81eaa8e581, type: 3}
