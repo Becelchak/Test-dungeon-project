@@ -11,7 +11,6 @@ public class EquipmentViewModel : BaseViewModel
     public int ActiveWeaponSlotIndex => _equipment.ActiveWeaponSlotIndex;
 
     private ItemData _hoveredItemData;
-    private Vector2 _infoPanelPosition;
 
     public ItemData HoveredItemData
     {
@@ -20,16 +19,6 @@ public class EquipmentViewModel : BaseViewModel
         {
             _hoveredItemData = value;
             OnPropertyChanged(nameof(HoveredItemData));
-        }
-    }
-
-    public Vector2 InfoPanelPosition
-    {
-        get => _infoPanelPosition;
-        private set
-        {
-            _infoPanelPosition = value;
-            OnPropertyChanged(nameof(InfoPanelPosition));
         }
     }
 
@@ -78,11 +67,6 @@ public class EquipmentViewModel : BaseViewModel
     public void SetHoveredItem(ItemData data)
     {
         HoveredItemData = data;
-
-        if (data != null)
-        {
-            InfoPanelPosition = Input.mousePosition + new Vector3(20f, -20f);
-        }
     }
 
     public void ClearHoveredItem()

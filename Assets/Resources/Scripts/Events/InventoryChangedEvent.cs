@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct InventoryChangedEvent : IInventoryChangedEventSubscriber
 {
-    public enum ChangeType { Added, Removed, Updated }
+    public enum ChangeType { Added, Removed, Updated, Unequiped }
     public ChangeType Type { get; }
     public InventoryItem Item { get; }
 

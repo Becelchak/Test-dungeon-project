@@ -12,7 +12,6 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
     private readonly List<InventoryItemSlotViewModel> _items = new();
 
     private ItemData _hoveredItemData;
-    private Vector2 _infoPanelPosition;
 
     public ItemData HoveredItemData
     {
@@ -21,17 +20,6 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
         {
             _hoveredItemData = value;
             OnPropertyChanged(nameof(HoveredItemData));
-        }
-    }
-
-    public Vector2 InfoPanelPosition
-    {
-        get => _infoPanelPosition;
-        private set
-        {
-            if (_infoPanelPosition == value) return;
-            _infoPanelPosition = value;
-            OnPropertyChanged(nameof(InfoPanelPosition));
         }
     }
 
@@ -84,11 +72,6 @@ public class InventoryViewModel : BaseViewModel, IInventoryChangedEventSubscribe
         if (_hoveredItemData == data) return;
 
         HoveredItemData = data;
-
-        if (data != null)
-        {
-            InfoPanelPosition = Input.mousePosition + new Vector3(20f, -20f);
-        }
     }
 
     /// <summary>Очистить инфо-панель, когда курсор убран.</summary>

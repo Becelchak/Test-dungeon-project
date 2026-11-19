@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
-using static UnityEditor.Profiling.HierarchyFrameDataView;
 
 public class InventoryView : BaseView<InventoryViewModel>
 {
@@ -10,14 +9,12 @@ public class InventoryView : BaseView<InventoryViewModel>
     [SerializeField] private InventoryItemSlot itemPrefab;
 
     [Header("Info")]
+    [Tooltip("GameObject с компонентом ItemInfoPanel")]
     [SerializeField] private GameObject infoPanel;
-    [SerializeField] private TMPro.TextMeshProUGUI infoTitle;
-    [SerializeField] private TMPro.TextMeshProUGUI infoDescription;
-    [SerializeField] private Vector2 _panelOffset = new Vector3();
 
     private readonly List<InventoryItemSlot> _itemUIs = new();
+    private ItemInfoPanel _infoPanel;
 
-    private RectTransform _panelRt;
     public UILayer Layer => UILayer.InventoryGroup;
 
     protected override void SetupBindings()
@@ -26,7 +23,9 @@ public class InventoryView : BaseView<InventoryViewModel>
         ViewModel.Initialize();
         if (infoPanel != null)
         {
-            _panelRt = infoPanel.GetComponent<RectTransform>();
+            _infoPanel = infoPanel.GetComponent<ItemInfoPanel>();
+            if (_infoPanel == null)
+                Debug.LogWarning("[InventoryView] На infoPanel нет компонента ItemInfoPanel!");
         }
     }
 
@@ -43,18 +42,15 @@ public class InventoryView : BaseView<InventoryViewModel>
 
         if (e.PropertyName == nameof(ViewModel.HoveredItemData))
         {
-            UpdateInfoPanel(ViewModel.HoveredItemData);
-        }
-
-        if (e.PropertyName == nameof(ViewModel.InfoPanelPosition))
-        {
-            UpdateInfoPanelPosition();
+            if (ViewModel.HoveredItemData != null)
+                _infoPanel?.Show(ViewModel.HoveredItemData, Input.mousePosition);
+            else
+                _infoPanel?.Hide();
         }
     }
 
     private void Rebuild()
     {
-        Debug.Log("Rebild");
         if (_itemUIs == null)
         {
             Debug.LogWarning("Список UI пуст!");
@@ -64,7 +60,7 @@ public class InventoryView : BaseView<InventoryViewModel>
         foreach (var ui in _itemUIs) if (ui != null) Destroy(ui.gameObject);
         _itemUIs.Clear();
 
-        if (infoPanel != null) infoPanel.SetActive(false);
+        _infoPanel?.Hide();
 
         foreach (var vm in ViewModel.Items)
         {
@@ -73,48 +69,4 @@ public class InventoryView : BaseView<InventoryViewModel>
             _itemUIs.Add(ui);
         }
     }
-
-    public void UpdateInfoPanel(ItemData item)
-    {
-        if (infoPanel == null) return;
-
-        // Если предмета нет — выключить панель
-        if (item == null)
-        {
-            if (infoPanel.activeSelf)
-            {
-                infoPanel.SetActive(false);
-            }
-            return;
-        }
-
-        // Обновить текст только если он изменился
-        if (infoTitle.text != item.displayName)
-        {
-            infoTitle.text = item.displayName;
-        }
-        if (infoDescription.text != item.description)
-        {
-            infoDescription.text = item.description;
-        }
-
-        if (!infoPanel.activeSelf)
-        {
-            if (_panelRt != null)
-            {
-                _panelRt.position = ViewModel.InfoPanelPosition + _panelOffset;
-            }
-
-            Debug.Log("[UpdateInfoPanel] - InventoryView");
-            infoPanel.SetActive(true);
-        }
-    }
-
-    private void UpdateInfoPanelPosition()
-    {
-        if (infoPanel == null || _panelRt == null) return;
-        _panelRt.position = ViewModel.InfoPanelPosition + _panelOffset;
-        Debug.Log("[UpdateInfoPanelPosition] - InventoryView");
-    }
-
 }

@@ -15,7 +15,7 @@ public interface IPlayerProfileService
     void ModifyStamina(float delta);
     void ModifyMana(float delta);
     void SetMaxStamina(float value);
-    void AddInventoryItem(InventoryItem item);
+    void AddInventoryItem(InventoryItem item, bool isUnequipedItem);
     void RemoveInventoryItem(InventoryItem item);
     void ClearPlayerInventory();
 }

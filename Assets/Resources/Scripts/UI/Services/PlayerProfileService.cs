@@ -211,7 +211,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         SaveProfile(CurrentProfile);
     }
 
-    public void AddInventoryItem(InventoryItem item)
+    public void AddInventoryItem(InventoryItem item, bool isUnequipedItem = false)
     {
         if (string.IsNullOrWhiteSpace(item.itemId))
         {
@@ -233,8 +233,12 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             OnItemAdded?.Invoke(item);
         }
         SaveProfile(CurrentProfile);
-        EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
-        s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Added, item)));
+        if(!isUnequipedItem)
+            EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
+            s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Added, item)));
+        else
+            EventBus.RaiseEvent<IInventoryChangedEventSubscriber>(
+            s => s.OnInventoryChanged(new InventoryChangedEvent(InventoryChangedEvent.ChangeType.Unequiped, item)));
     }
 
     public void RemoveInventoryItem(InventoryItem item)
@@ -345,7 +349,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
 
         if (unequipResult)
         {
-            AddInventoryItem(item);
+            AddInventoryItem(item, true);
             Debug.Log($"[ProfileService] Снятие завершено. Предмет {item.itemName} возвращён в инвентарь");
         }
         else

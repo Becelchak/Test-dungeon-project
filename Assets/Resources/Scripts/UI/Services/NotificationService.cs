@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 
 public class NotificationService : BaseService, INotificationService,
-    IXPChangedEventSubscriber, ILevelUpEventSubscriber
+    IXPChangedEventSubscriber, ILevelUpEventSubscriber, IInventoryChangedEventSubscriber
 {
     protected override Type GetServiceType() => typeof(INotificationService);
 
@@ -33,5 +33,17 @@ public class NotificationService : BaseService, INotificationService,
     {
         Notify(NotificationType.LevelUp, "Повышение уровня",
             $"Вы достигли {evt.NewLevel} уровня! +{evt.SkillPointsGranted} очко навыков");
+    }
+
+    public void OnInventoryChanged(InventoryChangedEvent evt)
+    {
+        switch (evt.Type)
+        {
+            case InventoryChangedEvent.ChangeType.Added:
+                Notify(NotificationType.Info, "Предмет подобран",
+                $"{evt.Item.itemName}");
+                break;
+        }
+        
     }
 }
