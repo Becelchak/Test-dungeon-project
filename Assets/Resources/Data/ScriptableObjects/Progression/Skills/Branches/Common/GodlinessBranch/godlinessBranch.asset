@@ -15,5 +15,17 @@ MonoBehaviour:
   branchId: godliness
   displayName: "\u041D\u0430\u0431\u043E\u0436\u043D\u043E\u0441\u0442\u044C"
   description: 
+  icon: {fileID: 0}
   branch: 4
-  nodeIds: []
+  nodeIds:
+  - absolutefast
+  - consecrateweapon
+  - guardianangel
+  - miracle
+  - renunciation
+  - sacredrelics
+  - tenetsoffaith
+  - tithe
+  - vowofpoverty
+  - vowofsilence
+  - wards

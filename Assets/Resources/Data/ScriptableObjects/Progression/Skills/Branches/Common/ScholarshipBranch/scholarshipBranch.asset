@@ -15,5 +15,16 @@ MonoBehaviour:
   branchId: scholarship
   displayName: "\u0423\u0447\u0435\u043D\u043E\u0441\u0442\u044C"
   description: 
+  icon: {fileID: 0}
   branch: 6
-  nodeIds: []
+  nodeIds:
+  - alchemist
+  - apothecary
+  - basichygiene
+  - chaotic
+  - literacy
+  - medicaleducation
+  - philologist
+  - runereader
+  - scholar
+  - selfimprovement

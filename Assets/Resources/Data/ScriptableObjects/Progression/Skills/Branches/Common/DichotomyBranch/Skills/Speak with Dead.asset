@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e422dd6767bcbfb4ebbb332b6ca68394, type: 3}
+  m_Name: Speak with Dead
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeData
+  nodeId: deadspeak
+  displayName: "\u0420\u0430\u0437\u0433\u043E\u0432\u043E\u0440 \u0441 \u043C\u0435\u0440\u0442\u0432\u044B\u043C\u0438"
+  description: 
+  icon: {fileID: -446916363, guid: 39c6e18c7e062b345a41b9e8ea550514, type: 3}
+  requiredNodes: []
+  cost: 1
+  branch: 5
+  effects: []
+  minInsightLevel: 1
+  requiredTraits: []

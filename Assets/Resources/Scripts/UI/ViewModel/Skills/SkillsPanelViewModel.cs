@@ -187,7 +187,6 @@ public class SkillsPanelViewModel : BaseViewModel
         // Update the node's unlock status
         foreach (var branch in Branches)
         {
-            //var nodeVm = branch.Nodes.FirstOrDefault(n => n.NodeId == node.nodeId);
             foreach(var nodeVm in branch.Nodes)
             {
                 nodeVm?.UpdateUnlockStatus();

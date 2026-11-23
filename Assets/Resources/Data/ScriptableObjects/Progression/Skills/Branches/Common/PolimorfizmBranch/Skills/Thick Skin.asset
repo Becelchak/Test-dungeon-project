@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeData
   nodeId: thickskin
   displayName: "\u0423\u0442\u043E\u043B\u0449\u0435\u043D\u0430\u044F \u043A\u043E\u0436\u0430"
-  description: 
+  description: "\u0412\u0435\u0441\u044C \u0444\u0438\u0437\u0438\u0447\u0435\u0441\u043A\u0438\u0439
+    \u0443\u0440\u043E\u043D \u0443\u043C\u0435\u043D\u044C\u0448\u0435\u043D \u043D\u0430
+    5%"
   icon: {fileID: -1176042298, guid: 6409a522eb12ab1438693063dce33c43, type: 3}
   requiredNodes:
   - grace

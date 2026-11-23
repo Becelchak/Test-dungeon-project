@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeData
   nodeId: scarred
   displayName: "\u041D\u0435\u0442 \u0436\u0438\u0432\u043E\u0433\u043E \u043C\u0435\u0441\u0442\u0430"
-  description: 
+  description: "\u0421\u043D\u0438\u0436\u0430\u0435\u0442 \u0440\u0438\u0441\u043A
+    \u043F\u043E\u044F\u0432\u043B\u0435\u043D\u0438\u044F \u0442\u0440\u0430\u0432\u043C\u044B
+    \u043A\u043E\u043D\u0435\u0447\u043D\u043E\u0441\u0442\u0438 \u043D\u0430 40%"
   icon: {fileID: 1329326248, guid: 6409a522eb12ab1438693063dce33c43, type: 3}
   requiredNodes: []
   cost: 1

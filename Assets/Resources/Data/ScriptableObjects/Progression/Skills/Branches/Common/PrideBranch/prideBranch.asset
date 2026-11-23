@@ -15,5 +15,14 @@ MonoBehaviour:
   branchId: pride
   displayName: "\u0413\u043E\u0440\u0434\u044B\u043D\u044F"
   description: 
+  icon: {fileID: 0}
   branch: 3
-  nodeIds: []
+  nodeIds:
+  - charismatic
+  - companyglory
+  - crumbsofgreatness
+  - deeppockets
+  - goldbearinghand
+  - greed
+  - lightburden
+  - perfection

@@ -15,5 +15,12 @@ MonoBehaviour:
   branchId: dichotomy
   displayName: "\u0414\u0438\u0445\u043E\u0442\u043E\u043C\u0438\u044F"
   description: 
+  icon: {fileID: 0}
   branch: 5
-  nodeIds: []
+  nodeIds:
+  - abyssalgaze
+  - callfrombeyond
+  - dichotomy
+  - deadspeak
+  - tongue
+  - transcendence
