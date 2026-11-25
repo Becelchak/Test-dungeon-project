@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillBranchData
   branchId: polimorfizm
   displayName: "\u041F\u043E\u043B\u0438\u043C\u043E\u0440\u0444\u0438\u0437\u043C"
-  description: 
+  description: "\u0411\u043E\u043D\u0443\u0441 \u0437\u0430 \u0437\u0430\u043A\u0440\u044B\u0442\u0438\u0435
+    \u0432\u0435\u0442\u043A\u0438: \r\n+30 \u043A \u0437\u0434\u043E\u0440\u043E\u0432\u044C\u044E
+    \u0438 +5% \u043D\u0438\u0432\u0435\u043B\u0438\u0440\u043E\u0432\u0430\u0442\u044C
+    \u043B\u044E\u0431\u043E\u0439 \u0443\u0440\u043E\u043D "
   icon: {fileID: 0}
   branch: 2
   nodeIds:

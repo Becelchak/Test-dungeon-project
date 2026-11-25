@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class RoomInstance
 {
+    /// <summary>Стабильный id комнаты в рамках плана (для сохранения экспедиции). -1 — не назначен.</summary>
+    public int id = -1;
     public RoomPrefab data;
     public Vector3 position;
     public Quaternion rotation;

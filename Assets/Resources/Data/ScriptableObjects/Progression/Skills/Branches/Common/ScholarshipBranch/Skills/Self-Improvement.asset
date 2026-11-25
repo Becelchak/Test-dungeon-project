@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeData
   nodeId: selfimprovement
   displayName: "\u0421\u0430\u043C\u043E\u0441\u043E\u0432\u0435\u0440\u0448\u0435\u043D\u0441\u0442\u0432\u043E\u0432\u0430\u043D\u0438\u0435"
-  description: "(+10% \u043A\u043E \u0432\u0441\u0435\u043C\u0443 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u043E\u043C\u0443
+  description: "+10% \u043A\u043E \u0432\u0441\u0435\u043C\u0443 \u043F\u043E\u043B\u0443\u0447\u0430\u0435\u043C\u043E\u043C\u0443
     \u043E\u043F\u044B\u0442\u0443"
+  loreText: 
   icon: {fileID: 1079369870, guid: 2b26754cfe910564d850fe8e580f3be3, type: 3}
   requiredNodes:
   - medicaleducation

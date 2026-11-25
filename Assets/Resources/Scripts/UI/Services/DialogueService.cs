@@ -1,13 +1,21 @@
-using System;
+п»їusing System;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogueService : BaseService, IDialogueService
+/// <summary>
+/// РЎРµСЂРІРёСЃ РґРёР°Р»РѕРіРѕРІ. РўР°РєР¶Рµ РІР»Р°РґРµРµС‚ РїР°РјСЏС‚СЊСЋ РѕР± NPC (СЃРµРєС†РёСЏ "npcMemory"
+/// РІ РѕР±С‰РµРј СЃРѕС…СЂР°РЅРµРЅРёРё) вЂ” РїРѕРєР° С…СЂР°РЅРёС‚ С‚РѕР»СЊРєРѕ СЌРјРѕС†РёРё Рё РїРѕСЃР»РµРґРЅСЋСЋ СЂРµРїР»РёРєСѓ.
+/// </summary>
+public class DialogueService : BaseService, IDialogueService, ISaveModule
 {
+    private readonly Dictionary<string, NpcMemoryEntry> _npcMemories = new Dictionary<string, NpcMemoryEntry>();
+
     protected override Type GetServiceType() => typeof(IDialogueService);
 
     protected override void Awake()
     {
         base.Awake();
+        ServiceLocator.Instance.GetService<ISaveService>()?.RegisterModule(this);
     }
 
     public DialogueData GetDialogue(string dialogueId)
@@ -43,7 +51,7 @@ public class DialogueService : BaseService, IDialogueService
                 return null;
             }
             var data = resourceService.LoadJson<AIDialogueData>($"Data/DialogData/AIDialog/{npcId}");
-            // Загружаем портрет после десериализации
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             data?.LoadPortrait();
 
             return data;
@@ -58,13 +66,72 @@ public class DialogueService : BaseService, IDialogueService
     public void ExecuteDialogueAction(DialogueAction action)
     {
         Debug.Log($"Executing dialogue action: {action.type} - {action.actionId}");
-        // Здесь будет логика выполнения действий (выдача предметов, старт квестов и т.д.)
+        // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ.пїЅ.)
     }
 
     public bool CheckCondition(DialogueCondition condition)
     {
-        // Временная реализация - всегда возвращает true
-        // В будущем здесь будет проверка условий (прогресс квестов, наличие предметов и т.д.)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ true
+        // пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅ.пїЅ.)
         return true;
+    }
+
+    // ===== РџР°РјСЏС‚СЊ NPC (ISaveModule, СЃРµРєС†РёСЏ "npcMemory") =====
+
+    public string Key => "npcMemory";
+
+    public NpcMemoryEntry GetMemory(string npcId)
+    {
+        if (string.IsNullOrEmpty(npcId)) return null;
+        return _npcMemories.TryGetValue(npcId, out var entry) ? entry : null;
+    }
+
+    public void SaveExchange(string npcId, string playerMessage, string npcReply, float[] emotions)
+    {
+        if (string.IsNullOrEmpty(npcId)) return;
+
+        if (!_npcMemories.TryGetValue(npcId, out var entry))
+        {
+            entry = new NpcMemoryEntry { npcId = npcId };
+            _npcMemories[npcId] = entry;
+        }
+
+        entry.lastPlayerMessage = playerMessage;
+        entry.lastNpcReply = npcReply;
+        entry.interactionCount++;
+        if (emotions != null && emotions.Length == 8)
+            entry.emotions = (float[])emotions.Clone();
+
+        ServiceLocator.Instance.GetService<ISaveService>()?.RequestSave();
+    }
+
+    public string CaptureStateJson()
+    {
+        var state = new NpcMemoryState();
+        foreach (var kv in _npcMemories)
+            state.entries.Add(kv.Value);
+        return JsonUtility.ToJson(state);
+    }
+
+    public void RestoreStateJson(string json)
+    {
+        _npcMemories.Clear();
+        if (string.IsNullOrEmpty(json)) return;
+
+        try
+        {
+            var state = JsonUtility.FromJson<NpcMemoryState>(json);
+            if (state?.entries == null) return;
+
+            foreach (var entry in state.entries)
+            {
+                if (entry != null && !string.IsNullOrEmpty(entry.npcId))
+                    _npcMemories[entry.npcId] = entry;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[DialogueService] РћС€РёР±РєР° РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёСЏ РїР°РјСЏС‚Рё NPC: {e.Message}");
+        }
     }
 }

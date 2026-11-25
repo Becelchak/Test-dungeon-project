@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: "\u0416\u0430\u0434\u043D\u043E\u0441\u0442\u044C"
   description: "\u041F\u043E\u0432\u044B\u0448\u0430\u0435\u0442 \u0448\u0430\u043D\u0441\u044B
     \u043D\u0430\u0439\u0442\u0438 \u0437\u043E\u043B\u043E\u0442\u043E"
+  loreText: "\u041C\u043E\u044F \u043F\u0440\u0435\u043B\u0435\u0441\u0442\u044C..."
   icon: {fileID: -718348218, guid: e4c6447d36b71ff45b493539a1ae7ef7, type: 3}
   requiredNodes: []
   cost: 1

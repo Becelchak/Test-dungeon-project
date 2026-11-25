@@ -1,9 +1,10 @@
 ﻿using EventBusSystem;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfectBlockEventSubscriber, IEquipmentRequestSubscriber
+public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfectBlockEventSubscriber, IEquipmentRequestSubscriber, ISaveModule
 {
     private const string PROFILE_KEY = "player_profile";
     private PlayerProfile _currentProfile;
@@ -29,6 +30,7 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
     {
         EventBus.Subscribe(this);
         _characterStatsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
+        ServiceLocator.Instance.GetService<ISaveService>()?.RegisterModule(this);
         Debug.Log("[PlayerProfileService] Подписан на EventBus как IEquipmentRequestSubscriber");
     }
 
@@ -48,25 +50,24 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
             _equipmentService = ServiceLocator.Instance.GetService<IEquipmentService>();
         }
 
+        // Миграция со старого формата: профиль мог быть сохранён в PlayerPrefs.
+        // При первом запуске с новой системой переносим его и очищаем ключ.
         if (PlayerPrefs.HasKey(PROFILE_KEY))
         {
             try
             {
                 var json = PlayerPrefs.GetString(PROFILE_KEY);
                 profile = JsonUtility.FromJson<PlayerProfile>(json);
-                Debug.Log("Профиль игрока загружен из сохранения");
+                PlayerPrefs.DeleteKey(PROFILE_KEY);
+                Debug.Log("Профиль игрока мигрирован из PlayerPrefs");
             }
             catch (Exception e)
             {
-                Debug.LogError($"Ошибка загрузки профиля: {e.Message}");
-                profile = CreateDefaultProfile();
+                Debug.LogError($"Ошибка миграции профиля из PlayerPrefs: {e.Message}");
             }
         }
-        else
-        {
-            profile = CreateDefaultProfile();
-        }
 
+        profile ??= CreateDefaultProfile();
         profile.LoadAvatar();
         EnsureStamina(profile);
         return profile;
@@ -88,7 +89,39 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         PlayerPrefs.DeleteKey(PROFILE_KEY);
         _currentProfile = null;
         var _ = CurrentProfile;
+        SaveService?.RequestSave();
         Debug.Log("Профиль игрока сброшен и создан заново");
+    }
+
+    // ===== ISaveModule (секция "profile") =====
+
+    public string Key => "profile";
+
+    public string CaptureStateJson()
+    {
+        // Newtonsoft.Json: корректно сериализует Dictionary (quests, attributes)
+        // и DateTime (firstPlayDate), в отличие от JsonUtility.
+        return JsonConvert.SerializeObject(CurrentProfile);
+    }
+
+    public void RestoreStateJson(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return;
+
+        try
+        {
+            var profile = JsonConvert.DeserializeObject<PlayerProfile>(json);
+            if (profile == null) return;
+
+            profile.LoadAvatar();
+            EnsureStamina(profile);
+            _currentProfile = profile;
+            Debug.Log("Профиль игрока загружен из сохранения");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Ошибка загрузки профиля из сохранения: {e.Message}");
+        }
     }
 
     private PlayerProfile CreateDefaultProfile()
@@ -188,16 +221,16 @@ public class PlayerProfileService : BaseService, IPlayerProfileService, IPerfect
         SaveProfile(profile);
     }
 
+    private ISaveService _saveService;
+    private ISaveService SaveService => _saveService ??= ServiceLocator.Instance.GetService<ISaveService>();
+
     public void SaveProfile(PlayerProfile profile)
     {
         try
         {
-            var json = JsonUtility.ToJson(profile);
-            PlayerPrefs.SetString(PROFILE_KEY, json);
-            PlayerPrefs.Save();
             _currentProfile = profile;
+            SaveService?.RequestSave();
             OnProfileChanged?.Invoke();
-            Debug.Log("Профиль игрока сохранен");
         }
         catch (Exception e)
         {

@@ -12,6 +12,8 @@ public class AIDialogueViewModel : BaseViewModel
     private AIDialogueData _aiData;
     private PlayerProfileService _player;
     private IPlayerContextService _playerContextService;
+    private IDialogueService _dialogueService;
+    private string _lastSentMessage;
 
     private string _npcId;
     private string _npcName = "Загрузка...";
@@ -80,6 +82,7 @@ public class AIDialogueViewModel : BaseViewModel
             _aiService = ServiceLocator.Instance.GetService<IAIService>();
             _player = (PlayerProfileService)ServiceLocator.Instance.GetService<IPlayerProfileService>();
             _playerContextService = ServiceLocator.Instance.GetService<IPlayerContextService>();
+            _dialogueService = dialogueService;
             if (_playerContextService != null)
                 _playerContextService.Initialize();
 
@@ -93,7 +96,11 @@ public class AIDialogueViewModel : BaseViewModel
 
             if (_aiData != null)
             {
-                _aiData.currentEmotions = _aiData.defaultEmotions?.ToArray() ?? new float[8];
+                // Восстанавливаем эмоции из памяти NPC, иначе — дефолтные
+                var memory = _dialogueService?.GetMemory(npcId);
+                _aiData.currentEmotions = memory?.emotions != null && memory.emotions.Length == 8
+                    ? memory.emotions
+                    : (_aiData.defaultEmotions?.ToArray() ?? new float[8]);
                 EventBus.RaiseEvent<IEmotionsUpdatedSubscriber>(
                     s => s.OnEmotionsUpdated(new EmotionsUpdatedEvent(_aiData.currentEmotions))
                 );
@@ -146,6 +153,7 @@ public class AIDialogueViewModel : BaseViewModel
         if (!CanSendMessage()) return;
 
         var userMessage = UserInput;
+        _lastSentMessage = userMessage;
         UserInput = string.Empty;
         IsWaitingForResponse = true;
 
@@ -173,11 +181,23 @@ public class AIDialogueViewModel : BaseViewModel
         // Формируем строку с текущими эмоциями для контекста
         string emotionsStr = string.Join(", ", _aiData.currentEmotions.Select(e => e.ToString("F2")));
 
+        // Контекст последнего общения с этим NPC (заглушка памяти)
+        string memoryContext = string.Empty;
+        var memory = _dialogueService?.GetMemory(_npcId);
+        if (memory != null && (!string.IsNullOrEmpty(memory.lastPlayerMessage) || !string.IsNullOrEmpty(memory.lastNpcReply)))
+        {
+            memoryContext = $@"
+        ВАШЕ ПРЕДЫДУЩЕЕ ОБЩЕНИЕ С ИГРОКОМ:
+        Игрок: {memory.lastPlayerMessage}
+        Вы: {memory.lastNpcReply}
+";
+        }
+
         return $@"
 
         ДАННЫЕ ИГРОКА:
         {playerContext}
-
+{memoryContext}
         ТВОИ ТЕКУЩИЕ ЭМОЦИИ (joy, sadness, anger, fear, surprise, trust, arousal, dominance):
         [{emotionsStr}]
 
@@ -223,6 +243,7 @@ public class AIDialogueViewModel : BaseViewModel
                         s => s.OnEmotionsUpdated(new EmotionsUpdatedEvent(newEmotions))
                     );
 
+                    _dialogueService?.SaveExchange(_npcId, _lastSentMessage, reply, newEmotions);
                     LogViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, reply);
                     return;
                 }
@@ -233,6 +254,7 @@ public class AIDialogueViewModel : BaseViewModel
             }
         }
 
+        _dialogueService?.SaveExchange(_npcId, _lastSentMessage, response, _aiData.currentEmotions);
         LogViewModel.AddEntry(_aiData.npcName, _aiData.npcPortrait, response);
     }
 

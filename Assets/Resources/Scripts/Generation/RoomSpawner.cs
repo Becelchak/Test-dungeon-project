@@ -4,7 +4,8 @@ using UnityEngine;
 
 public interface IRoomSpawner
 {
-    void SpawnRoomObjects(RoomComponent roomInstance, RoomPrefab roomData, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null);
+    /// <summary>Спавнит содержимое комнаты и возвращает список созданных объектов.</summary>
+    List<GameObject> SpawnRoomObjects(RoomComponent roomInstance, RoomPrefab roomData, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null);
 }
 
 public class RoomSpawner : MonoBehaviour ,IRoomSpawner
@@ -12,8 +13,9 @@ public class RoomSpawner : MonoBehaviour ,IRoomSpawner
     private readonly IResourceService _resources;
     public RoomSpawner(IResourceService resources) => _resources = resources;
 
-    public void SpawnRoomObjects(RoomComponent roomInstance, RoomPrefab roomData, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null)
+    public List<GameObject> SpawnRoomObjects(RoomComponent roomInstance, RoomPrefab roomData, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null)
     {
+        var spawned = new List<GameObject>();
         var spawnPoints = roomInstance.spawnPoints;
         if (prefereSpawnPointType != null)
             spawnPoints.RemoveAll(p => p.spawnType != prefereSpawnPointType);
@@ -23,7 +25,9 @@ public class RoomSpawner : MonoBehaviour ,IRoomSpawner
             var chosenPrefab = ChoosePrefab(point.possibleSpawns);
             if (chosenPrefab == null) continue;
             var rObj = Instantiate(chosenPrefab, point.transform.position, point.transform.rotation);
+            spawned.Add(rObj);
         }
+        return spawned;
     }
 
     private float GetSpawnChance(RoomSpawnPoint point, DungeonModifiers modifiers, SpawnType? prefereSpawnPointType = null)

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class EquipmentService : BaseService, IEquipmentService
+public class EquipmentService : BaseService, IEquipmentService, ISaveModule
 {
     [Header("Слоты экипировки")]
     [Tooltip("Список слотов. Если пуст, будет создана стандартная раскладка.")]
@@ -53,6 +53,8 @@ public class EquipmentService : BaseService, IEquipmentService
     public event Action<WeaponData> OnShieldChanged;
     private ICharacterStatsCalculator _characterStatsCalculator;
     private ICharacterStatsCalculator CharacterStatsCalculator => _characterStatsCalculator ??= ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
+    private ISaveService _saveService;
+    private ISaveService SaveService => _saveService ??= ServiceLocator.Instance.GetService<ISaveService>();
 
     protected override Type GetServiceType() => typeof(IEquipmentService);
 
@@ -81,6 +83,7 @@ public class EquipmentService : BaseService, IEquipmentService
     {
         var input = ServiceLocator.Instance.GetService<IInputService>();
         _characterStatsCalculator = ServiceLocator.Instance.GetService<ICharacterStatsCalculator>();
+        ServiceLocator.Instance.GetService<ISaveService>()?.RegisterModule(this);
         if (input != null)
             input.OnSwitchWeaponSlot += HandleSwitchWeaponSlot;
     }
@@ -183,6 +186,7 @@ public class EquipmentService : BaseService, IEquipmentService
         if (newShield != previousShield)
             OnShieldChanged?.Invoke(newShield);
 
+        SaveService?.RequestSave();
         return true;
     }
 
@@ -209,6 +213,7 @@ public class EquipmentService : BaseService, IEquipmentService
         if (newShield != previousShield)
             OnShieldChanged?.Invoke(newShield);
 
+        SaveService?.RequestSave();
         return true;
     }
 
@@ -236,6 +241,7 @@ public class EquipmentService : BaseService, IEquipmentService
         OnEquipmentChanged?.Invoke(EquipmentSlotType.Weapon1 + index, selectedItem);
         OnWeaponChanged?.Invoke(CurrentWeapon);
         OnShieldChanged?.Invoke(CurrentShield);
+        SaveService?.RequestSave();
     }
 
     public ItemData GetItemInSlot(EquipmentSlotType slotType)
@@ -320,6 +326,18 @@ public class EquipmentService : BaseService, IEquipmentService
     private EquipmentSlot GetSlot(EquipmentSlotType slotType)
     {
         return _slots.FirstOrDefault(s => s.slotType == slotType);
+    }
+
+    // ===== ISaveModule (секция "equipment") =====
+
+    public string Key => "equipment";
+
+    public string CaptureStateJson() => SaveToJson();
+
+    public void RestoreStateJson(string json)
+    {
+        if (!string.IsNullOrEmpty(json))
+            LoadFromJson(json);
     }
 
     public void SetPlayerStatus(bool deadStatus)

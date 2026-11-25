@@ -24,6 +24,8 @@ public class PortalInteractable : MonoBehaviour, IInteractable
         ServiceLocator.Instance.GetService<IInputService>()?.DisableAllInput();
         canInteract = false;
         windowsService.ShowWindow<DialogueLogViewModel>(UILayer.SystemMenu);
+        // Гарантируем запись сохранения перед выгрузкой сцены
+        ServiceLocator.Instance.GetService<ISaveService>()?.ForceSave();
         await sceneLoader.LoadSceneAsync(sceneToLoad, false);
     }
 

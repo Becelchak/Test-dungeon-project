@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillNodeData
   nodeId: tenetsoffaith
   displayName: "\u041E\u0441\u043D\u043E\u0432\u044B \u0432\u0435\u0440\u044B"
-  description: 
+  description: "\u041E\u0442\u043A\u0440\u044B\u0432\u0430\u0435\u0442 \u0432\u043E\u0437\u043C\u043E\u0436\u043D\u043E\u0441\u0442\u044C
+    \u043C\u043E\u043B\u0438\u0442\u044C\u0441\u044F"
+  loreText: "\u0412\u0441\u0435 \u043D\u0430\u0447\u0438\u043D\u0430\u0435\u0442\u0441\u044F
+    \u0441 \u043C\u0430\u043B\u043E\u0433\u043E"
   icon: {fileID: -1312732309, guid: e60250ecb28d09242875304c620fe916, type: 3}
   requiredNodes: []
   cost: 1

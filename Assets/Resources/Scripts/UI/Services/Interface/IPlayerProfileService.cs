@@ -10,6 +10,7 @@ public interface IPlayerProfileService
     public event Action OnProfileChanged;
     public PlayerProfile CurrentProfile { get; set; }
     void SaveProfile(PlayerProfile profile);
+    void UpdatePlayerStats(Action<PlayerStats> updateAction);
     void ResetProfile();
     void ModifyHealth(float delta);
     void ModifyStamina(float delta);
