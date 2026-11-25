@@ -7,6 +7,7 @@ public class SkillNodeData : ScriptableObject
     public string nodeId;
     public string displayName;
     [TextArea] public string description;
+    [TextArea] public string loreText;
     public Sprite icon;
 
     [Header("Graph")]
