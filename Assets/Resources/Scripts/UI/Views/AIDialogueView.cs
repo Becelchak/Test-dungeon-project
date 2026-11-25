@@ -12,6 +12,7 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>, IUIWindow
     [SerializeField] private Button sendButton;
     [SerializeField] private Button closeButton;
     [SerializeField] private GameObject loadingIndicator;
+    [SerializeField] private GameObject logContainer;
     [SerializeField] private TextMeshProUGUI npcNameText;
     [SerializeField] private TextMeshProUGUI dialogueText;
 
@@ -22,7 +23,12 @@ public class AIDialogueView : BaseView<AIDialogueViewModel>, IUIWindow
 
     protected override void SetupBindings()
     {
-
+        if (npcNameText == null || dialogueText == null)
+        {
+            var logEntry = logContainer.transform.GetChild(0).GetComponent<LogEntryView>();
+            npcNameText = logEntry.GetSpeakerName();
+            dialogueText = logEntry.GetMessageText();
+        }
         // Сначала устанавливаем значения по умолчанию
         npcNameText.text = "Загрузка...";
         dialogueText.text = "...";

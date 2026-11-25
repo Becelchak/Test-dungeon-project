@@ -72,6 +72,20 @@ public class SkillNodeViewModel : BaseViewModel
     public ICommand UnlockCommand { get; private set; }
 
     private IProgressionService _progressionService;
+    private SkillNodeData _nodeData;
+
+    /// <summary>Лорное описание навыка (может быть пустым).</summary>
+    public string LoreText => _nodeData?.loreText;
+
+    /// <summary>Требуемый уровень прозрения для открытия навыка.</summary>
+    public int MinInsightLevel => _nodeData?.minInsightLevel ?? 1;
+
+    /// <summary>Требуемые черты персонажа (id).</summary>
+    public IReadOnlyList<string> RequiredTraits => _nodeData?.requiredTraits;
+
+    /// <summary>Разблокирован ли другой узел (для отображения требований).</summary>
+    public bool IsNodeUnlocked(string nodeId) =>
+        _progressionService != null && _progressionService.IsUnlocked(nodeId);
 
     public SkillNodeViewModel(string nodeId, string displayName, string description, Sprite icon, int cost, IProgressionService progressionService)
     {
@@ -83,6 +97,8 @@ public class SkillNodeViewModel : BaseViewModel
         _progressionService = progressionService;
 
         UnlockCommand = new RelayCommand(ExecuteUnlock, CanExecuteUnlock);
+
+        _nodeData = _progressionService?.GetSkillNodeData(nodeId);
 
         UpdateUnlockStatus();
         FindRequiredNodes();
@@ -100,7 +116,9 @@ public class SkillNodeViewModel : BaseViewModel
 
     private void FindRequiredNodes()
     {
-        var skillData = _progressionService.GetSkillNodeData(_nodeId);
+        var skillData = _nodeData;
+        if (skillData == null) return;
+
         foreach (var node in _progressionService.GetAllNodes())
         {
             if (skillData.requiredNodes.Contains(node.nodeId))

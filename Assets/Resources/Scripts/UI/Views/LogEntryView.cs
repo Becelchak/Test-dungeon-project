@@ -60,6 +60,9 @@ public class LogEntryView : BaseView<LogEntryViewModel>
             transform as RectTransform);
     }
 
+    public TextMeshProUGUI GetMessageText() {  return messageText; }
+    public TextMeshProUGUI GetSpeakerName() { return speakerNameText; }
+
     public override void Unbind()
     {
         if (ViewModel != null)

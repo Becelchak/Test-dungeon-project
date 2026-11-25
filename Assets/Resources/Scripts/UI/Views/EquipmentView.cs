@@ -8,11 +8,11 @@ public class EquipmentView : BaseView<EquipmentViewModel>
     [SerializeField] private List<EquipmentSlotUI> staticSceneSlots = new List<EquipmentSlotUI>();
 
     [Header("Info Panel")]
-    [Tooltip("GameObject с компонентом ItemInfoPanel")]
+    [Tooltip("GameObject с компонентом AdaptiveInfoPanel")]
     [SerializeField] private GameObject infoPanel;
 
     private readonly Dictionary<EquipmentSlotType, EquipmentSlotUI> _slotUIs = new();
-    private ItemInfoPanel _infoPanel;
+    private AdaptiveInfoPanel _infoPanel;
 
     protected override void SetupBindings()
     {
@@ -20,9 +20,9 @@ public class EquipmentView : BaseView<EquipmentViewModel>
         ViewModel.OnActiveWeaponChanged += RefreshActiveHighlight;
         if (infoPanel != null)
         {
-            _infoPanel = infoPanel.GetComponent<ItemInfoPanel>();
+            _infoPanel = infoPanel.GetComponent<AdaptiveInfoPanel>();
             if (_infoPanel == null)
-                Debug.LogWarning("[EquipmentView] На infoPanel нет компонента ItemInfoPanel!");
+                Debug.LogWarning("[EquipmentView] На infoPanel нет компонента AdaptiveInfoPanel!");
         }
 
         BindStaticSlots();
@@ -44,7 +44,7 @@ public class EquipmentView : BaseView<EquipmentViewModel>
         if (e.PropertyName == nameof(ViewModel.HoveredItemData))
         {
             if (ViewModel.HoveredItemData != null)
-                _infoPanel?.Show(ViewModel.HoveredItemData, Input.mousePosition);
+                _infoPanel?.Show(ItemInfoFormatter.BuildContent(ViewModel.HoveredItemData), Input.mousePosition);
             else
                 _infoPanel?.Hide();
         }

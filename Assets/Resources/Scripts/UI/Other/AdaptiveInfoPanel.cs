@@ -4,24 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Панель информации о предмете: название (цвет редкости), описание
-/// и две колонки технических характеристик. Сама позиционируется
-/// рядом с курсором с клампингом по границам экрана.
+/// Универсальная адаптивная инфо-панель: заголовок (опционально в рамке),
+/// описание, дополнительные текстовые секции и две колонки характеристик.
+/// Не зависит от типа данных — принимает InfoPanelContent, собранный форматтером.
+/// Сама позиционируется рядом с курсором с клампингом по границам экрана.
 /// При показе может переноситься в overlayParent (например, Gameplay Layer),
 /// чтобы отображаться поверх окон, и возвращаться обратно при скрытии.
 /// Автоматически пересчитывает высоту панели, позиции строк
 /// и размер рамки заголовка под объём контента.
 /// </summary>
-public class ItemInfoPanel : MonoBehaviour
+public class AdaptiveInfoPanel : MonoBehaviour
 {
     [Header("Текстовые поля")]
     [SerializeField] private TMP_Text titleText;
     [SerializeField] private TMP_Text descriptionText;
+    [Tooltip("Дополнительные текстовые блоки (лор, требования и т.п.). " +
+             "BodySections[i] из InfoPanelContent заполняет i-й элемент списка.")]
+    [SerializeField] private List<TMP_Text> sectionTexts = new List<TMP_Text>();
     [SerializeField] private TMP_Text statsLeftText;
     [SerializeField] private TMP_Text statsRightText;
 
     [Header("Рамка заголовка")]
-    [Tooltip("Рамка вокруг названия предмета. Если не назначена — ищется автоматически как родитель titleText. Если titleText — прямой ребёнок панели, рамки нет.")]
+    [Tooltip("Рамка вокруг заголовка. Если не назначена — ищется автоматически как родитель titleText. Если titleText — прямой ребёнок панели, рамки нет.")]
     [SerializeField] private RectTransform titleFrame;
     [Tooltip("Внутренние отступы рамки заголовка (X — горизонтальные, Y — вертикальные)")]
     [SerializeField] private Vector2 titleFramePadding = new Vector2(24f, 8f);
@@ -67,17 +71,17 @@ public class ItemInfoPanel : MonoBehaviour
         }
     }
 
-    /// <summary>Показать панель с данными предмета рядом с точкой screenPos (Input.mousePosition).</summary>
-    public void Show(ItemData item, Vector2 screenPos)
+    /// <summary>Показать панель с готовым контентом рядом с точкой screenPos (Input.mousePosition).</summary>
+    public void Show(InfoPanelContent content, Vector2 screenPos)
     {
-        if (item == null)
+        if (content == null)
         {
             Hide();
             return;
         }
 
         MoveToOverlay();
-        FillContent(item);
+        FillContent(content);
         _anchorScreenPos = screenPos;
 
         if (!gameObject.activeSelf) gameObject.SetActive(true);
@@ -118,22 +122,49 @@ public class ItemInfoPanel : MonoBehaviour
         if (_visible) UpdatePosition();
     }
 
-    private void FillContent(ItemData item)
+    private void FillContent(InfoPanelContent content)
     {
-        if (titleText != null) titleText.text = ItemInfoFormatter.FormatTitle(item);
-        if (descriptionText != null) descriptionText.text = item.description ?? string.Empty;
+        if (titleText != null)
+        {
+            string title = content.Title ?? string.Empty;
+            titleText.text = !string.IsNullOrEmpty(content.TitleColorHex)
+                ? $"<color=#{content.TitleColorHex}>{title}</color>"
+                : title;
+        }
 
-        var lines = ItemInfoFormatter.BuildStatLines(item);
-        int mid = (lines.Count + 1) / 2;
-        var left = lines.GetRange(0, mid);
-        var right = lines.GetRange(mid, lines.Count - mid);
+        bool hasTitle = !string.IsNullOrEmpty(content.Title);
+        if (titleFrame != null)
+            titleFrame.gameObject.SetActive(hasTitle);
 
-        if (statsLeftText != null) statsLeftText.text = ItemInfoFormatter.BuildColumnText(left);
-        if (statsRightText != null) statsRightText.text = ItemInfoFormatter.BuildColumnText(right);
+        if (descriptionText != null)
+            descriptionText.text = content.Description ?? string.Empty;
+
+        // Текстовые секции: i-й блок контента → i-й TMP из sectionTexts
+        int sectionCount = content.BodySections?.Count ?? 0;
+        for (int i = 0; i < sectionTexts.Count; i++)
+        {
+            var tmp = sectionTexts[i];
+            if (tmp == null) continue;
+
+            bool hasSection = i < sectionCount && !string.IsNullOrEmpty(content.BodySections[i]);
+            tmp.gameObject.SetActive(hasSection);
+            if (hasSection) tmp.text = content.BodySections[i];
+        }
+
+        // Статы: делим на две колонки
+        var lines = content.StatLines;
+        int mid = ((lines?.Count ?? 0) + 1) / 2;
+        var left = lines != null ? lines.GetRange(0, mid) : new List<StatLine>();
+        var right = lines != null ? lines.GetRange(mid, lines.Count - mid) : new List<StatLine>();
+
+        if (statsLeftText != null) statsLeftText.text = StatLineFormatter.BuildColumnText(left);
+        if (statsRightText != null) statsRightText.text = StatLineFormatter.BuildColumnText(right);
 
         if (enableWordWrap)
         {
             if (descriptionText != null) descriptionText.enableWordWrapping = true;
+            for (int i = 0; i < sectionTexts.Count; i++)
+                if (sectionTexts[i] != null) sectionTexts[i].enableWordWrapping = true;
             if (statsLeftText != null) statsLeftText.enableWordWrapping = true;
             if (statsRightText != null) statsRightText.enableWordWrapping = true;
         }
@@ -144,22 +175,37 @@ public class ItemInfoPanel : MonoBehaviour
     /// измеряет предпочтительную высоту каждого текста,
     /// выстраивает строки сверху вниз от верха панели
     /// и задаёт итоговую высоту панели.
-    /// Строка заголовка — это рамка titleFrame (или сам titleText,
-    /// если рамки нет): рамка подгоняется под текст.
     /// Работает и на увеличение, и на уменьшение контента.
     /// </summary>
     private void FitToContent()
     {
         Canvas.ForceUpdateCanvases();
-        float descH = MeasureTextHeight(descriptionText);
+
+        // Ширина строк описания/секций = внутренняя ширина панели.
+        // Явно задаём её и при замере, и при размещении — иначе узкий
+        // RectTransform в префабе даст перенос текста посимвольно.
+        float bodyW = Mathf.Max(0f, _rt.rect.width - contentPadding * 2f);
+
+        // Собираем активные строки контента: описание + секции
+        var bodyRows = new List<(TMP_Text text, float height)>();
+        float descH = MeasureTextHeight(descriptionText, bodyW);
+        if (descH > 0.5f) bodyRows.Add((descriptionText, descH));
+
+        foreach (var section in sectionTexts)
+        {
+            if (section == null || !section.gameObject.activeSelf) continue;
+            float h = MeasureTextHeight(section, bodyW);
+            if (h > 0.5f) bodyRows.Add((section, h));
+        }
+
         float statsH = Mathf.Max(MeasureTextHeight(statsLeftText), MeasureTextHeight(statsRightText));
 
         float y = contentPadding;
         y = PlaceTitleRow(y);
-        if (descH > 0.5f)
+        foreach (var (text, h) in bodyRows)
         {
             y += rowSpacing;
-            y = PlaceTextRow(descriptionText, y, descH);
+            y = PlaceTextRow(text, y, h, bodyW);
         }
         if (statsH > 0.5f)
         {
@@ -178,7 +224,7 @@ public class ItemInfoPanel : MonoBehaviour
     }
 
     /// <summary>
-    /// Размещает строку заголовка: если есть рамка — подгоняет её
+    /// Размещает строку заголовка: если есть видимая рамка — подгоняет её
     /// под размер текста и ставит как строку; иначе ставит сам текст.
     /// Возвращает нижнюю границу строки.
     /// </summary>
@@ -186,7 +232,8 @@ public class ItemInfoPanel : MonoBehaviour
     {
         if (titleText == null) return topDistance;
 
-        if (titleFrame == null)
+        bool hasFrame = titleFrame != null && titleFrame.gameObject.activeSelf;
+        if (!hasFrame)
         {
             float h = MeasureTextHeight(titleText);
             return PlaceTextRow(titleText, topDistance, h);
@@ -215,12 +262,39 @@ public class ItemInfoPanel : MonoBehaviour
 
     /// <summary>
     /// Ставит текст в строку на расстоянии topDistance от верха панели
-    /// (якорь top-center) и возвращает нижнюю границу строки.
+    /// и возвращает нижнюю границу строки.
+    /// Строкой является ближайший к панели предок TMP (например, Image-подложка) —
+    /// он позиционируется и изменяется по высоте, а сам TMP растягивается внутри него.
     /// </summary>
-    private float PlaceTextRow(TMP_Text tmp, float topDistance, float height)
+    private float PlaceTextRow(TMP_Text tmp, float topDistance, float height, float? width = null)
     {
         if (tmp == null) return topDistance;
-        return PlaceRow(tmp.rectTransform, topDistance, height);
+
+        var trt = tmp.rectTransform;
+        var rowRoot = GetRowRoot(trt);
+
+        // TMP заполняет свой rowRoot целиком (актуально при вложенности в Image-подложку)
+        if (rowRoot != trt)
+        {
+            trt.anchorMin = Vector2.zero;
+            trt.anchorMax = Vector2.one;
+            trt.offsetMin = Vector2.zero;
+            trt.offsetMax = Vector2.zero;
+        }
+
+        return PlaceRow(rowRoot, topDistance, height, width);
+    }
+
+    /// <summary>
+    /// Ближайший к панели предок RectTransform: если TMP — прямой ребёнок панели,
+    /// возвращает его самого; если вложен (например, в Image) — верхний элемент
+    /// иерархии внутри панели.
+    /// </summary>
+    private RectTransform GetRowRoot(RectTransform rt)
+    {
+        while (rt.parent is RectTransform parent && parent != _rt)
+            rt = parent;
+        return rt;
     }
 
     /// <summary>
@@ -241,13 +315,13 @@ public class ItemInfoPanel : MonoBehaviour
         return topDistance + height;
     }
 
-    /// <summary>Предпочтительная высота текста при его текущей ширине.</summary>
-    private float MeasureTextHeight(TMP_Text tmp)
+    /// <summary>Предпочтительная высота текста при заданной ширине (0 — текущая ширина RectTransform).</summary>
+    private float MeasureTextHeight(TMP_Text tmp, float width = 0f)
     {
         if (tmp == null || string.IsNullOrEmpty(tmp.text)) return 0f;
 
         var rt = tmp.rectTransform;
-        float w = rt.rect.width;
+        float w = width > 0.5f ? width : rt.rect.width;
         if (w <= 0.5f) return rt.rect.height;
 
         var pref = tmp.GetPreferredValues(tmp.text, w, 0f);

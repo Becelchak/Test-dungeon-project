@@ -9,11 +9,11 @@ public class InventoryView : BaseView<InventoryViewModel>
     [SerializeField] private InventoryItemSlot itemPrefab;
 
     [Header("Info")]
-    [Tooltip("GameObject с компонентом ItemInfoPanel")]
+    [Tooltip("GameObject с компонентом AdaptiveInfoPanel")]
     [SerializeField] private GameObject infoPanel;
 
     private readonly List<InventoryItemSlot> _itemUIs = new();
-    private ItemInfoPanel _infoPanel;
+    private AdaptiveInfoPanel _infoPanel;
 
     public UILayer Layer => UILayer.InventoryGroup;
 
@@ -23,9 +23,9 @@ public class InventoryView : BaseView<InventoryViewModel>
         ViewModel.Initialize();
         if (infoPanel != null)
         {
-            _infoPanel = infoPanel.GetComponent<ItemInfoPanel>();
+            _infoPanel = infoPanel.GetComponent<AdaptiveInfoPanel>();
             if (_infoPanel == null)
-                Debug.LogWarning("[InventoryView] На infoPanel нет компонента ItemInfoPanel!");
+                Debug.LogWarning("[InventoryView] На infoPanel нет компонента AdaptiveInfoPanel!");
         }
     }
 
@@ -43,7 +43,7 @@ public class InventoryView : BaseView<InventoryViewModel>
         if (e.PropertyName == nameof(ViewModel.HoveredItemData))
         {
             if (ViewModel.HoveredItemData != null)
-                _infoPanel?.Show(ViewModel.HoveredItemData, Input.mousePosition);
+                _infoPanel?.Show(ItemInfoFormatter.BuildContent(ViewModel.HoveredItemData), Input.mousePosition);
             else
                 _infoPanel?.Hide();
         }

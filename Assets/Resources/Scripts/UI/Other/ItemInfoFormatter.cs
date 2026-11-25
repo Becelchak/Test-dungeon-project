@@ -1,37 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 /// <summary>
-/// Одна строка технической характеристики предмета для инфо-панели.
-/// </summary>
-public class ItemStatLine
-{
-    public string Label;
-    public string Value;
-    /// <summary>Числовое значение — подсветить акцентным цветом.</summary>
-    public bool HighlightValue;
-    /// <summary>Переопределение цвета значения (html hex без #). Если null — берётся HighlightValue.</summary>
-    public string ValueColorOverride;
-
-    public ItemStatLine(string label, string value, bool highlightValue = false, string valueColorOverride = null)
-    {
-        Label = label;
-        Value = value;
-        HighlightValue = highlightValue;
-        ValueColorOverride = valueColorOverride;
-    }
-}
-
-/// <summary>
-/// Форматирует технические характеристики ItemData для инфо-панели.
+/// Форматирует ItemData в нейтральный InfoPanelContent для AdaptiveInfoPanel.
 /// </summary>
 public static class ItemInfoFormatter
 {
-    private const string NumericColor = "FFD75E";   // золотистый для чисел
-    private const string LabelColor = "C8C8C8";     // приглушённый для лейблов
-    private const string PlainValueColor = "FFFFFF";// обычный текст значения
-
     private static readonly Dictionary<ItemRarity, string> RarityNames = new()
     {
         { ItemRarity.Common, "Обычный" },
@@ -80,20 +54,24 @@ public static class ItemInfoFormatter
     public static string ItemTypeName(ItemType type) =>
         ItemTypeNames.TryGetValue(type, out var n) ? n : type.ToString();
 
-    /// <summary>Название предмета, обёрнутое в цвет редкости (для TMP rich text).</summary>
-    public static string FormatTitle(ItemData item)
+    /// <summary>Собирает контент инфо-панели для предмета.</summary>
+    public static InfoPanelContent BuildContent(ItemData item)
     {
-        if (item == null) return string.Empty;
-        return $"<color=#{RarityColorHex(item.rarity)}>{item.displayName}</color>";
+        var content = new InfoPanelContent();
+        if (item == null) return content;
+
+        content.Title = item.displayName;
+        content.TitleColorHex = RarityColorHex(item.rarity);
+        content.Description = item.description ?? string.Empty;
+        content.StatLines = BuildStatLines(item);
+        return content;
     }
 
     /// <summary>Строки характеристик для конкретного типа предмета.</summary>
-    public static List<ItemStatLine> BuildStatLines(ItemData item)
+    public static List<StatLine> BuildStatLines(ItemData item)
     {
-        var lines = new List<ItemStatLine>();
+        var lines = new List<StatLine>();
         if (item == null) return lines;
-
-        lines.Add(new ItemStatLine("Редкость", RarityName(item.rarity), false, RarityColorHex(item.rarity)));
 
         if (item is WeaponData weapon)
         {
@@ -101,58 +79,40 @@ public static class ItemInfoFormatter
         }
         else
         {
-            lines.Add(new ItemStatLine("Тип", ItemTypeName(item.itemType)));
+            lines.Add(new StatLine("Тип", ItemTypeName(item.itemType)));
             if (item.isStackable)
-                lines.Add(new ItemStatLine("Макс. стопка", item.maxStackSize.ToString(), true));
+                lines.Add(new StatLine("Макс. стопка", item.maxStackSize.ToString(), true));
         }
 
         return lines;
     }
 
-    private static void BuildWeaponLines(WeaponData weapon, List<ItemStatLine> lines)
+    private static void BuildWeaponLines(WeaponData weapon, List<StatLine> lines)
     {
-        lines.Add(new ItemStatLine("Тип", WeaponTypeNames.TryGetValue(weapon.weaponType, out var wt) ? wt : weapon.weaponType.ToString()));
+        lines.Add(new StatLine("Тип", WeaponTypeNames.TryGetValue(weapon.weaponType, out var wt) ? wt : weapon.weaponType.ToString()));
 
         var stats = weapon.Stats;
         if (stats == null) return;
 
         if (weapon.weaponType == WeaponType.Shield)
         {
-            lines.Add(new ItemStatLine("Поглощение блока", Percent(stats.blockDamageReduction), true));
-            lines.Add(new ItemStatLine("Идеальный блок", Seconds(stats.perfectBlockWindow), true));
-            lines.Add(new ItemStatLine("Парирование", Seconds(stats.parryWindow), true));
-            lines.Add(new ItemStatLine("Стамина парирования", stats.parryStaminaCost.ToString("0.#"), true));
+            lines.Add(new StatLine("Поглощение блока", Percent(stats.blockDamageReduction), true));
+            lines.Add(new StatLine("Идеальный блок", Seconds(stats.perfectBlockWindow), true));
+            lines.Add(new StatLine("Парирование", Seconds(stats.parryWindow), true));
+            lines.Add(new StatLine("Стамина парирования", stats.parryStaminaCost.ToString("0.#"), true));
             return;
         }
 
-        lines.Add(new ItemStatLine("Урон", stats.damage.ToString("0.#"), true));
+        lines.Add(new StatLine("Урон", stats.damage.ToString("0.#"), true));
         if (stats.attackDuration > 0f)
-            lines.Add(new ItemStatLine("Скорость атаки", $"{(1f / stats.attackDuration):0.#}/с", true));
+            lines.Add(new StatLine("Скорость атаки", $"{(1f / stats.attackDuration):0.#}/с", true));
         if (stats.range > 0f)
-            lines.Add(new ItemStatLine("Дальность", stats.range.ToString("0.#"), true));
-        lines.Add(new ItemStatLine("Идеальный блок", Seconds(stats.perfectBlockWindow), true));
-        lines.Add(new ItemStatLine("Парирование", Seconds(stats.parryWindow), true));
-        lines.Add(new ItemStatLine("Поглощение блока", Percent(stats.blockDamageReduction), true));
-        lines.Add(new ItemStatLine("Стамина атаки", stats.attackStaminaCost.ToString("0.#"), true));
-        lines.Add(new ItemStatLine("Стамина парирования", stats.parryStaminaCost.ToString("0.#"), true));
-    }
-
-    /// <summary>Собирает TMP-разметку для одной колонки характеристик.</summary>
-    public static string BuildColumnText(IReadOnlyList<ItemStatLine> lines)
-    {
-        if (lines == null || lines.Count == 0) return string.Empty;
-
-        var sb = new StringBuilder(lines.Count * 32);
-        foreach (var line in lines)
-        {
-            string valueColor = line.ValueColorOverride ?? (line.HighlightValue ? NumericColor : PlainValueColor);
-            sb.Append("<color=#").Append(LabelColor).Append('>')
-              .Append(line.Label)
-              .Append("</color>  <color=#").Append(valueColor).Append('>')
-              .Append(line.Value)
-              .Append("</color>\n");
-        }
-        return sb.ToString();
+            lines.Add(new StatLine("Дальность", stats.range.ToString("0.#"), true));
+        lines.Add(new StatLine("Идеальный блок", Seconds(stats.perfectBlockWindow), true));
+        lines.Add(new StatLine("Парирование", Seconds(stats.parryWindow), true));
+        lines.Add(new StatLine("Поглощение блока", Percent(stats.blockDamageReduction), true));
+        lines.Add(new StatLine("Стамина атаки", stats.attackStaminaCost.ToString("0.#"), true));
+        lines.Add(new StatLine("Стамина парирования", stats.parryStaminaCost.ToString("0.#"), true));
     }
 
     private static string Percent(float v) => $"{v * 100f:0}%";

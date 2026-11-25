@@ -17,7 +17,13 @@ public class SkillsPanelView : BaseView<SkillsPanelViewModel>
     public List<SkillBranchView> commonBranchViews;
     public SkillBranchView archetypeBranchView;
 
+    [Header("Info Panel")]
+    [Tooltip("Адаптивная панель информации о навыке (AdaptiveInfoPanel)")]
+    [SerializeField] private AdaptiveInfoPanel infoPanel;
+
     public UILayer Layer => UILayer.Skills;
+
+    private readonly List<SkillNodeView> _nodeViews = new List<SkillNodeView>();
 
     protected override void SetupBindings()
     {
@@ -29,6 +35,40 @@ public class SkillsPanelView : BaseView<SkillsPanelViewModel>
 
         ViewModel.PropertyChanged += OnPropertyChanged;
         RefreshTab();
+
+        if (infoPanel != null)
+        {
+            _nodeViews.AddRange(GetComponentsInChildren<SkillNodeView>(true));
+            foreach (var nodeView in _nodeViews)
+            {
+                nodeView.Hovered += OnNodeHovered;
+                nodeView.Unhovered += OnNodeUnhovered;
+            }
+        }
+    }
+
+    public override void Unbind()
+    {
+        foreach (var nodeView in _nodeViews)
+        {
+            if (nodeView == null) continue;
+            nodeView.Hovered -= OnNodeHovered;
+            nodeView.Unhovered -= OnNodeUnhovered;
+        }
+        _nodeViews.Clear();
+        infoPanel?.Hide();
+
+        base.Unbind();
+    }
+
+    private void OnNodeHovered(SkillNodeViewModel node)
+    {
+        infoPanel?.Show(SkillInfoFormatter.Build(node), Input.mousePosition);
+    }
+
+    private void OnNodeUnhovered()
+    {
+        infoPanel?.Hide();
     }
 
     protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)

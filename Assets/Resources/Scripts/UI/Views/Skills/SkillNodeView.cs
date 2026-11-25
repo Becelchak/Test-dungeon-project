@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using System;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-public class SkillNodeView : MonoBehaviour
+public class SkillNodeView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("Settings")]
     public string nodeId;
@@ -30,6 +31,21 @@ public class SkillNodeView : MonoBehaviour
     public Color lockedColor = new Color(0.3f, 0.3f, 0.3f, 0.3f);
 
     private SkillNodeViewModel _viewModel;
+
+    /// <summary>Курсор вошёл на узел. Аргумент — текущая ViewModel узла.</summary>
+    public event Action<SkillNodeViewModel> Hovered;
+    /// <summary>Курсор покинул узел.</summary>
+    public event Action Unhovered;
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_viewModel != null) Hovered?.Invoke(_viewModel);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        Unhovered?.Invoke();
+    }
 
     public void Bind(SkillNodeViewModel viewModel)
     {

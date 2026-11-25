@@ -7,6 +7,7 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>, IUIWi
     [Header("Classical Dialogue UI")]
     [SerializeField] private TextMeshProUGUI npcNameText;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private GameObject logContainer;
     [SerializeField] private Transform responsesContainer;
     [SerializeField] private GameObject responseButtonPrefab;
 
@@ -17,6 +18,13 @@ public class ClassicalDialogueView : BaseView<ClassicalDialogueViewModel>, IUIWi
 
     protected override void SetupBindings()
     {
+        if (npcNameText == null || dialogueText == null)
+        {
+            var logEntry = logContainer.transform.GetChild(0).GetComponent<LogEntryView>();
+            npcNameText = logEntry.GetSpeakerName();
+            dialogueText = logEntry.GetMessageText();
+        }
+
         // Привязка имени NPC
         npcNameText.text = ViewModel.NpcName;
 
