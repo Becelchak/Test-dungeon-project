@@ -528,7 +528,7 @@ TextureImporter:
         height: 168
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 25, y: 24, z: 20, w: 23}
       customData: 
       outline: []
       physicsShape: []
@@ -588,7 +588,7 @@ TextureImporter:
       name: UI elements panel 1_28
       rect:
         serializedVersion: 2
-        x: 1615
+        x: 1616
         y: 245
         width: 840
         height: 265
