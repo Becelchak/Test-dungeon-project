@@ -3,8 +3,14 @@
 public class AimingService : BaseService, IAimingService
 {
     [SerializeField] private LayerMask aimLayers;
-    [SerializeField] private float maxDistance = 20f;
+    [SerializeField] private LayerMask ignoredAimLayers;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private float maxDistance = 20f;
+    [Header("Eye-level Aim")]
+    [Tooltip("Высота уровня глаз от pivot игрока, если кость Head не найдена")]
+    [SerializeField] private float fallbackEyeHeight = 1.6f;
+
+    [Header("Debug")]
     [SerializeField] private bool debugDraw = true;
     [SerializeField] private bool debugLog = false;
 
@@ -14,6 +20,19 @@ public class AimingService : BaseService, IAimingService
     public Vector3 AimPoint { get; private set; }
     public Vector3 AimDirection { get; private set; }
     public bool HasTarget { get; private set; }
+
+    /// <summary>
+    /// Точка прицеливания на уровне глаз: горизонтальная проекция точки
+    /// прицеливания на плоскость высоты головы. Дальность наследуется
+    /// от реальной точки (для промаха — maxDistance).
+    /// </summary>
+    public Vector3 EyeLevelPoint { get; private set; }
+
+    /// <summary>
+    /// true — прицел не попал по aimLayers (только ignored-слои или пустота),
+    /// AimPoint заморожен на уровне глаз.
+    /// </summary>
+    public bool IsEyeLevelAim { get; private set; }
 
     protected override System.Type GetServiceType() => typeof(IAimingService);
 
@@ -50,10 +69,16 @@ public class AimingService : BaseService, IAimingService
         // RaycastAll для приоритета NpcHitbox
         RaycastHit[] hits = Physics.RaycastAll(ray, maxDistance, aimLayers, QueryTriggerInteraction.Collide);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        RaycastHit[] ignoredHits = Physics.RaycastAll(ray, maxDistance, ignoredAimLayers, QueryTriggerInteraction.Collide);
+        System.Array.Sort(ignoredHits, (a, b) => a.distance.CompareTo(b.distance));
 
         HasTarget = false;
+        IsEyeLevelAim = false;
         AimPoint = ray.origin + ray.direction * maxDistance;
+        bool aimedAtTarget = false;
+        bool hasGeometryHit = hits.Length > 0 || ignoredHits.Length > 0;
 
+        // NpcHitbox — приоритетная цель
         foreach (var hit in hits)
         {
             if (hit.transform.root == playerTransform.root) continue;
@@ -62,30 +87,70 @@ public class AimingService : BaseService, IAimingService
             {
                 AimPoint = hit.point;
                 HasTarget = true;
+                aimedAtTarget = true;
                 break;
             }
         }
 
         // Если NpcHitbox не найден - берется ближайшее попадание
-        if (!HasTarget && hits.Length > 0)
+        // по aimLayers (собственный коллайдер игрока пропускаем)
+        if (!HasTarget)
         {
-            AimPoint = hits[0].point;
+            foreach (var hit in hits)
+            {
+                if (hit.transform.root == playerTransform.root) continue;
+                AimPoint = hit.point;
+                HasTarget = true;
+                aimedAtTarget = true;
+                break;
+            }
+        }
+
+        // Попадание только по игнорируемым слоям (земля/стены) —
+        // цель есть геометрически, но «нежелательная»
+        if (!HasTarget && ignoredHits.Length > 0)
+        {
+            AimPoint = ignoredHits[0].point;
             HasTarget = true;
         }
 
-        // КОРРЕКЦИЯ от головы персонажа
-        if (HasTarget && _headTransform != null)
+        // Уровень глаз персонажа
+        Vector3 eyePos = _headTransform != null
+            ? _headTransform.position
+            : playerTransform.position + Vector3.up * fallbackEyeHeight;
+
+        // EyeLevelPoint — горизонтальная проекция точки прицеливания
+        // на плоскость высоты глаз: «проводим точку от места прицеливания до глаз»
+        Vector3 toAimFlat = AimPoint - eyePos;
+        toAimFlat.y = 0f;
+        EyeLevelPoint = toAimFlat.sqrMagnitude > 0.0001f
+            ? eyePos + toAimFlat
+            : eyePos + playerTransform.forward * maxDistance;
+
+        // Нет попадания по aimLayers (только ignored-слои или пустота) —
+        // прицел замирает на уровне глаз
+        if (!aimedAtTarget)
+        {
+            IsEyeLevelAim = true;
+            AimPoint = EyeLevelPoint;
+            HasTarget = hasGeometryHit; // геометрия была — режим «уровень глаз», не «промах в пустоту»
+        }
+
+        // КЛАМП: целевая точка не дальше maxHeadDist от головы.
+        // В режиме уровня глаз не применяется — EyeLevelPoint уже ограничен
+        // горизонтальной дальностью исходной точки прицеливания.
+        if (HasTarget && !IsEyeLevelAim && _headTransform != null)
         {
             Vector3 headPos = _headTransform.position;
             Vector3 toAim = AimPoint - headPos;
             float headDist = toAim.magnitude;
-            
+
             float maxHeadDist = 15f;
             if (headDist > maxHeadDist)
             {
                 AimPoint = headPos + toAim.normalized * maxHeadDist;
             }
-            
+
             // Отрисовка линии от головы персонада
             if (debugDraw)
             {
@@ -100,7 +165,7 @@ public class AimingService : BaseService, IAimingService
             Debug.DrawRay(AimPoint, Vector3.up * 0.5f, Color.magenta);
             Debug.DrawRay(AimPoint + Vector3.left * 0.2f, Vector3.right * 0.4f, Color.magenta);
             Debug.DrawRay(AimPoint + Vector3.back * 0.2f, Vector3.forward * 0.4f, Color.magenta);
-            
+
             if (hits.Length > 0)
             {
                 string hitName = hits[0].collider.name;

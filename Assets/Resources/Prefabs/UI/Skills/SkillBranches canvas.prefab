@@ -8860,15 +8860,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u041E\n\u0431\n\u0449\n\u0438\n\u0435 \n\n\u043D\n\u0430\n\u0432\n\u044B\n\u043A\n\u0438"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 21779a60957805446a084d125abd30ec, type: 2}
+  m_sharedMaterial: {fileID: -6430099208103476043, guid: 21779a60957805446a084d125abd30ec, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8891,12 +8891,12 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 20
-  m_characterHorizontalScale: 1
+  m_characterHorizontalScale: 1.35
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -12787,15 +12787,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u0418\n\u043D\n\u0434\n\u0438\n\u0432\n\u0438\n\u0434\n\u0443\n\u0430\n\u043B\n\u044C\n\u043D\n\u044B\n\u0435\n\n\u043D\n\u0430\n\u0432\n\u044B\n\u043A\n\u0438"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 21779a60957805446a084d125abd30ec, type: 2}
+  m_sharedMaterial: {fileID: -6430099208103476043, guid: 21779a60957805446a084d125abd30ec, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -12812,18 +12812,18 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21
-  m_fontSizeBase: 21
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 20
-  m_characterHorizontalScale: 1
+  m_characterHorizontalScale: 1.35
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -16089,7 +16089,7 @@ GameObject:
   - component: {fileID: 264643663117972734}
   - component: {fileID: 6348831381532147137}
   m_Layer: 5
-  m_Name: Individual
+  m_Name: Individual button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16110,10 +16110,10 @@ RectTransform:
   - {fileID: 3069898076912084462}
   m_Father: {fileID: 1342048184775830864}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -931.0715, y: -263.34604}
-  m_SizeDelta: {x: 47.683, y: 526.69}
+  m_AnchorMin: {x: 0, y: 0.012}
+  m_AnchorMax: {x: 0.038000003, y: 0.5}
+  m_AnchoredPosition: {x: 2.5, y: 0}
+  m_SizeDelta: {x: -5.000061, y: 0.000015258789}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5543665674101469538
 CanvasRenderer:
@@ -16136,14 +16136,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6886792, g: 0.27690345, b: 0.08770915, a: 1}
+  m_Color: {r: 1, g: 0.6251335, b: 0.4481132, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 255474479, guid: 21bc2315c45acc94aacdb730768a9e51, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16152,7 +16152,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 5
 --- !u!114 &6348831381532147137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16632,7 +16632,7 @@ GameObject:
   - component: {fileID: 9156058850452015676}
   - component: {fileID: 3981989746606060827}
   m_Layer: 5
-  m_Name: Common
+  m_Name: Common button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16653,10 +16653,10 @@ RectTransform:
   - {fileID: 495586793582746426}
   m_Father: {fileID: 1342048184775830864}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -929.3632, y: 273.25034}
-  m_SizeDelta: {x: 47.683, y: 475.8549}
+  m_AnchorMin: {x: 0, y: 0.53255546}
+  m_AnchorMax: {x: 0.039, y: 0.9708519}
+  m_AnchoredPosition: {x: 5.0000005, y: 0}
+  m_SizeDelta: {x: -10.000001, y: -0.000004887581}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1493821516929340130
 CanvasRenderer:
@@ -16679,14 +16679,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.6886792, g: 0.27690345, b: 0.08770915, a: 1}
+  m_Color: {r: 1, g: 0.6251335, b: 0.4481132, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 255474479, guid: 21bc2315c45acc94aacdb730768a9e51, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16695,7 +16695,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 5
 --- !u!114 &3981989746606060827
 MonoBehaviour:
   m_ObjectHideFlags: 0
